@@ -7,7 +7,11 @@
 # Quotas and other obstacles are not
 # considered.
 #
-# Version 0.1 (feh)
+# Version 0.3 (feh) -- typeset enhanced
+#
+#-------------------------------------
+typeset ulocal
+typeset VOPMAILDIR
 #
 # Adjust your vpopmail home dir here:
 
@@ -15,25 +19,24 @@ VPOPMAILDIR=/home/vpopmail
 
 #--- done ---
 
+[ -d "${VPOPMAILDIR}/domains" ] || exit 2
+
 virtualdomains="HOME/control/virtualdomains"
-[ -f "$virtualdomains" ] || exit 2
-[ -d "$VPOPMAILDIR/domains" ] || exit 2
+[ -f "${virtualdomains}" ] || exit 2
 
 read -u3 address
-[ "x$address" = "x" ] && exit 2
+[ "x${address}" = "x" ] && exit 2
 
-localpart=`echo $address | cut -d'@' -f1 | tr '.' ':'`
-domainpart=`echo $address | cut -d'@' -f2`
+ulocal=`echo ${address} | cut -d'@' -f1 | tr '.' ':'`
+domain=`echo ${address} | cut -d'@' -f2`
 
-[ -f "$virtualdomains" ] || exit 2
-
-for line in `grep -v '^#' $virtualdomains`
+for line in `grep -v '^#' ${virtualdomains}`
 do
   vdomain=${line%:*}
-  if [ "$vdomain" = "$domainpart" ]
+  if [ "${vdomain}" = "${domain}" ]
   then
     vdomainuser=${line#*:*}
-    [ -d "$VPOPMAILDIR/domains/$vdomainuser/$localpart" ] && exit 0
+    [ -d "${VPOPMAILDIR}/domains/${vdomainuser}/${ulocal}" ] && exit 0
   fi
 done
 

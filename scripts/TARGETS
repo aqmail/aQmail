@@ -1,5 +1,4 @@
 ldap-pam
-multiple-queues
 qmail-alias2recipients
 qmail-pwd2recipients
 qmail-queue-scan

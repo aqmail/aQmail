@@ -18,6 +18,7 @@ Here's the glue:
 
   Reject AUTH missing		AUTHentication missing
   Reject AUTH type		AUTHentication of 'type' rejected
+  Reject Auth Meth		AUTHentication Method rejected
   Accept AUTH type		AUTHentication of 'type' accepted
 
   Reject DATA Invalid_Size 	DATA exceeds sizelimit

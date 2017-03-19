@@ -40,6 +40,10 @@ Changelog of s/qmail
 	Fixed SPF qmail-mrtg evaluation.
 	Fixed man page installation +  installation issues for OpenBSD.
 3.2.16	Added qmail-vpopbox and qmail-vmailbox PAM for Recipients.
-
+3.2.17	Final release of version 3.2; minor adjustments only.
+	The scripts have been reworked and integrated into the
+	package production chain.
+	This version is expected to work with OpenSSL 1.0/1.1 + LibreSSL
+	together with ucpsi-ssl-0.99.
 
 	

@@ -252,7 +252,7 @@ int main(int argc, char **argv)
   unsigned long calltime;
   unsigned long seconds;
   unsigned long nanoseconds;
-  unsigned int history = 300;
+  unsigned int history = 305;
   char flag;
 
   stralloc line = {0};
@@ -260,7 +260,7 @@ int main(int argc, char **argv)
 
   if (argc < 2) {
     puts("Usage: qmail-mrtg [ -1 | -2 | -3 | -4 | -5 | -6 | -a | -b | -c | -d | -e | -f | -g | -h | -i | -j | -z | -A | -B ] [time]");
-    puts("       qmail-mrtg needs to be called every [time] minutes (i.e. by crontab) -- default 5 mins");
+    puts("       qmail-mrtg needs to be called every [time] minutes (i.e. by crontab) -- default 305 secs");
     _exit(2);
   }
   flag = *(argv[1] + 1);
@@ -300,7 +300,7 @@ int main(int argc, char **argv)
       _exit(1);
     }
 
-    if (enoughtime) {		/* default history = 300 sec => evaluate logs every 5 mins */
+    if (enoughtime) {		/* default history = 305 sec => evaluate logs every ~5 mins */
       if (seconds <= calltime && seconds >= (calltime - history)) {
         if (flag >= '1' && flag <= '9') mrtg_sendlog(line.s+TAI64NLEN+2,flag);
         else if (flag >= 'a' && flag <= 'z') mrtg_smtplog(line.s+TAI64NLEN+2,flag);

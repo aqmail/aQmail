@@ -99,7 +99,8 @@ int tls_checkpeer(SSL *ssl,const char *hostname,int hlen,const int flag,const in
     }
 
     switch (fflag) {
-      case 5: if (dnsname == '*') if (!case_diffrs(hostname,dnsname+1)) return -3; break;
+      case 5: if (dnsname[0] == '*' && dnsname[1] == '.') 
+                if (!case_diffrs(hostname,dnsname+1)) return -3; break;
       case 6: if (str_diffn(hostname,dnsname,hlen)) return -3; break;
     }
   }

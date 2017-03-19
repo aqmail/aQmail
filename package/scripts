@@ -12,18 +12,81 @@ safe umask 022
 [ -d package ] || barf "no package directory"
 [ -d scripts  ] || barf "no src directory"
 
-safe cd scripts
-
-[ -f Makefile ] && safe make
-for script in `cat TARGETS`
-do 
-  safe install -pv -g $group -o root $script $destination
+for i in `sed -e '/^it-/!d' -e 's/^it-//' < scripts/it=d`
+do
+  all="$all $i"
 done
-rc=$?
+
+other="`grep -v '^it-' scripts/it=d`"
+usage() { shout "usage: package/scripts [ [-]$all ]"; exit 100; }
+
+targets=""
+if [ $# -eq 0 ]
+then
+  targets="$all"
+else
+  if [ "$1" = "-" ]
+  then
+    shift
+    suppress=":"
+    for i in ${1+"$@"}
+    do
+      case "$all " in
+        *\ $i\ *)
+          ;;
+        *)
+          usage
+          ;;
+      esac
+      suppress="$suppress$i:"
+    done
+    for i in $all
+    do
+      case "$suppress" in
+        *:$i:*)
+          ;;
+        *)
+          targets="$targets $i"
+          ;;
+      esac
+    done
+  else
+    for i in ${1+"$@"}
+    do
+      case "$all " in
+        *\ $i\ *)
+          ;;
+        *)
+          usage
+          ;;
+      esac
+      targets="$targets $i"
+    done
+  fi
+fi
+
+[ "X$all" != "X" ] && [ "X$targets" = "X" ] && usage
+
+commands=""
+for i in $targets
+do
+  commands="$commands `cat package/commands-$i`"
+done
+
+safe cd scripts
+safe make $other `echo "$targets" | sed -e 's/ / it-/g'`
+
+for i in $commands
+do 
+  i=${i%:}
+  safe rm -f command/$i'{new}'
+  safe cp -p scripts/$i command/$i'{new}'
+  safe mv -f command/$i'{new}' command/$i
+done
 
 safe cd $here
 
 shout "s/qmail additional script files installed in $destination with RC=$rc."
-shout "Note: Some of the scripts work only in a specific envrionment; ldap-pam requries module 'Net::LDAP'."
+shout "Note: Some of the scripts work only in a specific envrionment; ldap-pam requires PERL module 'Net::LDAP'."
 
-exit $rc
+exit 0

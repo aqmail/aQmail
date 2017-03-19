@@ -140,7 +140,7 @@ USER INTERFACE CHANGES:
 - Additional TLS control files for X.509 certificates, 
   key files and verification handling
 - RECIPIENTS extension from Spamcontol
-- Added qmail-vpopbox and qmail-vmailbox PAMs for Recipient verfication.
+- Added qmail-vpopbox and qmail-vmailbox PAMs for Recipient verfication
  
 s/qmail (3.2) -- this README is not comprehensive yet 
 

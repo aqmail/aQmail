@@ -584,16 +584,16 @@ is mandatory secured by TLS with a CA cert available as
 with a verification depth of
 .IR 2 .
 
-Furthermore, the sample in line 11 demonstrates the case where 
+Furthermore, the sample on line 11 demonstrates the case where 
 .B qmail-remote
-sees a destination address concatinated with a 
+sees a destination address concatinated with
 .IR = .
 Now it will only accept the certificate,
 if the X.509's DN can be validated
 against the FQDN of the server (by means of a DNS lookup)
 and it verifies against the 
 .IR cacert
-CA  certificate and does not exeed a verification depth of
+CA certificate and does not exeed a verification depth of
 .IR 1 .
 
 In case a certain
@@ -617,7 +617,7 @@ for authentication if told so.
 Certificate pinning for a particular 
 .I %host
 indicated by the leading character '%' is shown on line 14. 
-Instead of the ca file, now the
+Instead of the CA file, now the
 .I =fingerprint
 of the peer host certificate needs to be provided. 
 The X.509 fingerprint

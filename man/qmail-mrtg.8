@@ -97,7 +97,7 @@ connections.
 
 The intervalls to evaluate the information given on STDIN 
 defaults to
-.IR 300 secs
+.IR 305 secs
 and can be changed by the second argument for 
 .BR qmail-mrtg .
 
@@ -118,6 +118,11 @@ facility, additional information neeeds to be supplied:
   */5 * * * * env LANG=C mrtg /etc/qmail-mrtg.smtpd.cfg &>/dev/null
   */5 * * * * env LANG=C mrtg /etc/qmail-mrtg.pop3d.cfg &>/dev/null
 .EE
+
+Note: The default intervall of 
+.IR 305 secs
+allows a certain overlap for cron not to loose events at the very
+edge.
 
 .SH "SEE ALSO"
 mrtg(1),

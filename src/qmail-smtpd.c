@@ -127,21 +127,26 @@ void dohelo(char *arg)
   if (!stralloc_0(&helohost)) die_nomem();
   fakehelo = case_diffs(remotehost,helohost.s) ? helohost.s : 0;
   if (helocheck) {
-      if (str_len(helocheck) == 1) {
-        switch (*helocheck) {
-          case '=': flagbadhelo = bhelocheck();
-        if (fakehelo) { flagdnshelo = 1; badhelocond = "="; } break;
-    case 'A': flagbadhelo = bhelocheck();
-        if (flagbadhelo == 0) { flagdnshelo = dnsq(helohost.s,"A"); badhelocond = "A"; } break;
-    case 'M': flagbadhelo = bhelocheck();
-        if (flagbadhelo == 0) { flagdnshelo = dnsq(helohost.s,"M"); badhelocond = "M"; } break;
-          case '.': flagbadhelo = bhelocheck();
-        if (!str_len(arg)) flagbadhelo = -2; break;
-          case '!': if (!str_len(arg)) flagbadhelo = -2; break;
-        }
+    if (str_len(helocheck) == 1) {
+      switch (*helocheck) {
+        case '=': flagbadhelo = bhelocheck();
+                  if (fakehelo) { flagdnshelo = 1; badhelocond = "="; }
+                  break;
+        case 'A': flagbadhelo = bhelocheck();
+                  if (flagbadhelo == 0) { flagdnshelo = dnsq(helohost.s,"A"); badhelocond = "A"; }
+                  break;
+        case 'M': flagbadhelo = bhelocheck();
+                  if (flagbadhelo == 0) { flagdnshelo = dnsq(helohost.s,"M"); badhelocond = "M"; }
+                  break;
+        case '.': flagbadhelo = bhelocheck();
+                  if (!str_len(arg)) flagbadhelo = -2; 
+                  break;
+        case '!': if (!str_len(arg)) flagbadhelo = -2;  
+                  break;
       }
-      else
-        flagbadhelo = bhelocheck();
+    } else {
+       flagbadhelo = bhelocheck();
+    }
     if (flagbadhelo == -3) flagbadhelo = 0;
   }
   if (!env_unset("HELOHOST")) die_read();
@@ -938,8 +943,12 @@ void smtp_starttls()
 
 void smtp_mail(char *arg)
 {
-  if (smtpauth > 10 && !seenauth) {
-    err_authreq("Reject::AUTH::submission",protocol.s,remoteip,remotehost,helohost.s);
+  if ((starttls > 1) && !seentls) {    
+    err_tlsreq("Reject::TLS::missing",protocol.s,remoteip,remotehost,helohost.s);
+    return;
+  }
+  if (smtpauth > 10 && !seenauth) {   
+    err_authreq("Reject::AUTH::missing",protocol.s,remoteip,remotehost,helohost.s);
     return;
   }
   if (!addrparse(arg)) { err_syntax(); return; }
@@ -972,18 +981,6 @@ void smtp_rcpt(char *arg)
   if (!seenmail) { err_wantmail(); return; }
   if (!addrparse(arg)) { err_syntax(); return; }
   rcptcount++;
-
-/* this file is too long --------------------------------- Sesssion checks */
-
-  if ((starttls > 1) && !seentls) { /* STARTTLS rejects */
-    err_tlsreq("Reject::TLS::missing",protocol.s,remoteip,remotehost,helohost.s);
-    return;
-  }
-
-  if (smtpauth > 10 && !seenauth) {     /* Auth rejects */
-    err_authreq("Reject::AUTH::missing",protocol.s,remoteip,remotehost,helohost.s);
-    return;
-  }
 
 /* this file is too long --------------------------------- Split Horizon envelope checks */
 
