@@ -1,0 +1,6 @@
+sqmail
+nofiles
+
+
+The s/qmail groups: sqmail is used for binary and man files;
+nofiles for auxiliary files.

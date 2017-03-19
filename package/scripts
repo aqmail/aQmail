@@ -1,0 +1,29 @@
+#!/bin/sh
+
+shout() { echo "$0: $@" >&2; }
+barf() { shout "fatal: $@"; exit 111; }
+safe() { "$@" || barf "cannot $@"; }
+
+here=`env - PATH=$PATH pwd`
+destination="`head -1 conf-home`/bin"
+group="`head -1 conf-groups`"
+
+safe umask 022
+[ -d package ] || barf "no package directory"
+[ -d scripts  ] || barf "no src directory"
+
+safe cd scripts
+
+[ -f Makefile ] && safe make
+for script in `cat TARGETS`
+do 
+  safe install -pv -g $group -o root $script $destination
+done
+rc=$?
+
+safe cd $here
+
+shout "s/qmail additional script files installed in $destination with RC=$rc."
+shout "Note: Some of the scripts work only in a specific envrionment; ldap-pam requries module 'Net::LDAP'."
+
+exit $rc

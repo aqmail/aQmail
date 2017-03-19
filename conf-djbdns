@@ -1,0 +1,5 @@
+\`cat dns.lib\` 
+#
+# Remove the above line and replace it with path to djbdns lib.
+#
+../djbdns-1.05/qmail.a

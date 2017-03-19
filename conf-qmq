@@ -1,0 +1,6 @@
+# conf-qmq environment settings
+# Here, you may change some global settings
+
+export SKELETON_CONCURRENCYREMOTE="120"
+export SKELETON_QUEUELIFETIME="1440" # 24 Hours
+export SKELETON_PORT="1000" # high ports for QMQ

@@ -1,0 +1,8 @@
+ldap-pam
+multiple-queues
+qmail-alias2recipients
+qmail-pwd2recipients
+qmail-queue-scan
+qmail-users2recipients
+qmail-vpopmail2recipients
+x509fingerprint
