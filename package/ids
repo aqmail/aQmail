@@ -19,7 +19,6 @@ unix=`uname -a | cut -d' ' -f1 | tr [a-z] [A-Z]`
 
 if [ "$unix" = "LINUX" ]
 then
-
   qshl="/bin/false"
   shout "Linux (Shell: $qshl):"
 
@@ -54,9 +53,7 @@ then
     fi
   done
 
-fi
-
-if [ `echo "$unix" | grep "BSD"` ]
+elif [ `echo "$unix" | grep "BSD"` ]
 then
   qshl="/sbin/nologin"
   shout "BSD ($unix) (Shell: $qshl):"
@@ -101,6 +98,9 @@ then
     fi
   done
 
+else
+   shout "Unix OS not recognized; please install s/qmail user/groups manually \\
+ and continue with installation step-by-step."
 fi
 
 exit 0

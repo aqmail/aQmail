@@ -424,7 +424,7 @@ int spf_mechanism(char *mechanism,char *spfspec,char *prefix,char *domain)
 /**
  @brief  spf_include
          deals with recursive evaluation of SPF record [RFC7208 Sec. 5.2]
- @param  input:  pointer to included SPF specification; CDIR prefix length
+ @param  input:  pointer to included SPF specification; CIDR prefix length
  @return int r = 1 ok; 0 failure
  */
 

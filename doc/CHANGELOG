@@ -38,12 +38,14 @@ Changelog of s/qmail
 3.2.15	Included LibreSSL hook (ucspi-ssl-0.98++ required).
 	Added Maildir extensions in qmail-local from Tobi.
 	Fixed SPF qmail-mrtg evaluation.
-	Fixed man page installation +  installation issues for OpenBSD.
+	Fixed man page installation + installation issues for OpenBSD.
 3.2.16	Added qmail-vpopbox and qmail-vmailbox PAM for Recipients.
 3.2.17	Final release of version 3.2; minor adjustments only.
 	The scripts have been reworked and integrated into the
 	package production chain.
 	This version is expected to work with OpenSSL 1.0/1.1 + LibreSSL
-	together with ucpsi-ssl-0.99.
+	together with ucspi-ssl-0.99.
+3.2.18	Fixed bug [20170217#1/3.2.18] wrong order of badmailform evaluation 
+	& DNS MF check within qmail-smtpd.
 
 	

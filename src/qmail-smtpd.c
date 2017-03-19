@@ -467,7 +467,7 @@ ipalloc ia = {0};
 int seenmail = 0;
 int flagbarf; /* defined if seenmail */
 int flagrcpt;
-int flagdnsmf;
+int flagdnsmf = 0;
 int flagsize;
 int rcptcount = 0;
 
@@ -556,25 +556,43 @@ int bmfcheck()
     if (!stralloc_copys(&eddr,"?")) die_nomem();
     if (!stralloc_cat(&eddr,&mailfrom)) die_nomem();
     case_lowerb(eddr.s,eddr.len);
-    if (constmap(&mapbmf,eddr.s,eddr.len - 1)) return 110;
+    if (constmap(&mapbmf,eddr.s,eddr.len - 1)) return -110;
 
-/* Standard */
+/* '+' extended address for none-RELAYCLIENTS */
 
-    if (constmap(&mapbmf,mailfrom.s,mailfrom.len - 1)) return 1;
-    if (at && at < mailfrom.len)
-      if (constmap(&mapbmf,mailfrom.s + at,mailfrom.len - at - 1)) return 1;
+    if (at && !relayclient) {
+      eddr.len = 0;
+      if (!stralloc_copyb(&eddr,mailfrom.s,mailfrom.len - 1)) die_nomem();
+      if (!stralloc_append(&eddr,"+")) die_nomem();
+      if (!stralloc_0(&eddr)) die_nomem();
+      case_lowerb(eddr.s,eddr.len);
+      if (constmap(&mapbmf,eddr.s + at,eddr.len - at - 1)) return -5;
+    }
 
-/* Wildmating */
+/* '-' extended address from UNKNOWN */
 
-    i = k = 0;
-    for (j = 0; j < bmf.len; ++j)
-      if (!bmf.s[j]) {
-        subvalue = bmf.s[i] != '!';
-        if (!subvalue) i++;
-        if ((k != subvalue) && wildmat(mailfrom.s,bmf.s + i)) k = subvalue;
-        i = j + 1;
+    if (!case_diffs(remotehost,"unknown")) {
+      eddr.len = 0;
+      if (!stralloc_copyb(&eddr,mailfrom.s,mailfrom.len - 1)) die_nomem();
+      if (!stralloc_append(&eddr,"-")) die_nomem();
+      if (!stralloc_0(&eddr)) die_nomem();
+      case_lowerb(eddr.s,eddr.len);
+      if (constmap(&mapbmf,eddr.s + at,eddr.len - at - 1)) return -4;
+    }
+
+/* '=' extended address for WELLKNOWN senders */
+
+    if (!case_diffs(remotehost,"unknown"))
+      if (at && rlen >= mailfrom.len - at - 1) {
+        dlen = mailfrom.len - at - 2;
+        eddr.len = 0;
+        if (!stralloc_copyb(&eddr,mailfrom.s,mailfrom.len - 1)) die_nomem();
+        if (!stralloc_append(&eddr,"=")) die_nomem();
+        if (!stralloc_0(&eddr)) die_nomem();
+        case_lowerb(eddr.s,eddr.len);
+        if (str_diffn(remotehost + rlen - dlen,eddr.s + at + 1,dlen))
+          if (constmap(&mapbmf,eddr.s + at,eddr.len - at - 1)) return -3;
       }
-    return k;
 
 /* '~' extended address for MISMATCHED Domains */
 
@@ -592,43 +610,26 @@ int bmfcheck()
         while (j > 0 && rlen - j > 0);
       }
 
-/* '=' extended address for WELLKNOWN senders */
+/* Standard */
 
-    if (!case_diffs(remotehost,"unknown"))
-      if (at && rlen >= mailfrom.len - at - 1) {
-        dlen = mailfrom.len - at - 2;
-        eddr.len = 0;
-        if (!stralloc_copyb(&eddr,mailfrom.s,mailfrom.len - 1)) die_nomem();
-        if (!stralloc_append(&eddr,"=")) die_nomem();
-        if (!stralloc_0(&eddr)) die_nomem();
-        case_lowerb(eddr.s,eddr.len);
-        if (str_diffn(remotehost + rlen - dlen,eddr.s + at + 1,dlen))
-          if (constmap(&mapbmf,eddr.s + at,eddr.len - at - 1)) return -3;
+    if (constmap(&mapbmf,mailfrom.s,mailfrom.len - 1)) return -1;
+    if (at && at < mailfrom.len)
+      if (constmap(&mapbmf,mailfrom.s + at,mailfrom.len - at - 1)) return -1;
+
+/* Wildmating */
+
+    i = k = 0;
+    for (j = 0; j < bmf.len; ++j) {
+      if (!bmf.s[j]) {
+        subvalue = bmf.s[i] != '!';
+        if (!subvalue) i++;
+        if ((k != subvalue) && wildmat(mailfrom.s,bmf.s + i)) k = subvalue;
+        i = j + 1;
       }
-
-/* '-' extended address from UNKNOWN */
-
-    if (!case_diffs(remotehost,"unknown")) {
-      eddr.len = 0;
-      if (!stralloc_copyb(&eddr,mailfrom.s,mailfrom.len - 1)) die_nomem();
-      if (!stralloc_append(&eddr,"-")) die_nomem();
-      if (!stralloc_0(&eddr)) die_nomem();
-      case_lowerb(eddr.s,eddr.len);
-      if (constmap(&mapbmf,eddr.s + at,eddr.len - at - 1)) return -4;
+      return k;
     }
 
-/* '+' extended address for none-RELAYCLIENTS */
-
-    if (at && !relayclient) {
-      eddr.len = 0;
-      if (!stralloc_copyb(&eddr,mailfrom.s,mailfrom.len - 1)) die_nomem();
-      if (!stralloc_append(&eddr,"+")) die_nomem();
-      if (!stralloc_0(&eddr)) die_nomem();
-      case_lowerb(eddr.s,eddr.len);
-      if (constmap(&mapbmf,eddr.s + at,eddr.len - at - 1)) return -5;
-    }
   }
-
   return 0;
 }
 
@@ -962,17 +963,16 @@ void smtp_mail(char *arg)
     if (flagmav > 0) if (!stralloc_append(&protocol,"M")) die_nomem();
   }
   if (!stralloc_copys(&rcptto,"")) die_nomem();
-  if (!stralloc_copys(&mailfrom,addr.s)) die_nomem();
-  if (!stralloc_0(&mailfrom)) die_nomem();
+  if (!stralloc_copy(&mailfrom,&addr)) die_nomem();
 
   if (!env_unset("MAILFROM")) die_read();
   if (!env_put2("MAILFROM",mailfrom.s)) die_nomem();
 
   flagbarf = bmfcheck();
-  if (flagbarf != 110) if (mfdnscheck) flagdnsmf = dnsq(mailfrom.s,"M");
+  if (flagbarf != -110) if (mfdnscheck) flagdnsmf = dnsq(mailfrom.s,"M");
   if (!stralloc_0(&protocol)) die_nomem();
 
-  out("250 ok\r\n");
+  if (!flagdnsmf) out("250 ok\r\n");
 }
 
 void smtp_rcpt(char *arg)
@@ -1051,7 +1051,7 @@ void smtp_rcpt(char *arg)
 
 /* this file is too long --------------------------------- Common checks */
 
-  if (flagbarf && flagbarf != 112) {
+  if (flagbarf && flagbarf != -110) {
     switch (flagbarf) {
       case -1: badmailcond = "@"; break;
       case -2: badmailcond = "~"; break;
