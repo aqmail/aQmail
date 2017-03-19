@@ -56,7 +56,7 @@ Here's the glue:
   Accept SPF  Recipients_Wild   ORIG was authorized and RCPT was accepted as per recipients/wildlisting.
   Accept SPF  Rcpthosts_Rcptto 	ORIG was authorized and RCPT was accepted as per rcpthosts/morercpthosts
 
-  Accept SPF  Fail		ORIG authorization failed per SPF 
+  Reject SPF  Fail		ORIG authorization failed per SPF 
 
 
 SNDR (S) corresponds to the sending MTA.
@@ -70,4 +70,6 @@ The Information is typically constructed from the SMTP envelope like:
 
 
 This scheme is easy extendable to other successful/deferred SMTP sessions.
+
+In addition for POP3 services this scheme is used; but now logging takes place on FD 5.
 

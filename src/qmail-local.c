@@ -619,13 +619,14 @@ int main(int argc,char **argv)
           if (!stralloc_copys(&ueo,local)) temp_nomem();
           if (!stralloc_cats(&ueo,"-owner@")) temp_nomem();
           if (!stralloc_cats(&ueo,host)) temp_nomem();
+        }
       }
-    }
   if (!stralloc_0(&ueo)) temp_nomem();
   if (!env_put2("NEWSENDER",ueo.s)) temp_nomem();
 
   if (!stralloc_ready(&cmds,0)) temp_nomem();
   cmds.len = 0;
+
   if (fd != -1)
     if (slurpclose(fd,&cmds,256) == -1) temp_nomem();
 

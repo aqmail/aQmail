@@ -36,8 +36,10 @@ Changelog of s/qmail
 	Fixes for OpenBSD installation.
 	SPF Header is written befor SMTP received header.
 3.2.15	Included LibreSSL hook (ucspi-ssl-0.98++ required).
-	Added Maldir extensions in qmail-local from Tobi.
+	Added Maildir extensions in qmail-local from Tobi.
 	Fixed SPF qmail-mrtg evaluation.
 	Fixed man page installation +  installation issues for OpenBSD.
+3.2.16	Added qmail-vpopbox and qmail-vmailbox PAM for Recipients.
+
 
 	

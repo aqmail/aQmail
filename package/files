@@ -216,6 +216,7 @@ scripts/it-pam=d
 scripts/it-recipients=d
 scripts/it-x509=d
 scripts/ldap-pam.pl
+scripts/ksh-auto.sh
 scripts/perl-auto.sh
 scripts/warn-auto.sh
 scripts/qmail-alias2recipients.sh
@@ -223,6 +224,8 @@ scripts/qmail-pwd2recipients.sh
 scripts/qmail-queue-scan.sh
 scripts/qmail-users2recipients.sh
 scripts/qmail-vpopmail2recipients.sh
+scripts/qmail-vpopbox.sh
+scripts/qmail-vmailbox.sh
 scripts/x509fingerprint.sh
 service/run_log
 service/run_pop3d

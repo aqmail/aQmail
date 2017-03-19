@@ -631,8 +631,8 @@ Of course, this requires
 to request a client cert for mutual authentication.
 
 Note: Adding a qualifier to LOCALMFCHCEK,
-the entire "Mail From:" address is verified; 
-not only the domain part.
+the domain part of the "Mail From:" address is compared
+against the provided string.
 .TP 5
 .IR MFDNSCHECK
 enable DNS MX lookup for the domain part of the "Mail From:" envelope sender address.
@@ -873,17 +873,6 @@ in authentication mode set to the accepted username.
 information from
 .BR sslserver ,
 if applicable.
-.TP 5
-.I SPFRESULT
-indicates the evaluation of the SPF query. The following
-values are provided (in addition with the Received header):
-.IR pass ,
-.IR fail ,
-.IR softfail ,
-.IR neutral ,
-.IR unknown ,
-and
-.IR error .
 
 .SH "SEE ALSO"
 tcp-environ(5),

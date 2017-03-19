@@ -32,7 +32,7 @@ const static char ip4loopback[4] = {127,0,0,1};
  *   cccccccccccccccc (16 chars; d[16]) -- each char swallows two hex values
  *
  * Bitstring representation with length prefix: 
- *   bbbbbbb.........bbbb (max 128 bits); stralloc(ip6string); b = 0 || 1 ; LSB or MSB depending on Arch
+ *   bbbbbbb.........bbbb (max 128 bits); stralloc(ip6string); b = 0 || 1
  *
  */
 

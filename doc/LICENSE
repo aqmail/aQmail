@@ -29,7 +29,7 @@ DEPENDENCIES
 ============
 
 s/qmail depends on the package ucspi-ssl found on http://www.fehcom.de/ipnet/ucspi-ssl.html.
-s/qmail uses the OpenSSL routines and requires those for encryption services. 
+s/qmail uses the OpenSSL or LibreSSL routines and requires those for encryption services. 
 
 
 FITNESS

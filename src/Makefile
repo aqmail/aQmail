@@ -1262,7 +1262,7 @@ qmail-smtpam: \
 load qmail-smtpam.o control.o constmap.o strsalloc.o timeoutread.o timeoutwrite.o \
 timeoutconn.o tcpto.o now.o dns.o ip.o ipalloc.o ipme.o quote.o socket6_if.o \
 ndelay.a sig.a open.a lock.a seek.a getln.a stralloc.a alloc.a case.a \
-substdio.a error.a str.a fs.a auto_qmail.o dns.lib socket.lib \
+substdio.a error.a str.a fs.a auto_qmail.o dns.lib socket.lib ssl.lib \
 tls_timeoutio.o tls_errors.o tls_remote.o 
 	./load qmail-smtpam control.o constmap.o strsalloc.o timeoutread.o \
 	timeoutwrite.o timeoutconn.o tcpto.o now.o dns.o ip.o \

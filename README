@@ -29,8 +29,8 @@ HOW TO INSTALL:
   * untar the sqmail tar file under '/package'
   * Move to /package/mail/sqmail/sqmail-V.R.F
   and go on with installation
-- Set up the s/qmail package with the
-  following step-by-step options or simple run:
+- Set up the s/qmail package with the following 
+  step-by-step options or simple run (as 'root'):
   * package/install -- does it all
 
 HOW TO INSTALL ON OpenBSD:
@@ -140,6 +140,7 @@ USER INTERFACE CHANGES:
 - Additional TLS control files for X.509 certificates, 
   key files and verification handling
 - RECIPIENTS extension from Spamcontol
+- Added qmail-vpopbox and qmail-vmailbox PAMs for Recipient verfication.
  
 s/qmail (3.2) -- this README is not comprehensive yet 
 

@@ -6,5 +6,5 @@
 fe80::/10:allow,RELAYCLIENT=""
 fc00::/7:allow,RELAYCLIENT=""
 =localhost:allow,RELAYCLIENT=""
-=:allow
+=:allow,SPF='3'
 :deny

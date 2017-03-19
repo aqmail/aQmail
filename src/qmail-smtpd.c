@@ -909,7 +909,7 @@ void smtp_ehlo(char *arg)
   seenhelo++; seenmail = 0; rcptcount = 0; dohelo(arg);
 }
 
-void smtp_rset()
+void smtp_rset(void)
 {
   seenmail = 0; rcptcount = 0; /* RFC 5321: seenauth + seentls stay */
   mailfrom.len = 0; rcptto.len = 0; ssin.p = 0;
