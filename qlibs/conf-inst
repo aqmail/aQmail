@@ -12,5 +12,5 @@ HDRDIR=
 # Additinal files
 # Per default all *.a file will be installed into destination $LIBDIR.
 # Here you can add more files which will be installed into $LIBDIR.
-FILES='base64.o byte.o fmt.o prot.o readclose.o
+FILES='base64.o byte.o fmt.o prot.o pathexec.o readclose.o
  slurpclose.o'

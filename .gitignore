@@ -1,0 +1,7 @@
+*.o
+*.a
+*.tmp
+*.bck
+*.bck.c
+*.diff
+sslsrv

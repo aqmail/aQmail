@@ -60,7 +60,8 @@ compat:
 #endif
   return s;
 #else
-  return socket_tcp();
+//  return socket_tcp();
+  return socket_tcp4();
 #endif
 }
 
@@ -107,6 +108,6 @@ compat:
 #endif
   return s;
 #else
-  return socket_udp();
+  return socket_udp4();
 #endif
 }
