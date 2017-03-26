@@ -3,5 +3,6 @@
 *.tmp
 *.bck
 *.bck.c
+*.bck.h
 *.diff
 sslsrv
