@@ -545,7 +545,7 @@ int bmfcheck()
   int dlen;
   char subvalue;
 
-  if (bmfok && mailfrom.len > 1) {
+  if (bmfok) {
     int rlen = str_len(remotehost);
     int at = byte_rchr(mailfrom.s,mailfrom.len,'@');
     if (at >= mailfrom.len) at = 0;
@@ -571,7 +571,7 @@ int bmfcheck()
 
 /* '-' extended address from UNKNOWN */
 
-    if (!case_diffs(remotehost,"unknown")) {
+    if (at && !case_diffs(remotehost,"unknown")) {
       eddr.len = 0;
       if (!stralloc_copyb(&eddr,mailfrom.s,mailfrom.len - 1)) die_nomem();
       if (!stralloc_append(&eddr,"-")) die_nomem();
@@ -582,21 +582,18 @@ int bmfcheck()
 
 /* '=' extended address for WELLKNOWN senders */
 
-    if (!case_diffs(remotehost,"unknown"))
-      if (at && rlen >= mailfrom.len - at - 1) {
-        dlen = mailfrom.len - at - 2;
-        eddr.len = 0;
-        if (!stralloc_copyb(&eddr,mailfrom.s,mailfrom.len - 1)) die_nomem();
-        if (!stralloc_append(&eddr,"=")) die_nomem();
-        if (!stralloc_0(&eddr)) die_nomem();
-        case_lowerb(eddr.s,eddr.len);
-        if (str_diffn(remotehost + rlen - dlen,eddr.s + at + 1,dlen))
-          if (constmap(&mapbmf,eddr.s + at,eddr.len - at - 1)) return -3;
-      }
+    else if (at && rlen >= mailfrom.len - at - 1) {
+      dlen = mailfrom.len - at - 2;
+      eddr.len = 0;
+      if (!stralloc_copyb(&eddr,mailfrom.s,mailfrom.len - 1)) die_nomem();
+      if (!stralloc_append(&eddr,"=")) die_nomem();
+      if (!stralloc_0(&eddr)) die_nomem();
+      case_lowerb(eddr.s,eddr.len);
+      if (str_diffn(remotehost + rlen - dlen,eddr.s + at + 1,dlen))
+        if (constmap(&mapbmf,eddr.s + at,eddr.len - at - 1)) return -3;
 
 /* '~' extended address for MISMATCHED Domains */
 
-    if (case_diffs(remotehost,"unknown"))
       if (case_diffrs(remotehost,mailfrom.s + at + 1)) {
         j = 0;
         do {
@@ -609,6 +606,7 @@ int bmfcheck()
         }
         while (j > 0 && rlen - j > 0);
       }
+    }
 
 /* Standard */
 
@@ -626,10 +624,10 @@ int bmfcheck()
         if ((k != subvalue) && wildmat(mailfrom.s,bmf.s + i)) k = subvalue;
         i = j + 1;
       }
-      return k;
     }
-
+    return k;
   }
+
   return 0;
 }
 

@@ -854,31 +854,21 @@ void qmtp()
 
 /* this file is too long -------------------------------------- common */
 
-void addrmangle(stralloc *saout,char *s,int *flagalias,int flagcname)  /* host has to be canonical, box has to be quoted */
+void addrmangle(stralloc *saout,char *s)	/* host has to be canonical, box has to be quoted */
 {
   int j;
- 
-  *flagalias = flagcname;
  
   j = str_rchr(s,'@');
   if (!s[j]) {
     if (!stralloc_copys(saout,s)) temp_nomem();
     return;
   }
+
   if (!stralloc_copys(&canonbox,s)) temp_nomem();
   canonbox.len = j;
   if (!quote(saout,&canonbox)) temp_nomem();
   if (!stralloc_cats(saout,"@")) temp_nomem();
- 
   if (!stralloc_copys(&canonhost,s+j+1)) temp_nomem();
-  if (flagcname)
-    switch(dns_cname(&canonhost)) {
-      case 0: *flagalias = 0; break;
-      case DNS_MEM: temp_nomem();
-      case DNS_SOFT: temp_dnscanon();
-      case DNS_HARD: ; /* alias loop, not our problem */
-    }
-
   if (!stralloc_cat(saout,&canonhost)) temp_nomem();
 }
 
@@ -950,7 +940,6 @@ int main(int argc,char **argv)
   char **recips;
   unsigned long prefme;
   int flagallaliases;
-  int flagalias;
   char *relayhost;
   struct sockaddr_in6 s6;
   struct sockaddr_in s4;
@@ -966,7 +955,7 @@ int main(int argc,char **argv)
   authsender = 0;
   relayhost = 0;
 
-  addrmangle(&sender,argv[2],&flagalias,0);
+  addrmangle(&sender,argv[2]);
 
   if (sender.len > 1) {
     i = str_chr(sender.s,'@'); 
@@ -1180,8 +1169,7 @@ int main(int argc,char **argv)
   while (*recips) {
     if (!saa_readyplus(&reciplist,1)) temp_nomem();
     reciplist.sa[reciplist.len] = sauninit;
-    addrmangle(reciplist.sa + reciplist.len,*recips,&flagalias,!relayhost);
-    if (!flagalias) flagallaliases = 0;
+    addrmangle(reciplist.sa + reciplist.len,*recips);
     ++reciplist.len;
     ++recips;
   }
