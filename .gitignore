@@ -1,8 +1,51 @@
 *.o
 *.a
-*.tmp
 *.bck
+*.orig
 *.bck.c
-*.bck.h
-*.diff
-sslsrv
+
+qlibs
+qlibs/*
+qlibs/.*
+mod/*
+
+obsolete/*
+
+compile
+makelib
+load
+
+# ignore all binaries:
+
+  qmail-authuser
+  qmail-badloadertypes
+  qmail-badmimetypes
+  qmail-clean
+  qmail-getpw
+  qmail-inject
+  qmail-local
+  qmail-lspawn
+  qmail-mfrules
+  qmail-mrtg
+  qmail-newmrh
+  qmail-newu
+  qmail-pop3d
+  qmail-popup
+  qmail-pw2u
+  qmail-qmqpc
+  qmail-qmqpd
+  qmail-qmtpd
+  qmail-qread
+  qmail-queue
+  qmail-recipients
+  qmail-remote
+  qmail-rspawn
+  qmail-send
+  qmail-showctl
+  qmail-smtpam
+  qmail-smtpd
+  qmail-start
+  qmail-tcpok
+  qmail-tcpto
+  qmail-todo
+  qmail-vmailuser

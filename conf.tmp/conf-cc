@@ -1,0 +1,7 @@
+cc -O2 -include /usr/include/errno.h -pipe -Wall
+
+This will work for both i386 and AMD64 architecture enabling INET6 support.
+
+gcc -Wall -pipe -z relro -z now -pie -fPIE -fstack-protector-all -D_FORTIFY_SOURCE=2 -O2 -include /usr/include/errno.h 
+
+This is for gcc and with strong security in mind.
