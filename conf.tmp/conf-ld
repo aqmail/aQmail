@@ -1,0 +1,9 @@
+cc -s -m64
+
+This is for AMD64 architecture; use else:
+
+cc -s
+
+This will be used to link .o files into an executable.
+
+Note: UCSPI-SSL's conf-ld needs to use the same architecture!

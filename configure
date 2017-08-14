@@ -1,0 +1,46 @@
+#!/bin/sh
+#********************************************************************************
+# Configure script of eQmail-1.10
+#
+# Beware of the order of checks!
+#********************************************************************************
+CRITICAL=""
+
+echo -n "Checking system ... "
+OS=`uname -s | tr '/:[A-Z]' '..[a-z]'` ; echo -n $OS > systype
+echo "building on "${OS}"!"
+echo -n "Checking architecture ... "
+ARCH=`uname -m` ; echo -n ":$ARCH" >> systype
+echo "build on "${ARCH}"!"
+
+#********************************************************************************
+# check for external system tools
+#. cfg/exttools.inc
+
+#********************************************************************************
+# Checking conf-* files
+#. cfg/conf-files.inc
+
+#********************************************************************************
+# Check headers
+#. cfg/headers.inc
+
+#********************************************************************************
+# Create compile, load, makelib
+. configure.in/buildtools.inc
+
+#********************************************************************************
+# Checking for shared libraries
+#. cfg/shared-libs.inc
+
+#********************************************************************************
+#
+#. cfg/compiled-in.inc
+#********************************************************************************
+echo
+if [ "$CRITICAL" ] ; then
+   printf "\033[1m""Critical:$CRITICAL not found!""\033[0m\n"
+#   exit 1
+ else
+   echo "Done! Now run make."
+fi

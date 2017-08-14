@@ -1,7 +1,15 @@
-cc -O2 -include /usr/include/errno.h -pipe -Wall
+cc -O2 -I./qlibs/include -DINET6 -DTLS=20160918 -I/usr/local/openssl/include -Wall
 
-This will work for both i386 and AMD64 architecture enabling INET6 support.
+This will be used to compile .c files. Some additional options will
+be added by the configure script.
 
-gcc -Wall -pipe -z relro -z now -pie -fPIE -fstack-protector-all -D_FORTIFY_SOURCE=2 -O2 -include /usr/include/errno.h 
 
-This is for gcc and with strong security in mind.
+Parameters:
+===========
+ -I./inc         : default header files directory - don't change
+
+ -DINET6         : enable IPv6 for remote connections, recommended
+
+ -DTLS[=<date>]  : enable SSL/TLS, recommended (datestring is optional)
+
+ -I/usr/local/openssl/include: sometimes needed for openssl header files
