@@ -1,6 +1,6 @@
 #include "byte.h"
-/* Consolidate the "byte_*.c" functions into one source
-   file. Original files were shipped with qmail-1.03.
+/* Consolidate the "byte_*.c" functions into one source file. The
+   original files were shipped with qmail-1.03.
    The "byte" functions will be linked to "str.a" only!
    Included files:  Size (bytes)
      - byte_chr.c           386
@@ -8,13 +8,13 @@
      - byte_cr.c            314
      - byte_diff.c          453
      - byte_rchr.c          433
-     - byte_zero.c          230                      */
+     - byte_zero.c          230                                */
 
-/* file: byte_chr.c */
-unsigned int byte_chr(s,n,c)
-char *s;
-register unsigned int n;
-int c;
+/* file: byte_chr.c ****************************************** */
+unsigned int byte_chr(char *s,register unsigned int n,int c)
+//char *s;
+//register unsigned int n;
+//int c;
 {
   register char ch;
   register char *t;
@@ -30,11 +30,11 @@ int c;
   return t - s;
 }
 
-/* file: byte_copy.c */
-void byte_copy(to,n,from)
-register char *to;
-register unsigned int n;
-register char *from;
+/* file: byte_copy.c ***************************************** */
+void byte_copy(register char *to,register unsigned int n,register char *from)
+//register char *to;
+//register unsigned int n;
+//register char *from;
 {
   for (;;) {
     if (!n) return; *to++ = *from++; --n;
@@ -44,11 +44,11 @@ register char *from;
   }
 }
 
-/* file: byte_cr.c */
-void byte_copyr(to,n,from)
-register char *to;
-register unsigned int n;
-register char *from;
+/* file: byte_cr.c ******************************************* */
+void byte_copyr(register char *to,register unsigned int n,register char *from)
+//register char *to;
+//register unsigned int n;
+//register char *from;
 {
   to += n;
   from += n;
@@ -60,11 +60,11 @@ register char *from;
   }
 }
 
-/* file: byte_diff.c */
-int byte_diff(s,n,t)
-register char *s;
-register unsigned int n;
-register char *t;
+/* file: byte_diff.c ***************************************** */
+int byte_diff(register char *s,register unsigned int n,register char *t)
+//register char *s;
+//register unsigned int n;
+//register char *t;
 {
   for (;;) {
     if (!n) return 0; if (*s != *t) break; ++s; ++t; --n;
@@ -77,10 +77,10 @@ register char *t;
 }
 
 /* file: byte_rchr.c */
-unsigned int byte_rchr(s,n,c)
-char *s;
-register unsigned int n;
-int c;
+unsigned int byte_rchr(char *s,register unsigned int n,int c)
+//char *s;
+//register unsigned int n;
+//int c;
 {
   register char ch;
   register char *t;
@@ -99,10 +99,10 @@ int c;
   return u - s;
 }
 
-/* file: byte_zero.c */
-void byte_zero(s,n)
-char *s;
-register unsigned int n;
+/* file: byte_zero.c ***************************************** */
+void byte_zero(char *s,register unsigned int n)
+//char *s;
+//register unsigned int n;
 {
   for (;;) {
     if (!n) break; *s++ = 0; --n;

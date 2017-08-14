@@ -1,23 +1,41 @@
+/*
+ *  Revision 20170504, Kai Peter
+ *  - 
+*/
 #ifndef STRALLOC_H
 #define STRALLOC_H
 
-//#include "gen_alloc.h"
-/* file: gen_alloc.h */
-#define GEN_ALLOC_typedef(ta,type,field,len,a) \
-  typedef struct ta { type *field; unsigned int len; unsigned int a; } ta;
-GEN_ALLOC_typedef(stralloc,char,s,len,a)
+#include <sys/types.h>
 
-//#include "gen_allocdefs.h"
 
-extern int stralloc_ready(stralloc *,unsigned int);
-extern int stralloc_readyplus(stralloc *,unsigned int);
+/* from libowfat: replace the GEN_ALLOC by the struct */
+
+/* stralloc is the internal data structure all functions are working on.
+ * s is the string.
+ * len is the used length of the string.
+ * a is the allocated length of the string.
+ */
+
+typedef struct stralloc {
+  char* s;
+  size_t len;
+  size_t a;
+} stralloc;
+/* end from libowfat */
+
+
+//extern int stralloc_ready(stralloc *,unsigned int);
+extern int stralloc_ready(stralloc *sa,size_t len);
+//extern int stralloc_readyplus(stralloc *,unsigned int);
+extern int stralloc_readyplus(stralloc *sa,size_t len);
 extern int stralloc_copy(stralloc *,stralloc *);
 extern int stralloc_cat(stralloc *,stralloc *);
 extern int stralloc_copys(stralloc *,const char *);
 extern int stralloc_cats(stralloc *,const char *);
 extern int stralloc_copyb(stralloc *,const char *,unsigned int);
 extern int stralloc_catb(stralloc *,const char *,unsigned int);
-extern int stralloc_append(stralloc *,char *); /* beware: this takes a pointer to 1 char */
+//extern int stralloc_append(stralloc *,char *); /* beware: this takes a pointer to 1 char */
+extern int stralloc_append(stralloc *sa,const char *in); /* beware: this takes a pointer to 1 char */
 extern int stralloc_starts(stralloc *,const char *);
 
 #define stralloc_0(sa) stralloc_append(sa,"")
@@ -32,7 +50,13 @@ extern void stralloc_free(stralloc *);
 #define stralloc_catint0(sa,i,n) (stralloc_catlong0((sa),(i),(n)))
 #define stralloc_catint(sa,i) (stralloc_catlong0((sa),(i),0))
 
-/* file: gen_allocdefs.h (--> @Kai: IMHO libowfat has better code) */
+
+/* file: gen_alloc.h */
+#define GEN_ALLOC_typedef(ta,type,field,len,a) \
+  typedef struct ta { type *field; unsigned int len; unsigned int a; } ta;
+
+/* file: gen_allocdefs.h   (deprecated) */
+// used in: ipalloc, prioq, qmail-remote, qmail-inject, token822
 #define GEN_ALLOC_ready(ta,type,field,len,a,i,n,x,base,ta_ready) \
 int ta_ready(x,n) register ta *x; register unsigned int n; \
 { register unsigned int i; \
@@ -62,5 +86,6 @@ int ta_rplus(x,n) register ta *x; register unsigned int n; \
 #define GEN_ALLOC_append(ta,type,field,len,a,i,n,x,base,ta_rplus,ta_append) \
 int ta_append(x,i) register ta *x; register type *i; \
 { if (!ta_rplus(x,1)) return 0; x->field[x->len++] = *i; return 1; }
+
 
 #endif

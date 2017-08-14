@@ -12,8 +12,7 @@
 
 
 /* file: uint32_pack.c ******************************************** */
-void uint32_pack(char s[4],uint32 u)
-{
+void uint32_pack(char s[4],uint32 u) {
   s[0] = u & 255;
   u >>= 8;
   s[1] = u & 255;
@@ -21,8 +20,7 @@ void uint32_pack(char s[4],uint32 u)
   s[2] = u & 255;
   s[3] = u >> 8;
 }
-void uint32_pack_big(char s[4],uint32 u)
-{
+void uint32_pack_big(char s[4],uint32 u) {
   s[3] = u & 255;
   u >>= 8;
   s[2] = u & 255;
@@ -32,8 +30,7 @@ void uint32_pack_big(char s[4],uint32 u)
 }
 
 /* file: uint32_unpack.c ****************************************** */
-void uint32_unpack(char s[4],uint32 *u)
-{
+void uint32_unpack(char s[4],uint32 *u) {
   uint32 result;
 
   result = (unsigned char) s[3];
@@ -46,8 +43,7 @@ void uint32_unpack(char s[4],uint32 *u)
 
   *u = result;
 }
-void uint32_unpack_big(char s[4],uint32 *u)
-{
+void uint32_unpack_big(char s[4],uint32 *u) {
   uint32 result;
 
   result = (unsigned char) s[0];

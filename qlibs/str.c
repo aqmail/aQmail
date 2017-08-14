@@ -1,6 +1,10 @@
+/*
+ *  Revision 20170501, Kai Peter
+ *  - new function: str_append()
+*/
 #include "str.h"
-/* Consolidate the "str_*.c" functions into one source
-   file. Original files shipped with qmail-1.03.
+/* Consolidate the "str_*.c" functions into one source file. Original files
+   shipped with qmail-1.03.
    The "str" functions will be linked to "str.a" only!
    Included files:    Size (bytes)    Date
      - str_chr.c              350     19980615
@@ -11,11 +15,8 @@
      - str_rchr.c             397     19980615
      - str_start.c            342     19980615      */
 
-/* file: str_chr.c */
-unsigned int str_chr(s,c)
-register char *s;
-int c;
-{
+/* file: str_chr.c ******************************************************** */
+unsigned int str_chr(register char *s,int c) {
   register char ch;
   register char *t;
 
@@ -30,11 +31,8 @@ int c;
   return t - s;
 }
 
-/* file: str_cpy.c */
-unsigned int str_copy(s,t)
-register char *s;
-register char *t;
-{
+/* file: str_cpy.c ******************************************************** */
+unsigned int str_copy(register char *s,register char *t) {
   register int len;
 
   len = 0;
@@ -46,11 +44,8 @@ register char *t;
   }
 }
 
-/* file: str_diff.c */
-int str_diff(s,t)
-register char *s;
-register char *t;
-{
+/* file: str_diff.c ******************************************************* */
+int str_diff(register char *s,register char *t) {
   register char x;
 
   for (;;) {
@@ -63,12 +58,8 @@ register char *t;
        - ((int)(unsigned int)(unsigned char) *t);
 }
 
-/* file: str_diffn.c */
-int str_diffn(s,t,len)
-register char *s;
-register char *t;
-unsigned int len;
-{
+/* file: str_diffn.c ****************************************************** */
+int str_diffn(register char *s,register char *t,unsigned int len) {
   register char x;
 
   for (;;) {
@@ -81,10 +72,8 @@ unsigned int len;
        - ((int)(unsigned int)(unsigned char) *t);
 }
 
-/* file: str_len.c */
-unsigned int str_len(s)
-register char *s;
-{
+/* file: str_len.c ******************************************************** */
+unsigned int str_len(register char *s) {
   register char *t;
 
   t = s;
@@ -96,11 +85,8 @@ register char *s;
   }
 }
 
-/* file: str_rchr.c */
-unsigned int str_rchr(s,c)
-register char *s;
-int c;
-{
+/* file: str_rchr.c ******************************************************* */
+unsigned int str_rchr(register char *s,int c) {
   register char ch;
   register char *t;
   register char *u;
@@ -118,11 +104,8 @@ int c;
   return u - s;
 }
 
-/* file: str_start.c */
-int str_start(s,t)
-register char *s;
-register char *t;
-{
+/* file: str_start.c ****************************************************** */
+int str_start(register char *s,register char *t) {
   register char x;
 
   for (;;) {
@@ -131,4 +114,13 @@ register char *t;
     x = *t++; if (!x) return 1; if (x != *s++) return 0;
     x = *t++; if (!x) return 1; if (x != *s++) return 0;
   }
+}
+
+/* str_append: like 'strcat' (g)libc standard function ******************* */
+char *str_append(char *dest, char *s) {
+  static stralloc sa = {0};
+
+  stralloc_copys(&sa,dest);
+  stralloc_catb(&sa,s,sizeof(s));
+  return sa.s;
 }

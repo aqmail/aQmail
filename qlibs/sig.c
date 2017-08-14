@@ -123,4 +123,3 @@ void sig_miscignore() {
 void (*sig_ignorehandler)() = SIG_IGN;
 
 int sig_cont = SIGCONT;
-

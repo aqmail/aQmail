@@ -4,7 +4,7 @@
 #include "buffer.h"
 #include "stralloc.h"
 
-extern int getln(buffer *,stralloc *,int *,int);
-extern int sgetln(buffer *,stralloc *,char **,unsigned int *,int);
+extern int getln(buffer *b,stralloc *sa,int *match,int sep);
+extern int sgetln(buffer *b,stralloc *sa,char **cont,unsigned int *clen,int sep);
 
 #endif

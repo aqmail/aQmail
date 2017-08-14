@@ -14,7 +14,7 @@
 /* Part of lib 'socket.a':
    Original file was 'socket_local6.c',  taken from ucspi-ssl-0.88. As the
    file 'socket_local.c' (with IPv4 functinality only) was not used,  this
-   one is be used for IPv4 AND IPv6 now. 
+   one is be used for IPv4 AND IPv6 now.
 */
 
 #define socket_local socket_local6    /* backwards compatibility (tmp) */

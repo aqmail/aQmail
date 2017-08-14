@@ -4,9 +4,9 @@
 *.orig
 *.bck.c
 
-qlibs
-qlibs/*
-qlibs/.*
+#qlibs
+#qlibs/*
+#qlibs/.*
 mod/*
 
 obsolete/*
