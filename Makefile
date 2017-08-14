@@ -11,8 +11,8 @@ it-mbox it-forward it-pop it-queue \
 it-clients it-user it-dns it-server it-log
 
 clean:
-	rm -f *.a *.o 
-#`cat TARGETS`
+	rm -f *.a *.o `cat TARGETS`
+	rm -f compile load makelib
 
 alloc.a: \
 makelib alloc.o alloc_re.o
@@ -284,10 +284,6 @@ chkspawn.o: \
 compile chkspawn.c substdio.h subfd.h fmt.h select.h \
 exit.h auto_spawn.h
 	./compile chkspawn.c
-
-clean: \
-TARGETS
-	rm -f `cat TARGETS`
 
 coe.o: \
 compile coe.c coe.h

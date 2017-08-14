@@ -1,0 +1,25 @@
+.TH str_append 3 qlibs eQmail
+.SH NAME
+str_append \- append a string to an existing string
+.SH SYNTAX
+.B #include <str.h>
+
+char *\fBstr_append\fP(char* \fIout\fR,char* \fIs\fR);
+.SH DESCRIPTION
+str_append concatenates the string \fIs\fR at the end of a string \fIout\fR. An abbreviation is
+\fBstr_cat\fP, similar to the standard C function \fBstrcat\fP.
+
+\fBstr_append\fP returns the concatenated string. It doesn't append \fI\\0\fR to \fIout\fR.
+
+.SH EXAMPLE
+In the example the variable \fIout\fR has the value "firstsecond" at the end:
+
+  #include "str.h"
+
+  char *out = "first";
+  char *s = "second";
+
+  out = str_cat(out,s);
+
+.SH "SEE ALSO"
+strlen(3), strcat(3)
