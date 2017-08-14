@@ -305,11 +305,11 @@ compile commands.c commands.h substdio.h stralloc.h gen_alloc.h str.h \
 case.h
 	./compile commands.c
 
-compile: \
-make-compile warn-auto.sh systype
-	( cat warn-auto.sh; ./make-compile "`cat systype`" ) > \
-	compile
-	chmod 755 compile
+compile:
+#make-compile warn-auto.sh systype
+#	( cat warn-auto.sh; ./make-compile "`cat systype`" ) > \
+#	compile
+#	chmod 755 compile
 
 condredirect: \
 load condredirect.o qmail.o strerr.a fd.a sig.a wait.a seek.a env.a \
@@ -813,7 +813,8 @@ qmail-clean qmail-start qmail-queue qmail-inject qmail-todo
 
 it-mbox: \
 forward predate preline condredirect bouncesaying except \
-datemail maildirmake maildir2mbox maildirwatch qbiff qreceipt
+datemail maildirmake maildir2mbox maildirwatch qreceipt
+#datemail maildirmake maildir2mbox maildirwatch qbiff qreceipt
 
 it-clients: \
 mailsubj qmail-remote qmail-qmqpc qmail-smtpam sendmail
@@ -849,10 +850,10 @@ config config-fast install instcheck
 it-user: \
 qmail-getpw qmail-newu qmail-pw2u qmail-newmrh 
 
-load: \
-make-load warn-auto.sh systype
-	( cat warn-auto.sh; ./make-load "`cat systype`" ) > load
-	chmod 755 load
+load:
+#make-load warn-auto.sh systype
+#	( cat warn-auto.sh; ./make-load "`cat systype`" ) > load
+#	chmod 755 load
 
 lock.a: \
 makelib lock_ex.o lock_exnb.o lock_un.o
@@ -922,26 +923,26 @@ warn-auto.sh mailsubj.sh ../conf-home ../conf-break ../conf-split
 	> mailsubj
 	chmod 755 mailsubj
 
-make-compile: \
-make-compile.sh auto-ccld.sh
-	cat auto-ccld.sh make-compile.sh > make-compile
-	chmod 755 make-compile
+#make-compile: \
+#make-compile.sh auto-ccld.sh
+#	cat auto-ccld.sh make-compile.sh > make-compile
+#	chmod 755 make-compile
 
-make-load: \
-make-load.sh auto-ccld.sh
-	cat auto-ccld.sh make-load.sh > make-load
-	chmod 755 make-load
+#make-load: \
+#make-load.sh auto-ccld.sh
+#	cat auto-ccld.sh make-load.sh > make-load
+#	chmod 755 make-load
 
-make-makelib: \
-make-makelib.sh auto-ccld.sh
-	cat auto-ccld.sh make-makelib.sh > make-makelib
-	chmod 755 make-makelib
+#make-makelib: \
+#make-makelib.sh auto-ccld.sh
+#	cat auto-ccld.sh make-makelib.sh > make-makelib
+#	chmod 755 make-makelib
 
-makelib: \
-make-makelib warn-auto.sh systype
-	( cat warn-auto.sh; ./make-makelib "`cat systype`" ) > \
-	makelib
-	chmod 755 makelib
+makelib:
+#make-makelib warn-auto.sh systype
+#	( cat warn-auto.sh; ./make-makelib "`cat systype`" ) > \
+#	makelib
+#	chmod 755 makelib
 
 matchup: \
 load matchup.o strerr.a getln.a substdio.a stralloc.a alloc.a error.a \
@@ -1102,16 +1103,16 @@ prot.o: \
 compile prot.c hasshsgr.h prot.h
 	./compile prot.c
 
-qbiff: \
-load qbiff.o headerbody.o hfield.o getln.a env.a open.a stralloc.a \
-alloc.a substdio.a error.a str.a
-	./load qbiff headerbody.o hfield.o getln.a env.a open.a \
-	stralloc.a alloc.a substdio.a error.a str.a 
+#qbiff: \
+#load qbiff.o headerbody.o hfield.o getln.a env.a open.a stralloc.a \
+#alloc.a substdio.a error.a str.a
+#	./load qbiff headerbody.o hfield.o getln.a env.a open.a \
+#	stralloc.a alloc.a substdio.a error.a str.a 
 
-qbiff.o: \
-compile hasutmp.h qbiff.c readwrite.h stralloc.h gen_alloc.h substdio.h subfd.h \
-open.h byte.h str.h headerbody.h hfield.h env.h exit.h
-	./compile qbiff.c
+#qbiff.o: \
+#compile hasutmp.h qbiff.c readwrite.h stralloc.h gen_alloc.h substdio.h subfd.h \
+#open.h byte.h str.h headerbody.h hfield.h env.h exit.h
+#	./compile qbiff.c
 
 qmail-authuser: \
 load qmail-authuser.o auto_qmail.o alloc.a case.a control.o constmap.o \
