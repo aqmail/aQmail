@@ -10,19 +10,19 @@
      - wait_pid.c            709    19980615          */
 /* 20160405: removed HASWAITPID code (Kai Peter)      */
 
-/* file: wait_nohang.c */
-int wait_nohang(wstat) int *wstat;
+/* file: wait_nohang.c ****************************** */
+int wait_nohang(int *wstat)
 {
   return waitpid(-1,wstat,WNOHANG);
 }
 
-/* file: wait_pid.c */
-int wait_pid(wstat,pid) int *wstat; int pid;
+/* file: wait_pid.c ******************************** */
+int wait_pid(int *wstat,int pid)
 {
   int r;
 
   do
     r = waitpid(pid,wstat,0);
-  while ((r == -1) && (errno == error_intr));
+  while ((r == -1) && (errno == EINTR));
   return r;
 }

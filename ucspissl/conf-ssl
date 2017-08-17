@@ -1,0 +1,9 @@
+-I
+
+# check for that
+
+-I /usr/kerberos/include 
+
+# This will be used to compile .c files when openssl requires additional support,
+# e.g. kerberos support on RedHat Linux.
+

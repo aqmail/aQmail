@@ -7,7 +7,7 @@ SHELL=/bin/sh
 # 3. link/copy (some) files
 
 #CFLAGS=-Iinc -I.. -I../inc
-SRC=*.c
+SRCS=*.c
 COMPILE=./compile
 MAKELIB=./makelib
 
@@ -22,14 +22,14 @@ clean:
 	@cd dns ; make -s clean
 	@echo " done!"
 
-libs: obj alloc.a buffer.a case.a cdb.a env.a error.a fd.a fs.a getln.a getopt.a lock.a \
+libs: obj alloc.a buffer.a case.a cdb.a env.a errmsg.a fd.a fs.a getln.a getopt.a lock.a \
 ndelay.a open.a seek.a sig.a substdio.a str.a stralloc.a strerr.a time.a wait.a \
-dns.a ip.a socket.a
-#	./install
+dns.a ip.a socket.a error.a \
+qstring.a
 
 obj:
 	@echo Making all in qlibs ...
-	$(COMPILE) $(SRC)
+	$(COMPILE) $(SRCS)
 	@cp readclose.o slurpclose.o
 
 install: setup
@@ -41,8 +41,7 @@ alloc.a:
 	$(MAKELIB) alloc.a alloc.o
 
 buffer.a:
-	$(MAKELIB) buffer.a buffer.o buffer_0.o buffer_1.o buffer_2.o \
-	buffer_copy.o buffer_get.o buffer_put.o
+	$(MAKELIB) buffer.a buffer.o buffer_copy.o buffer_get.o buffer_put.o
 
 case.a:
 	$(MAKELIB) case.a case.o
@@ -53,8 +52,12 @@ cdb.a:
 env.a:
 	$(MAKELIB) env.a env.o
 
+# deprecated
 error.a:
-	$(MAKELIB) error.a error.o error_str.o error_temp.o
+	$(MAKELIB) error.a errstr.o error_temp.o
+
+errmsg.a:
+	$(MAKELIB) errmsg.a errstr.o errmsg.o
 
 fd.a:
 	$(MAKELIB) fd.a fd.o
@@ -83,38 +86,48 @@ seek.a:
 sig.a:
 	$(MAKELIB) sig.a sig.o
 
+# deprecated:
 substdio.a: ./makelib substdio.o substdi.o substdo.o \
 subfderr.o subfdout.o subfdouts.o subfdin.o subfdins.o
 	./makelib substdio.a substdio.o substdi.o substdo.o \
 	subfderr.o subfdout.o subfdouts.o subfdin.o subfdins.o
 
 str.a:
-	$(MAKELIB) str.a str.o byte.o
+	$(MAKELIB) str.a str.o byte.o stralloc.o alloc.o
 
 stralloc.a:
-	$(MAKELIB) stralloc.a stralloc.o
+	$(MAKELIB) stralloc.a stralloc.o alloc.o
 
+# deprecated
 strerr.a:
 	$(MAKELIB) strerr.a strerr.o
+
+time.a: iopause.o tai.o taia.o
+	$(MAKELIB) time.a iopause.o tai.o taia.o
 
 wait.a:
 	$(MAKELIB) wait.a wait.o
 
-#***  new from ucspi-tcp **************************************************
-time.a: iopause.o tai.o taia.o
-	$(MAKELIB) time.a iopause.o tai.o taia.o
-
-#********************************************
-# needed by qmail-tcpsrv - devel
 dns.a:
 	@echo "Building dns lib ..."
-	@cd dns ; make --no-print-directory
+	@cd dns ; make
 	@cp dns/dns.a dns.a
 
-socket.a:
+socket.a: ip.a
 	@echo "Building socket lib ..."
 	$(MAKELIB) socket.a socket.o socket_accept.o socket_bind.o \
 	socket_connect.o socket_proto.o socket_local.o socket_remote.o ip.a
 
 ip.a:
 	$(MAKELIB) ip.a ip4.o ip6.o socket.o
+
+# consolidate libs into one
+qnet.a: dns.a socket.a
+	$(MAKELIB) qnet.a ip4.o ip6.o dns.a socket.a
+
+qstring.a:
+	$(MAKELIB) qstring.a alloc.o byte.o str.o stralloc.o \
+	case.o fmt.o scan.o
+
+quint.a:
+	$(MAKELIB) quint.a uint16p.o uint32p.o

@@ -17,7 +17,6 @@
    one is be used for IPv4 AND IPv6 now.
 */
 
-#define socket_remote6 socket_remote   /* backwards compatibility (tmp) */
 int socket_remote(int s,char ip[16],uint16 *port,uint32 *scope_id)
 {
 #ifdef LIBC_HAS_IP6
@@ -47,3 +46,4 @@ int socket_remote(int s,char ip[16],uint16 *port,uint32 *scope_id)
 #endif
   return 0;
 }
+//#define socket_remote6 socket_remote   /* backwards compatibility (tmp) */

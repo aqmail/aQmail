@@ -1,0 +1,5 @@
+CFLAGS=-O2 -I./qlibs/include
+
+# -DINET6
+
+compiler flags - usually this shouldn't be changed

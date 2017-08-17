@@ -1,0 +1,61 @@
+.TH errmsg 3 qlibs eQmail
+.SH NAME
+errmsg \- print error and log messages to stderr
+.SH SYNTAX
+.B #include <error.h>
+
+int errmsg(char *who, int code, unsigned int severity, char *msg)
+
+err_sys(c) errmsg(WHO,c,FATAL,"")
+.br
+err_sys_plus(c,s) errmsg(WHO,c,FATAL,s)
+.br
+err_tmp(c) errmsg(WHO,c,ERROR,"")
+.br
+err_tmp_plus(c,s) errmsg(WHO,c,ERROR,s)
+.br
+err_int(c,l) errmsg(WHO,c,l,"")
+.br
+err_int_plus(c,l,s) errmsg(WHO,c,l,s)
+.br
+log(l,s) errmsg(WHO,0,l,s)
+.br
+log_anon(l,s) errmsg("",0,l,s)
+
+.SH DESCRIPTION
+\fBerrmsg\fR prints messages to stderr. \fIwho\fR is the name of the program, \fIcode\fR is
+an error code, \fIseverity\fR is the loglevel and \fImsg\fR is an additional message. Read
+"error.h" to learn related constants.
+
+Its behavior will be controlled by \fIcode\fR and \fIseverity\fR (loglevel). If the
+\fIseverity\fR is equal or greater than the default loglevel WARN, it print a message and
+returns. Otherwise it exits with \fIcode\fR.
+
+If \fIcode\fR is unequal 0, it gets an related error message from \fBerrstr\fR. To avoid
+conflicts with syscall error codes, user defined error codes should be negative. The values
+\fI-15\fR, \fI-100\fR and \fI-111\fR are reserved because of backwards compatibility. If 
+\fImsg\fR is given it will be printed additionally.
+
+If \fIcode\fR is equal null no syscall message or code will be printed. The macros are
+typical use cases.
+
+.SH NOTES
+errmsg.c needs to be linked with errstr.c.
+
+.SH EXAMPLES
+The macro definitions uses \fBc\fR for code, \fBl\fR for severity and \fBs\fR for msg.
+
+  #include <error.h>
+
+  err_sys(errno);
+  err_sys_plus(-111,"additional message);
+
+  err_tmp(-100);
+  err_tmp(errno,"additional message");
+
+  log(INFO,"message");
+
+log_anon() is like log() but doesn't print the caller name.
+
+.SH "SEE ALSO"
+syslog(3)

@@ -11,21 +11,18 @@
      - uint16_unpack.c       348    20000318                        */
 
 /* file: uint16_pack.c ******************************************** */
-void uint16_pack(char s[2],uint16 u)
-{
+void uint16_pack(char s[2],uint16 u) {
   s[0] = u & 255;
   s[1] = u >> 8;
 }
 
-void uint16_pack_big(char s[2],uint16 u)
-{
+void uint16_pack_big(char s[2],uint16 u) {
   s[1] = u & 255;
   s[0] = u >> 8;
 }
 
 /* file: uint16_unpack.c ****************************************** */
-void uint16_unpack(char s[2],uint16 *u)
-{
+void uint16_unpack(char s[2],uint16 *u) {
   uint16 result;
 
   result = (unsigned char) s[1];
@@ -34,8 +31,7 @@ void uint16_unpack(char s[2],uint16 *u)
 
   *u = result;
 }
-void uint16_unpack_big(char s[2],uint16 *u)
-{
+void uint16_unpack_big(char s[2],uint16 *u) {
   uint16 result;
 
   result = (unsigned char) s[0];

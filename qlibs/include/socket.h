@@ -25,12 +25,12 @@ extern int socket_listen(int,int);
 extern int socket_accept4(int,char *,uint16 *);
 extern int socket_accept6(int s,char *ip,uint16 *port,uint32 *scope_id);
 extern int socket_recv4(int,char *,int,char *,uint16 *);
-extern int socket_send4(int,const char *,int,const char *,uint16);
 extern int socket_recv6(int s,char *buf,unsigned int len,char *ip,uint16 *port,uint32 *scope_id);
+extern int socket_send4(int,const char *,int,const char *,uint16);
 extern int socket_send6(int s,const char *buf,unsigned int len,const char *ip,uint16 port,uint32 scope_id);
 extern int socket_local4(int,char *,uint16 *);
-extern int socket_remote4(int,char *,uint16 *);
 extern int socket_local6(int s,char *ip,uint16 *port,uint32 *scope_id);
+extern int socket_remote4(int,char *,uint16 *);
 extern int socket_remote6(int s,char *ip,uint16 *port,uint32 *scope_id);
 
 /* enable sending udp packets to the broadcast address */
@@ -57,5 +57,7 @@ extern int noipv6;
 
 extern int socket_ipoptionskill(int);
 extern int socket_tcpnodelay(int);
+
+#define socket_remote socket_remote6    /* backwards compat */
 
 #endif

@@ -9,7 +9,7 @@ qlibs/*
 qlibs/.*
 mod/*
 
-obsolete/*
+obsolete
 
 compile
 makelib
@@ -49,3 +49,5 @@ load
   qmail-tcpto
   qmail-todo
   qmail-vmailuser
+
+  qmail-upq.sh
