@@ -1,0 +1,1 @@
+#define HASGETSPNAM 1

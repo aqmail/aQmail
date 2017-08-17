@@ -1,0 +1,36 @@
+#!/bin/sh
+#********************************************************************************
+# Create compile, load, makelib
+
+CFLAGS=`cat conf-cc | grep ^CFLAGS 2>/dev/null | cut -d= -f2`
+
+echo -n "Checking for compile ... "
+CC="cc"
+( echo '#!/bin/sh'
+  echo exec "$CC" "$CFLAGS" -c '${1+"$@"}' ) > compile
+chmod 755 compile
+echo "created!"
+
+# load: auto-ld
+echo -n "Checking for loader ... "
+#LD=`head -1 conf-ld`"$LDOPTS"
+LD="cc -s -L/usr/local/lib/qlibs"
+( echo '#!/bin/sh'
+  echo 'main="$1"; shift' ; \
+  echo exec "$LD" '-o "$main" "$main".o ${1+"$@"}') > load
+chmod 755 load
+echo "created!"
+
+echo -n "Checking for makelib ... "
+( echo '#!/bin/sh' ;
+  echo "" ;
+  echo 'main="$1"; shift' ; \
+  echo 'rm -f "$main"' ; \
+  echo 'ar cr "$main" ${1+"$@"}' ; \
+  echo 'ranlib "$main"') > makelib
+chmod 755 makelib
+echo "created!"
+
+#********************************************************************************
+# create the conf_ca* files
+echo "const char auto_cadir[] = \"`head -1 conf-cadir`\";" > auto_cadir.c

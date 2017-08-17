@@ -6,13 +6,21 @@ COMPILE=./compile
 MAKELIB=./makelib
 LOAD=./load
 
-default: it-analog it-base it-setup it-dns it-control \
+default: libs it-analog it-base it-setup it-dns it-control \
 it-mbox it-forward it-pop it-queue \
 it-clients it-user it-dns it-server it-log
 
 clean:
-	rm -f *.a *.o `cat TARGETS`
-	rm -f compile load makelib
+	rm -f *.a *.o  `cat TARGETS`
+	cd ucspissl ; make clean
+	cd qlibs ; make clean
+
+
+libs:
+#	cd qlibs ; make
+	cd ucspissl ; make
+	cp ucspissl/ucspissl.a ucspissl.a
+	cp ucspissl/ssl.lib ssl.lib
 
 alloc.a: \
 makelib alloc.o alloc_re.o
@@ -26,12 +34,12 @@ alloc_re.o: \
 compile alloc_re.c alloc.h byte.h
 	./compile alloc_re.c
 
-auto-ccld.sh: \
-../conf-cc ../conf-ld warn-auto.sh
-	( cat warn-auto.sh; \
-	echo CC=\'`head -1 ../conf-cc`\'; \
-	echo LD=\'`head -1 ../conf-ld`\' \
-	) > auto-ccld.sh
+auto-ccld.sh:
+#../conf-cc conf-ld warn-auto.sh
+#	( cat warn-auto.sh; \
+#	echo CC=\'`head -1 ../conf-cc`\'; \
+#	echo LD=\'`head -1 ../conf-ld`\' \
+#	) > auto-ccld.sh
 
 auto-gid: \
 load auto-gid.o substdio.a error.a str.a fs.a
@@ -76,58 +84,59 @@ scan.h fmt.h
 	./compile auto-uid.c
 
 auto_break.c: \
-auto-str ../conf-break
+auto-str
 	./auto-str auto_break \
-	"`head -1 ../conf-break`" > auto_break.c
+	"`head -1 conf-break`" > auto_break.c
 
 auto_break.o: \
 compile auto_break.c
 	./compile auto_break.c
 
 auto_patrn.c: \
-auto-int8 ../conf-patrn
-	./auto-int8 auto_patrn `head -1 ../conf-patrn` > auto_patrn.c
+auto-int8
+	./auto-int8 auto_patrn `head -1 conf-patrn` > auto_patrn.c
 
 auto_patrn.o: \
 compile auto_patrn.c
 	./compile auto_patrn.c
 
 auto_qmail.c: \
-auto-str ../conf-home
-	./auto-str auto_qmail `head -1 ../conf-home` > auto_qmail.c
+auto-str
+	./auto-str auto_qmail `head -1 conf-home` > auto_qmail.c
 
 auto_qmail.o: \
 compile auto_qmail.c
 	./compile auto_qmail.c
 
 auto_spawn.c: \
-auto-int ../conf-spawn
-	./auto-int auto_spawn `head -1 ../conf-spawn` > auto_spawn.c
+auto-int
+	./auto-int auto_spawn `head -1 conf-spawn` > auto_spawn.c
 
 auto_spawn.o: \
 compile auto_spawn.c
 	./compile auto_spawn.c
 
 auto_split.c: \
-auto-int ../conf-split
-	./auto-int auto_split `head -1 ../conf-split` > auto_split.c
+auto-int
+	./auto-int auto_split `head -1 conf-split` > auto_split.c
 
 auto_split.o: \
 compile auto_split.c
 	./compile auto_split.c
 
 auto_uids.c: \
-auto-uid auto-gid ../conf-users ../conf-groups
-	( ./auto-uid auto_uida `head -1 ../conf-users` \
-	&&./auto-uid auto_uidd `head -2 ../conf-users | tail -1` \
-	&&./auto-uid auto_uidl `head -3 ../conf-users | tail -1` \
-	&&./auto-uid auto_uido `head -4 ../conf-users | tail -1` \
-	&&./auto-uid auto_uidp `head -5 ../conf-users | tail -1` \
-	&&./auto-uid auto_uidq `head -6 ../conf-users | tail -1` \
-	&&./auto-uid auto_uidr `head -7 ../conf-users | tail -1` \
-	&&./auto-uid auto_uids `head -8 ../conf-users | tail -1` \
-	&&./auto-gid auto_gidq `head -1 ../conf-groups` \
-	&&./auto-gid auto_gidn `head -2 ../conf-groups | tail -1` \
+auto-uid auto-gid
+#../conf-users ../conf-groups
+	( ./auto-uid auto_uida `head -1 conf-users` \
+	&&./auto-uid auto_uidd `head -2 conf-users | tail -1` \
+	&&./auto-uid auto_uidl `head -3 conf-users | tail -1` \
+	&&./auto-uid auto_uido `head -4 conf-users | tail -1` \
+	&&./auto-uid auto_uidp `head -5 conf-users | tail -1` \
+	&&./auto-uid auto_uidq `head -6 conf-users | tail -1` \
+	&&./auto-uid auto_uidr `head -7 conf-users | tail -1` \
+	&&./auto-uid auto_uids `head -8 conf-users | tail -1` \
+	&&./auto-gid auto_gidq `head -1 conf-groups` \
+	&&./auto-gid auto_gidn `head -2 conf-groups | tail -1` \
 	) > auto_uids.c.tmp && mv auto_uids.c.tmp auto_uids.c
 
 auto_uids.o: \
@@ -135,8 +144,9 @@ compile auto_uids.c
 	./compile auto_uids.c
 
 auto_usera.c: \
-auto-str ../conf-users
-	./auto-str auto_usera `head -1 ../conf-users` > auto_usera.c
+auto-str
+# ../conf-users
+	./auto-str auto_usera `head -1 conf-users` > auto_usera.c
 
 auto_usera.o: \
 compile auto_usera.c
@@ -323,22 +333,24 @@ wait.h seek.h qmail.h substdio.h strerr.h fmt.h
 	./compile condredirect.c
 
 config: \
-warn-auto.sh config.sh ../conf-home ../conf-break ../conf-split
+warn-auto.sh config.sh
+# ../conf-home ../conf-break ../conf-split
 	cat warn-auto.sh config.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
-	| sed s}BREAK}"`head -1 ../conf-break`"}g \
-	| sed s}SPLIT}"`head -1 ../conf-split`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
+	| sed s}BREAK}"`head -1 conf-break`"}g \
+	| sed s}SPLIT}"`head -1 conf-split`"}g \
 	> config
 	chmod 755 config
 
-config-fast: \
-warn-auto.sh config-fast.sh ../conf-home ../conf-break ../conf-split
-	cat warn-auto.sh config-fast.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
-	| sed s}BREAK}"`head -1 ../conf-break`"}g \
-	| sed s}SPLIT}"`head -1 ../conf-split`"}g \
-	> config-fast
-	chmod 755 config-fast
+config-fast:
+#warn-auto.sh config-fast.sh
+## ../conf-home ../conf-break ../conf-split
+#	cat warn-auto.sh config-fast.sh \
+#	| sed s}HOME}"`head -1 conf-home`"}g \
+#	| sed s}BREAK}"`head -1 conf-break`"}g \
+#	| sed s}SPLIT}"`head -1 conf-split`"}g \
+#	> config-fast
+#	chmod 755 config-fast
 
 constmap.o: \
 compile constmap.c constmap.h alloc.h case.h
@@ -361,11 +373,12 @@ compile date822fmt.c datetime.h fmt.h date822fmt.h
 	./compile date822fmt.c
 
 datemail: \
-warn-auto.sh datemail.sh ../conf-home ../conf-break ../conf-split
+warn-auto.sh datemail.sh
+# ../conf-home ../conf-break ../conf-split
 	cat warn-auto.sh datemail.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
-	| sed s}BREAK}"`head -1 ../conf-break`"}g \
-	| sed s}SPLIT}"`head -1 ../conf-split`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
+	| sed s}BREAK}"`head -1 conf-break`"}g \
+	| sed s}SPLIT}"`head -1 conf-split`"}g \
 	> datemail
 	chmod 755 datemail
 
@@ -382,16 +395,18 @@ compile datetime_un.c datetime.h
 	./compile datetime_un.c
 
 ddist: \
-warn-auto.sh ddist.sh ../conf-home
+warn-auto.sh ddist.sh
+#../conf-home
 	cat warn-auto.sh ddist.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> ddist
 	chmod 755 ddist
 
 deferrals: \
-warn-auto.sh deferrals.sh ../conf-home
+warn-auto.sh deferrals.sh 
+#../conf-home
 	cat warn-auto.sh deferrals.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> deferrals
 	chmod 755 deferrals
 
@@ -529,9 +544,9 @@ compile except.c fork.h strerr.h wait.h error.h exit.h
 	./compile except.c
 
 failures: \
-warn-auto.sh failures.sh ../conf-home
+warn-auto.sh failures.sh
 	cat warn-auto.sh failures.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> failures
 	chmod 755 failures
 
@@ -747,8 +762,8 @@ compile hostname.c substdio.h subfd.h readwrite.h exit.h
 idn2.lib: \
 tryidn2.c compile load
 	( (./compile tryidn2.c && \
-	./load tryidn2 `head -1 ../conf-idn2` -lidn2 ) >/dev/null 2>&1 \
-	&& echo "`head -1 ../conf-idn2` -lidn2" || exit 0 ) > idn2.lib
+	./load tryidn2 `head -1 conf.tmp/conf-idn2` -lidn2 ) >/dev/null 2>&1 \
+	&& echo "`head -1 conf.tmp/conf-idn2` -lidn2" || exit 0 ) > idn2.lib
 #	rm -f tryind2.o tryidn2
 
 install: \
@@ -839,7 +854,8 @@ it-log: \
 splogger qmail-mrtg qmail-mrtg-queue tai64nfrac
 
 it-queue: \
-qmail-qread qmail-qstat qmail-tcpto qmail-tcpok qmail-upq
+qmail-qread qmail-qstat qmail-tcpto qmail-tcpok
+# qmail-upq
 
 it-server: \
 qmail-qmtpd qmail-qmqpd qmail-smtpd dnsip
@@ -915,11 +931,12 @@ readwrite.h open.h headerbody.h maildir.h strerr.h
 	./compile maildirwatch.c
 
 mailsubj: \
-warn-auto.sh mailsubj.sh ../conf-home ../conf-break ../conf-split
+warn-auto.sh mailsubj.sh
+# ../conf-home ../conf-break ../conf-split
 	cat warn-auto.sh mailsubj.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
-	| sed s}BREAK}"`head -1 ../conf-break`"}g \
-	| sed s}SPLIT}"`head -1 ../conf-split`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
+	| sed s}BREAK}"`head -1 conf-break`"}g \
+	| sed s}SPLIT}"`head -1 conf-split`"}g \
 	> mailsubj
 	chmod 755 mailsubj
 
@@ -1232,11 +1249,12 @@ stralloc.a alloc.a strerr.a substdio.a error.a str.a auto_qmail.o
 	error.a str.a auto_qmail.o
 
 qmail-badloadertypes.8: \
-qmail-badloadertypes.9 ../conf-break ../conf-spawn
+qmail-badloadertypes.9 
+#../conf-break ../conf-spawn
 	cat qmail-badloadertypes.9 \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
-	| sed s}BREAK}"`head -1 ../conf-break`"}g \
-	| sed s}SPAWN}"`head -1 ../conf-spawn`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
+	| sed s}BREAK}"`head -1 conf-break`"}g \
+	| sed s}SPAWN}"`head -1 conf-spawn`"}g \
 	> qmail-badloadertypes.8
 
 qmail-badloadertypes.o: \
@@ -1334,9 +1352,9 @@ substdio.h byte.h scan.h fmt.h error.h str.h
 	./compile qmail-mrtg.c
 
 qmail-mrtg-queue: \
-warn-auto.sh qmail-mrtg-queue.sh ../conf-home
+warn-auto.sh qmail-mrtg-queue.sh
 	cat warn-auto.sh qmail-mrtg-queue.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> qmail-mrtg-queue
 	chmod 755 qmail-mrtg-queue
 
@@ -1459,11 +1477,12 @@ exit.h
 	./compile qmail-qread.c
 
 qmail-qstat: \
-warn-auto.sh qmail-qstat.sh ../conf-home ../conf-break ../conf-split
+warn-auto.sh qmail-qstat.sh
+# ../conf-home ../conf-break ../conf-split
 	cat warn-auto.sh qmail-qstat.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
-	| sed s}BREAK}"`head -1 ../conf-break`"}g \
-	| sed s}SPLIT}"`head -1 ../conf-split`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
+	| sed s}BREAK}"`head -1 conf-break`"}g \
+	| sed s}SPLIT}"`head -1 conf-split`"}g \
 	> qmail-qstat
 	chmod 755 qmail-qstat
 
@@ -1627,12 +1646,12 @@ exit.h fmt.h fmtqfn.h getln.h open.h ndelay.h now.h readsubdir.h readwrite.h \
 scan.h select.h str.h stralloc.h substdio.h trigger.h qsutil.h
 	./compile qmail-todo.c
 
-qmail-upq: \
-warn-auto.sh qmail-upq.sh ../conf-home ../conf-break ../conf-split
+qmail-upq: warn-auto.sh qmail-upq.sh
+#conf-home ../conf-break ../conf-split
 	cat warn-auto.sh qmail-upq.sh \
-	| sed s}QMAIL}"`head -1 ../conf-home`"}g \
-	| sed s}BREAK}"`head -1 ../conf-break`"}g \
-	| sed s}SPLIT}"`head -1 ../conf-split`"}g \
+	| sed s}QMAIL}"`head -1 conf-home`"}g \
+	| sed s}BREAK}"`head -1 conf-break`"}g \
+	| sed s}SPLIT}"`head -1 conf-split`"}g \
 	> qmail-upq
 	chmod 755 qmail-upq
 
@@ -1676,30 +1695,30 @@ case.h constmap.h stralloc.h gen_alloc.h recipients.h substdio.h auto_break.h
 	./compile recipients.c
 
 recipients: \
-warn-auto.sh recipients.sh ../conf-home
+warn-auto.sh recipients.sh
 	cat warn-auto.sh recipients.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> recipients
 	chmod 755 recipients
 
 rhosts: \
-warn-auto.sh rhosts.sh ../conf-home
+warn-auto.sh rhosts.sh
 	cat warn-auto.sh rhosts.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> rhosts
 	chmod 755 rhosts
 
 rxdelay: \
-warn-auto.sh rxdelay.sh ../conf-home
+warn-auto.sh rxdelay.sh
 	cat warn-auto.sh rxdelay.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> rxdelay
 	chmod 755 rxdelay
 
 senders: \
-warn-auto.sh senders.sh ../conf-home
+warn-auto.sh senders.sh
 	cat warn-auto.sh senders.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> senders
 	chmod 755 senders
 
@@ -1723,16 +1742,16 @@ tryshadow.c compile load
 	rm -f tryshadow.o tryshadow
 
 successes: \
-warn-auto.sh successes.sh ../conf-home
+warn-auto.sh successes.sh
 	cat warn-auto.sh successes.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> successes
 	chmod 755 successes
 
 suids: \
-warn-auto.sh suids.sh ../conf-home
+warn-auto.sh suids.sh
 	cat warn-auto.sh suids.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> suids
 	chmod 755 suids
 
@@ -2191,99 +2210,99 @@ compile wildmat.c
 	./compile wildmat.c
 
 xqp: \
-warn-auto.sh xqp.sh ../conf-home
+warn-auto.sh xqp.sh
 	cat warn-auto.sh xqp.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> xqp
 	chmod 755 xqp
 
 xrecipient: \
-warn-auto.sh xrecipient.sh ../conf-home
+warn-auto.sh xrecipient.sh
 	cat warn-auto.sh xrecipient.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> xrecipient
 	chmod 755 xrecipient
 
 xsender: \
-warn-auto.sh xsender.sh ../conf-home
+warn-auto.sh xsender.sh
 	cat warn-auto.sh xsender.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> xsender
 	chmod 755 xsender
 
 zddist: \
-warn-auto.sh zddist.sh ../conf-home
+warn-auto.sh zddist.sh
 	cat warn-auto.sh zddist.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> zddist
 	chmod 755 zddist
 
 zdeferrals: \
-warn-auto.sh zdeferrals.sh ../conf-home
+warn-auto.sh zdeferrals.sh
 	cat warn-auto.sh zdeferrals.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> zdeferrals
 	chmod 755 zdeferrals
 
 zfailures: \
-warn-auto.sh zfailures.sh ../conf-home
+warn-auto.sh zfailures.sh
 	cat warn-auto.sh zfailures.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> zfailures
 	chmod 755 zfailures
 
 zoverall: \
-warn-auto.sh zoverall.sh ../conf-home
+warn-auto.sh zoverall.sh
 	cat warn-auto.sh zoverall.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> zoverall
 	chmod 755 zoverall
 
 zrecipients: \
-warn-auto.sh zrecipients.sh ../conf-home
+warn-auto.sh zrecipients.sh
 	cat warn-auto.sh zrecipients.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> zrecipients
 	chmod 755 zrecipients
 
 zrhosts: \
-warn-auto.sh zrhosts.sh ../conf-home
+warn-auto.sh zrhosts.sh
 	cat warn-auto.sh zrhosts.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> zrhosts
 	chmod 755 zrhosts
 
 zrxdelay: \
-warn-auto.sh zrxdelay.sh ../conf-home
+warn-auto.sh zrxdelay.sh
 	cat warn-auto.sh zrxdelay.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> zrxdelay
 	chmod 755 zrxdelay
 
 zsenders: \
-warn-auto.sh zsenders.sh ../conf-home
+warn-auto.sh zsenders.sh
 	cat warn-auto.sh zsenders.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> zsenders
 	chmod 755 zsenders
 
 zsendmail: \
-warn-auto.sh zsendmail.sh ../conf-home
+warn-auto.sh zsendmail.sh
 	cat warn-auto.sh zsendmail.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> zsendmail
 	chmod 755 zsendmail
 
 zsuccesses: \
-warn-auto.sh zsuccesses.sh ../conf-home
+warn-auto.sh zsuccesses.sh
 	cat warn-auto.sh zsuccesses.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> zsuccesses
 	chmod 755 zsuccesses
 
 zsuids: \
-warn-auto.sh zsuids.sh ../conf-home
+warn-auto.sh zsuids.sh
 	cat warn-auto.sh zsuids.sh \
-	| sed s}HOME}"`head -1 ../conf-home`"}g \
+	| sed s}HOME}"`head -1 conf-home`"}g \
 	> zsuids
 	chmod 755 zsuids
