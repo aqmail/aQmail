@@ -413,11 +413,11 @@ warn-auto.sh deferrals.sh
 	> deferrals
 	chmod 755 deferrals
 
-direntry.h: \
-compile trydrent.c direntry.h1 direntry.h2
-	( ./compile trydrent.c >/dev/null 2>&1 \
-	&& cat direntry.h2 || cat direntry.h1 ) > direntry.h
-	rm -f trydrent.o
+#direntry.h: \
+#compile trydrent.c direntry.h1 direntry.h2
+#	( ./compile trydrent.c >/dev/null 2>&1 \
+#	&& cat direntry.h2 || cat direntry.h1 ) > direntry.h
+#	rm -f trydrent.o
 
 dns.lib: \
 tryrsolv.c compile load socket.lib dns.o ipalloc.o ip.o strsalloc.o \
@@ -896,7 +896,7 @@ compile lock_un.c hasflock.h lock.h
 
 maildir.o: \
 compile maildir.c prioq.h datetime.h gen_alloc.h env.h stralloc.h \
-direntry.h datetime.h now.h datetime.h str.h maildir.h \
+datetime.h now.h datetime.h str.h maildir.h \
 strerr.h
 	./compile maildir.c
 
@@ -1157,7 +1157,7 @@ substdio.a error.a str.a fs.a auto_qmail.o auto_split.o
 
 qmail-clean.o: \
 compile qmail-clean.c readwrite.h sig.h now.h datetime.h str.h \
-direntry.h getln.h stralloc.h gen_alloc.h substdio.h subfd.h \
+getln.h stralloc.h gen_alloc.h substdio.h subfd.h \
 scan.h fmt.h error.h exit.h fmtqfn.h auto_qmail.h
 	./compile qmail-clean.c
 
@@ -1296,7 +1296,7 @@ stralloc.a str.a
 
 qmail-vmailuser.o: \
 compile qmail-vmailuser.c auto_qmail.h case.h constmap.h control.h \
-direntry.h error.h exit.h fd.h fmt.h gen_alloc.h global.h getln.h \
+error.h exit.h fd.h fmt.h gen_alloc.h global.h getln.h \
 open.h readwrite.h scan.h stralloc.h str.h substdio.h stralloc.h 
 	./compile qmail-vmailuser.c
 
@@ -1468,7 +1468,7 @@ auto_qmail.o auto_split.o
 
 qmail-qread.o: \
 compile qmail-qread.c stralloc.h gen_alloc.h substdio.h subfd.h \
-fmt.h str.h getln.h fmtqfn.h readsubdir.h direntry.h \
+fmt.h str.h getln.h fmtqfn.h readsubdir.h \
 auto_qmail.h open.h datetime.h date822fmt.h readwrite.h error.h \
 exit.h
 	./compile qmail-qread.c
@@ -1551,12 +1551,12 @@ auto_split.o env.a
 	substdio.a error.a str.a fs.a auto_qmail.o auto_split.o env.a
 
 qmail-send.o: \
-compile qmail-send.c readwrite.h sig.h direntry.h control.h select.h \
+compile qmail-send.c readwrite.h sig.h control.h select.h \
 open.h seek.h exit.h lock.h ndelay.h now.h datetime.h getln.h \
 substdio.h alloc.h error.h stralloc.h gen_alloc.h str.h fmt.h \
 scan.h case.h auto_qmail.h trigger.h newfield.h quote.h \
 qmail.h qsutil.h prioq.h datetime.h gen_alloc.h constmap.h \
-fmtqfn.h readsubdir.h direntry.h
+fmtqfn.h readsubdir.h
 	./compile qmail-send.c
 
 qmail-showctl: \
@@ -1570,7 +1570,7 @@ auto_patrn.o auto_spawn.o auto_split.o
 
 qmail-showctl.o: \
 compile qmail-showctl.c substdio.h subfd.h exit.h fmt.h \
-str.h control.h constmap.h stralloc.h gen_alloc.h direntry.h \
+str.h control.h constmap.h stralloc.h gen_alloc.h \
 auto_uids.h auto_qmail.h auto_break.h auto_patrn.h auto_spawn.h \
 auto_split.h
 	./compile qmail-showctl.c
@@ -1638,7 +1638,7 @@ substdio.a error.a str.a fs.a auto_qmail.o auto_split.o
 	alloc.a substdio.a error.a str.a fs.a auto_qmail.o auto_split.o
 
 qmail-todo.o: \
-compile alloc.h auto_qmail.h constmap.h control.h direntry.h error.h \
+compile alloc.h auto_qmail.h constmap.h control.h error.h \
 exit.h fmt.h fmtqfn.h getln.h open.h ndelay.h now.h readsubdir.h readwrite.h \
 scan.h select.h str.h stralloc.h substdio.h trigger.h qsutil.h
 	./compile qmail-todo.c
@@ -1753,7 +1753,7 @@ warn-auto.sh suids.sh
 	chmod 755 suids
 
 readsubdir.o: \
-compile readsubdir.c readsubdir.h direntry.h fmt.h scan.h str.h \
+compile readsubdir.c readsubdir.h fmt.h scan.h str.h \
 auto_split.h
 	./compile readsubdir.c
 
