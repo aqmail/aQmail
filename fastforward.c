@@ -200,7 +200,7 @@ void doprogram(char *arg)
     args[3] = 0;
   }
 
-  switch(child = vfork()) {
+  switch(child = fork()) {
     case -1:
       strerr_die2sys(111,FATAL,"unable to fork: ");
     case 0:

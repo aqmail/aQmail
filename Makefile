@@ -172,7 +172,7 @@ load bouncesaying.o strerr.a error.a substdio.a str.a wait.a
 	wait.a 
 
 bouncesaying.o: \
-compile bouncesaying.c fork.h strerr.h error.h wait.h sig.h exit.h
+compile bouncesaying.c strerr.h error.h wait.h sig.h exit.h
 	./compile bouncesaying.c
 
 byte_chr.o: \
@@ -331,7 +331,7 @@ substdio.a error.a str.a fs.a auto_qmail.o
 	seek.a env.a substdio.a error.a str.a fs.a auto_qmail.o 
 
 condredirect.o: \
-compile condredirect.c sig.h readwrite.h exit.h env.h error.h fork.h \
+compile condredirect.c sig.h readwrite.h exit.h env.h error.h \
 wait.h seek.h qmail.h substdio.h strerr.h fmt.h
 	./compile condredirect.c
 
@@ -543,7 +543,7 @@ load except.o strerr.a error.a substdio.a str.a wait.a
 	./load except strerr.a error.a substdio.a str.a wait.a 
 
 except.o: \
-compile except.c fork.h strerr.h wait.h error.h exit.h
+compile except.c strerr.h wait.h error.h exit.h
 	./compile except.c
 
 failures: \
@@ -566,7 +566,7 @@ fastforward.o: \
 compile fastforward.c stralloc.h gen_alloc.h substdio.h subfd.h \
 substdio.h strset.h uint32.h sgetopt.h subgetopt.h readwrite.h exit.h \
 strerr.h env.h sig.h qmail.h substdio.h fmt.h case.h alloc.h coe.h \
-seek.h wait.h fork.h str.h slurpclose.h open.h cdb.h
+seek.h wait.h str.h slurpclose.h open.h cdb.h
 	./compile fastforward.c
 
 fd.a: \
@@ -618,12 +618,12 @@ fmtqfn.o: \
 compile fmtqfn.c fmtqfn.h fmt.h auto_split.h
 	./compile fmtqfn.c
 
-fork.h: \
-compile load tryvfork.c fork.h1 fork.h2
-	( ( ./compile tryvfork.c && ./load tryvfork ) >/dev/null \
-	2>&1 \
-	&& cat fork.h2 || cat fork.h1 ) > fork.h
-	rm -f tryvfork.o tryvfork
+#fork.h: \
+#compile load tryvfork.c fork.h1 fork.h2
+#	( ( ./compile tryvfork.c && ./load tryvfork ) >/dev/null \
+#	2>&1 \
+#	&& cat fork.h2 || cat fork.h1 ) > fork.h
+#	rm -f tryvfork.o tryvfork
 
 forward: \
 load forward.o qmail.o strerr.a alloc.a fd.a wait.a sig.a env.a \
@@ -1083,7 +1083,7 @@ error.a str.a fs.a
 	substdio.a error.a str.a fs.a 
 
 predate.o: \
-compile predate.c datetime.h fork.h wait.h fd.h fmt.h strerr.h \
+compile predate.c datetime.h wait.h fd.h fmt.h strerr.h \
 substdio.h subfd.h readwrite.h exit.h
 	./compile predate.c
 
@@ -1095,7 +1095,7 @@ error.a str.a
 
 preline.o: \
 compile preline.c fd.h sgetopt.h subgetopt.h readwrite.h strerr.h \
-substdio.h exit.h fork.h wait.h env.h sig.h error.h
+substdio.h exit.h wait.h env.h sig.h error.h
 	./compile preline.c
 
 printforward: \
@@ -1221,7 +1221,7 @@ fs.a auto_qmail.o auto_uids.o auto_spawn.o
 
 qmail-lspawn.o: \
 compile qmail-lspawn.c fd.h wait.h prot.h substdio.h stralloc.h \
-gen_alloc.h scan.h exit.h fork.h error.h cdb.h uint32.h case.h \
+gen_alloc.h scan.h exit.h error.h cdb.h uint32.h case.h \
 slurpclose.h auto_qmail.h auto_uids.h qlx.h
 	./compile qmail-lspawn.c
 
@@ -1495,7 +1495,7 @@ str.a fs.a auto_qmail.o auto_split.o auto_uids.o
 
 qmail-queue.o: \
 compile qmail-queue.c readwrite.h sig.h exit.h open.h seek.h fmt.h \
-env.h fork.h wait.h \
+env.h wait.h \
 alloc.h substdio.h datetime.h now.h datetime.h triggerpull.h extra.h \
 auto_qmail.h auto_uids.h date822fmt.h fmtqfn.h
 	./compile qmail-queue.c
@@ -1534,7 +1534,7 @@ auto_qmail.o auto_uids.o auto_spawn.o
 	auto_spawn.o 
 
 qmail-rspawn.o: \
-compile qmail-rspawn.c fd.h wait.h substdio.h exit.h fork.h error.h \
+compile qmail-rspawn.c fd.h wait.h substdio.h exit.h error.h \
 tcpto.h uint32.h
 	./compile qmail-rspawn.c
 
@@ -1604,7 +1604,7 @@ load qmail-start.o prot.o fd.a auto_uids.o
 	./load qmail-start prot.o fd.a auto_uids.o 
 
 qmail-start.o: \
-compile qmail-start.c fd.h prot.h exit.h fork.h auto_uids.h
+compile qmail-start.c fd.h prot.h exit.h auto_uids.h
 	./compile qmail-start.c
 
 qmail-tcpok: \
@@ -1653,7 +1653,7 @@ qmail-upq: warn-auto.sh qmail-upq.sh
 	chmod 755 qmail-upq
 
 qmail.o: \
-compile qmail.c substdio.h readwrite.h wait.h exit.h fork.h fd.h \
+compile qmail.c substdio.h readwrite.h wait.h exit.h fd.h \
 qmail.h auto_qmail.h
 	./compile qmail.c
 
