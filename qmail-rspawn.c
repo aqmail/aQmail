@@ -2,7 +2,7 @@
 #include "wait.h"
 #include "substdio.h"
 #include "exit.h"
-#include "fork.h"
+//#include "fork.h"
 #include "error.h"
 #include "ipalloc.h"
 #include "tcpto.h"

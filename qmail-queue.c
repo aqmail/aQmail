@@ -17,7 +17,7 @@
 #include "date822fmt.h"
 #include "fmtqfn.h"
 #include "env.h"
-#include "fork.h"
+//#include "fork.h"
 #include "wait.h"
 
 #define DEATH 86400 /* 24 hours; _must_ be below q-s's OSSIFIED (36 hours) */

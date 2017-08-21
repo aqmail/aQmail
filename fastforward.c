@@ -18,7 +18,7 @@
 #include "coe.h"
 #include "seek.h"
 #include "wait.h"
-#include "fork.h"
+//#include "fork.h"
 #include "byte.h"
 #include "str.h"
 #include "open.h"

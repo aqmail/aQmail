@@ -1,7 +1,7 @@
 #include <sys/types.h>
 #include <time.h>
 #include "datetime.h"
-#include "fork.h"
+//#include "fork.h"
 #include "wait.h"
 #include "fd.h"
 #include "fmt.h"

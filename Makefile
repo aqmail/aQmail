@@ -1957,6 +1957,16 @@ byte_copy.o byte_cr.o byte_zero.o
 	str_chr.o str_rchr.o str_start.o byte_chr.o byte_rchr.o \
 	byte_diff.o byte_copy.o byte_cr.o byte_zero.o
 
+#str.a: \
+#makelib str_len.o str_diff.o str_diffn.o str_cpy.o str_chr.o \
+#str_rchr.o str_start.o
+## byte_chr.o byte_rchr.o byte_diff.o \
+##byte_copy.o byte_cr.o byte_zero.o
+#	./makelib str.a str_len.o str_diff.o str_diffn.o str_cpy.o \
+#	str_chr.o str_rchr.o str_start.o qlibs/byte.o
+##	 byte_chr.o byte_rchr.o \
+##	byte_diff.o byte_copy.o byte_cr.o byte_zero.o
+
 str_chr.o: \
 compile str_chr.c str.h
 	./compile str_chr.c

@@ -4,7 +4,7 @@
 #include "strerr.h"
 #include "substdio.h"
 #include "exit.h"
-#include "fork.h"
+//#include "fork.h"
 #include "wait.h"
 #include "env.h"
 #include "sig.h"
