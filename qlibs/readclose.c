@@ -33,7 +33,7 @@ int readclose(int fd,stralloc *sa,unsigned int bufsize)
   return readclose_append(fd,sa,bufsize);
 }
 
-/* file: openceadclose.c ******************************************* */
+/* file: openreadclose.c ******************************************* */
 int openreadclose(const char *fn,stralloc *sa,unsigned int bufsize)
 {
   int fd;

@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "slurpclose.h"
+//#include "slurpclose.h"
+#include "readclose.h"
 #include "stralloc.h"
 #include "substdio.h"
 #include "subfd.h"
