@@ -2,7 +2,7 @@
 #include "readwrite.h"
 #include "wait.h"
 #include "exit.h"
-#include "fork.h"
+//#include "fork.h"
 #include "fd.h"
 #include "qmail.h"
 #include "auto_qmail.h"
@@ -28,7 +28,7 @@ int qmail_open(struct qmail *qq)
   if (pipe(pim) == -1) return -1;
   if (pipe(pie) == -1) { close(pim[0]); close(pim[1]); return -1; }
  
-  switch(qq->pid = vfork()) {
+  switch(qq->pid = fork()) {
     case -1:
       close(pim[0]); close(pim[1]);
       close(pie[0]); close(pie[1]);

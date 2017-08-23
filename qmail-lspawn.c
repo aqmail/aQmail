@@ -5,11 +5,12 @@
 #include "stralloc.h"
 #include "scan.h"
 #include "exit.h"
-#include "fork.h"
+//#include "fork.h"
 #include "error.h"
 #include "cdb.h"
 #include "case.h"
-#include "slurpclose.h"
+//#include "slurpclose.h"
+#include "readclose.h"
 #include "auto_qmail.h"
 #include "auto_uids.h"
 #include "qlx.h"
@@ -133,7 +134,7 @@ void nughde_get(char *local)
   args[0] = "bin/qmail-getpw";
   args[1] = local;
   args[2] = 0;
-  switch(gpwpid = vfork()) {
+  switch(gpwpid = fork()) {
     case -1:
       _exit(QLX_SYS);
     case 0:

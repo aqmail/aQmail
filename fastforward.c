@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "slurpclose.h"
+//#include "slurpclose.h"
+#include "readclose.h"
 #include "stralloc.h"
 #include "substdio.h"
 #include "subfd.h"
@@ -18,7 +19,7 @@
 #include "coe.h"
 #include "seek.h"
 #include "wait.h"
-#include "fork.h"
+//#include "fork.h"
 #include "byte.h"
 #include "str.h"
 #include "open.h"
@@ -200,7 +201,7 @@ void doprogram(char *arg)
     args[3] = 0;
   }
 
-  switch(child = vfork()) {
+  switch(child = fork()) {
     case -1:
       strerr_die2sys(111,FATAL,"unable to fork: ");
     case 0:

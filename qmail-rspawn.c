@@ -2,7 +2,7 @@
 #include "wait.h"
 #include "substdio.h"
 #include "exit.h"
-#include "fork.h"
+//#include "fork.h"
 #include "error.h"
 #include "ipalloc.h"
 #include "tcpto.h"
@@ -56,10 +56,10 @@ void report(substdio *ss,int wstat,char *s,int len)
       substdio_puts(ss,s + 1);
       if (result <= orr)
         if (k < len)
-  	  switch(s[k]) {
-	    case 'Z': case 'D': case 'K':
+      switch(s[k]) {
+        case 'Z': case 'D': case 'K':
               substdio_puts(ss,s + k + 1);
-	  }
+      }
      break;
    }
 }
@@ -75,7 +75,7 @@ int spawn(int fdmess,int fdout,char *s,char *r,int at)
   args[3] = r;
   args[4] = 0;
 
-  if (!(f = vfork())) {
+  if (!(f = fork())) {
     if (fd_move(0,fdmess) == -1) _exit(111);
     if (fd_move(1,fdout) == -1) _exit(111);
     if (fd_copy(2,1) == -1) _exit(111);

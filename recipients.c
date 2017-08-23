@@ -7,7 +7,7 @@
 #include "stralloc.h"
 #include "recipients.h"
 #include "strerr.h"
-#include "fork.h"
+//#include "fork.h"
 #include "wait.h"
 #include "str.h"
 #include "case.h"

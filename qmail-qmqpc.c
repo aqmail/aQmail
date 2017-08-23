@@ -7,7 +7,7 @@
 #include "readwrite.h"
 #include "exit.h"
 #include "stralloc.h"
-#include "slurpclose.h"
+#include "readclose.h"
 #include "error.h"
 #include "str.h"
 #include "sig.h"

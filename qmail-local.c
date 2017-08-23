@@ -1,11 +1,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include "readwrite.h"
 #include "sig.h"
 #include "env.h"
 #include "byte.h"
 #include "exit.h"
-#include "fork.h"
+//#include "fork.h"
 #include "open.h"
 #include "wait.h"
 #include "lock.h"
@@ -24,7 +25,8 @@
 #include "case.h"
 #include "quote.h"
 #include "qmail.h"
-#include "slurpclose.h"
+//#include "slurpclose.h"
+#include "readclose.h"
 #include "myctime.h"
 #include "gfrom.h"
 #include "auto_patrn.h"

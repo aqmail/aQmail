@@ -8,7 +8,7 @@
 #include "strerr.h"
 #include "open.h"
 #include "seek.h"
-#include "fork.h"
+//#include "fork.h"
 
 #define FATAL "idedit: fatal: "
 #define WARNING "idedit: warning: "

@@ -1,10 +1,12 @@
 #include "stralloc.h"
 #include "alloc.h"
-#include "slurpclose.h"
+//#include "slurpclose.h"
+#include "readclose.h"
 #include "strerr.h"
 #include "substdio.h"
 #include "readwrite.h"
 #include "exit.h"
+#include "open.h"
 
 #define FATAL "columnt: fatal: "
 
