@@ -36,12 +36,12 @@ int ssl_verify(SSL *ssl,const char *hostname)
 //#if OPENSSL_VERSION_NUMBER < 0x10100000L
         if (ASN1_STRING_type(ext->d.ia5) != V_ASN1_IA5STRING) continue;
 //#else 
-        if (OBJ_sn2nid(ext->d.ia5) != V_ASN1_IA5STRING) continue;
+        if (OBJ_sn2nid((const char *)ext->d.ia5) != V_ASN1_IA5STRING) continue;
 //#endif
         dnsname = (char *)ASN1_STRING_data(ext->d.ia5);
         len = ASN1_STRING_length(ext->d.ia5);
         if (len != str_len(dnsname)) continue;
-        if (case_diffs(hostname,dnsname) == 0) return 0;
+        if (case_diffs((char *)hostname,dnsname) == 0) return 0;
         dname = 1;
       }
     }
@@ -49,7 +49,7 @@ int ssl_verify(SSL *ssl,const char *hostname)
     if (!dname) {
       X509_NAME_get_text_by_NID(X509_get_subject_name(cert),NID_commonName,buf,sizeof buf);
       buf[SSL_NAME_LEN - 1] = 0;
-      if (case_diffs(hostname,buf) == 0) return 0;
+      if (case_diffs((char *)hostname,buf) == 0) return 0;
     }
 
     return -3;
