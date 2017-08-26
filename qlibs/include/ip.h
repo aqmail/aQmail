@@ -74,4 +74,8 @@ extern const unsigned char V6any[16];          /*={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 #define ip6_isv4mapped(ip) (byte_equal(ip,12,V4mappedprefix))
 
+/* file: ip4_bit.h (from ucspissl) */
+//extern int getaddressasbit(char *,int,stralloc *);
+//extern int getbitasaddress(stralloc *);
+
 #endif

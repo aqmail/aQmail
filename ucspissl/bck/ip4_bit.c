@@ -1,4 +1,4 @@
-#include "ip4_bit.h"
+//#include "ip4_bit.h"
 //#include "ip4.h"
 #include "ip.h"
 #include "byte.h"

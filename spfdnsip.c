@@ -10,7 +10,7 @@
 #include "qlibs/include/byte.h"
 #include "now.h"
 #include "dns.h"
-#include "case.h"
+#include "qlibs/include/case.h"
 #include "spf.h"
 
 extern stralloc dnsname;

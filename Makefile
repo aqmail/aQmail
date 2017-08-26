@@ -156,14 +156,10 @@ hmac_md5.o : \
 compile hmac_md5.c hmac_md5.h global.h str.h
 	./compile hmac_md5.c
 
-bouncesaying: \
-load bouncesaying.o strerr.a error.a substdio.a str.a wait.a
-	./load bouncesaying strerr.a error.a substdio.a str.a \
-	wait.a 
-
-bouncesaying.o: \
-compile bouncesaying.c strerr.h error.h wait.h sig.h exit.h
-	./compile bouncesaying.c
+bouncesaying:
+#strerr.a error.a substdio.a str.a
+	$(COMPILE) bouncesaying.c
+	$(LOAD) bouncesaying strerr.a error.a substdio.a str.a wait.a
 
 byte_chr.o: \
 compile byte_chr.c
@@ -189,39 +185,8 @@ byte_zero.o: \
 compile byte_zero.c
 	./compile byte_zero.c
 
-case.a: \
-makelib case_diffb.o case_diffs.o case_lowerb.o case_lowers.o \
-case_starts.o case_startb.o case_diffrs.o
-	./makelib case.a case_diffb.o case_diffs.o case_lowerb.o \
-	case_lowers.o case_starts.o case_startb.o case_diffrs.o
-
-case_diffb.o: \
-compile case_diffb.c case.h
-	./compile case_diffb.c
-
-case_diffs.o: \
-compile case_diffs.c case.h
-	./compile case_diffs.c
-
-case_diffrs.o: \
-compile case_diffrs.c case.h str.h
-	./compile case_diffrs.c
-
-case_lowerb.o: \
-compile case_lowerb.c case.h
-	./compile case_lowerb.c
-
-case_lowers.o: \
-compile case_lowers.c case.h
-	./compile case_lowers.c
-
-case_startb.o: \
-compile case_startb.c case.h
-	./compile case_startb.c
-
-case_starts.o: \
-compile case_starts.c case.h
-	./compile case_starts.c
+case.a:
+	cp qlibs/case.a case.a
 
 cdb.a: \
 makelib cdb.o cdb_hash.o cdb_unpack.o cdb_seek.o cdb_make.o
@@ -302,9 +267,10 @@ error.a str.a slurpclose.o
 #compile columnt.c stralloc.h gen_alloc.h alloc.h slurpclose.h \
 #strerr.h substdio.h readwrite.h exit.h
 
-commands.o: \
-compile commands.c commands.h substdio.h stralloc.h gen_alloc.h str.h \
-case.h
+commands.o:
+#compile commands.c
+# commands.h substdio.h stralloc.h gen_alloc.h str.h
+#case.h
 	./compile commands.c
 
 compile:
@@ -320,8 +286,9 @@ substdio.a error.a str.a fs.a auto_qmail.o
 	seek.a env.a substdio.a error.a str.a fs.a auto_qmail.o 
 
 condredirect.o: \
-compile condredirect.c sig.h readwrite.h exit.h env.h error.h \
-wait.h seek.h qmail.h substdio.h strerr.h fmt.h
+compile condredirect.c
+# sig.h readwrite.h exit.h env.h error.h \
+#wait.h seek.h qmail.h substdio.h strerr.h fmt.h
 	./compile condredirect.c
 
 config: \
@@ -343,8 +310,8 @@ config-fast:
 #	> config-fast
 #	chmod 755 config-fast
 
-constmap.o: \
-compile constmap.c constmap.h case.h
+constmap.o:
+#compile constmap.c constmap.h case.h
 	./compile constmap.c
 
 control.o: \
@@ -409,7 +376,8 @@ stralloc.a alloc.a error.a fs.a str.a
 
 dns.o: \
 compile dns.c ip.h ipalloc.h gen_alloc.h fmt.h str.h \
-stralloc.h strsalloc.h gen_alloc.h dns.h case.h
+stralloc.h strsalloc.h gen_alloc.h dns.h
+# case.h
 	./compile dns.c
 
 dnscname: \
@@ -522,7 +490,8 @@ load except.o strerr.a error.a substdio.a str.a wait.a
 	./load except strerr.a error.a substdio.a str.a wait.a 
 
 except.o: \
-compile except.c strerr.h wait.h error.h exit.h
+compile except.c
+# strerr.h wait.h error.h exit.h
 	./compile except.c
 
 failures: \
@@ -922,7 +891,8 @@ str.a fs.a case.a
 matchup.o: \
 compile matchup.c stralloc.h gen_alloc.h gen_alloc.h gen_allocdefs.h \
 strerr.h getln.h substdio.h subfd.h substdio.h readwrite.h exit.h \
-str.h fmt.h scan.h case.h
+str.h fmt.h scan.h
+# case.h
 	./compile matchup.c
 
 myctime.o: \
@@ -956,7 +926,7 @@ str.a fs.a seek.a open.a case.a
 newaliases.o: \
 compile newaliases.c substdio.h strerr.h stralloc.h gen_alloc.h \
 getln.h open.h readwrite.h token822.h gen_alloc.h control.h \
-auto_qmail.h case.h cdbmss.h cdbmake.h uint32.h substdio.h
+auto_qmail.h cdbmss.h cdbmake.h uint32.h substdio.h
 	./compile newaliases.c
 
 newinclude: \
@@ -1026,8 +996,9 @@ error.a str.a fs.a
 	substdio.a error.a str.a fs.a 
 
 predate.o: \
-compile predate.c datetime.h wait.h fd.h fmt.h strerr.h \
-substdio.h subfd.h readwrite.h exit.h
+compile predate.c
+# datetime.h wait.h fd.h fmt.h strerr.h \
+#substdio.h subfd.h readwrite.h exit.h
 	./compile predate.c
 
 preline: \
@@ -1037,8 +1008,9 @@ error.a str.a
 	substdio.a error.a str.a 
 
 preline.o: \
-compile preline.c fd.h sgetopt.h subgetopt.h readwrite.h strerr.h \
-substdio.h exit.h wait.h env.h sig.h error.h
+compile preline.c
+# fd.h sgetopt.h subgetopt.h readwrite.h strerr.h \
+#substdio.h exit.h wait.h env.h sig.h error.h
 	./compile preline.c
 
 printforward: \
@@ -1085,10 +1057,11 @@ s.lib sha1.o sha256.o sig.a wait.a
 	wait.a `cat shadow.lib` `cat crypt.lib` `cat s.lib`
 
 qmail-authuser.o: \
-compile qmail-authuser.c auto_qmail.h case.h constmap.h control.h \
+compile qmail-authuser.c auto_qmail.h constmap.h control.h \
 error.h exit.h fd.h fmt.h gen_alloc.h getln.h global.h hmac_md5.h md5.h \
 open.h pathexec.h prot.h readwrite.h scan.h stralloc.h str.h substdio.h \
-hasspnam.h hasuserpw.h stralloc.h sha1.h sha256.h sig.h wait.h
+hasspnam.h hasuserpw.h stralloc.h sha1.h sha256.h sig.h
+# wait.h
 	./compile qmail-authuser.c 
 
 qmail-clean: \
@@ -1112,7 +1085,7 @@ auto_usera.o
 
 qmail-getpw.o: \
 compile qmail-getpw.c readwrite.h substdio.h subfd.h  \
-error.h exit.h str.h case.h fmt.h auto_usera.h auto_break.h \
+error.h exit.h str.h fmt.h auto_usera.h auto_break.h \
 qlx.h
 	./compile qmail-getpw.c
 
@@ -1157,10 +1130,11 @@ fs.a auto_qmail.o auto_uids.o auto_spawn.o
 	auto_spawn.o 
 
 qmail-lspawn.o: \
-compile qmail-lspawn.c fd.h wait.h prot.h substdio.h stralloc.h \
-gen_alloc.h scan.h exit.h error.h cdb.h uint32.h case.h \
-slurpclose.h auto_qmail.h auto_uids.h qlx.h
+compile qmail-lspawn.c fd.h prot.h substdio.h stralloc.h \
+gen_alloc.h scan.h exit.h error.h cdb.h uint32.h \
+auto_qmail.h auto_uids.h qlx.h
 	./compile qmail-lspawn.c
+#slurpclose.h  wait.h
 
 qmail-badmimetypes: \
 load qmail-badmimetypes.o cdbmss.o getln.a open.a cdbmake.a seek.a case.a \
@@ -1205,7 +1179,7 @@ stralloc.a alloc.a strerr.a substdio.a error.a str.a auto_qmail.o
 qmail-newmrh.o: \
 compile qmail-newmrh.c strerr.h stralloc.h gen_alloc.h substdio.h \
 getln.h exit.h readwrite.h open.h auto_qmail.h cdbmss.h cdbmake.h \
-uint32.h case.h
+uint32.h
 	./compile qmail-newmrh.c
 
 qmail-recipients: \
@@ -1230,7 +1204,7 @@ stralloc.a str.a
 	substdio.a open.a seek.a str.a substdio.a stralloc.a 
 
 qmail-vmailuser.o: \
-compile qmail-vmailuser.c auto_qmail.h case.h constmap.h control.h \
+compile qmail-vmailuser.c auto_qmail.h constmap.h control.h \
 error.h exit.h fd.h fmt.h gen_alloc.h global.h getln.h \
 open.h readwrite.h scan.h stralloc.h str.h substdio.h stralloc.h 
 	./compile qmail-vmailuser.c
@@ -1250,7 +1224,7 @@ tls_timeoutio.o tls_errors.o tls_remote.o
 
 qmail-smtpam.o: \
 compile qmail-smtpam.c sig.h stralloc.h gen_alloc.h substdio.h \
-subfd.h scan.h case.h error.h auto_qmail.h control.h dns.h \
+subfd.h scan.h error.h auto_qmail.h control.h dns.h \
 alloc.h quote.h ip.h ipalloc.h gen_alloc.h ipme.h \
 gen_alloc.h gen_allocdefs.h str.h now.h datetime.h exit.h constmap.h \
 tcpto.h readwrite.h timeoutconn.h timeoutread.h timeoutwrite.h \
@@ -1265,7 +1239,7 @@ fs.a stralloc.a alloc.a strerr.a substdio.a error.a str.a auto_qmail.o
 	error.a str.a auto_qmail.o
 
 qmail-mfrules.o: \
-compile qmail-mfrules.c auto_qmail.h case.h strerr.h stralloc.h \
+compile qmail-mfrules.c auto_qmail.h strerr.h stralloc.h \
 gen_alloc.h readwrite.h open.h auto_qmail.h cdbmss.h cdbmake.h \
 getln.h substdio.h scan.h fmt.h error.h 
 	./compile qmail-mfrules.c
@@ -1278,7 +1252,7 @@ fs.a stralloc.a alloc.a strerr.a substdio.a error.a str.a case.a
 	error.a str.a case.a
 
 qmail-mrtg.o: \
-compile qmail-mfrules.c strerr.h stralloc.h gen_alloc.h case.h \
+compile qmail-mfrules.c strerr.h stralloc.h gen_alloc.h \
 readwrite.h open.h getln.h scan.h open.h fmt.h now.h datetime.h \
 substdio.h scan.h fmt.h error.h str.h
 	./compile qmail-mrtg.c
@@ -1300,7 +1274,7 @@ stralloc.a alloc.a substdio.a error.a str.a auto_qmail.o
 qmail-newu.o: \
 compile qmail-newu.c stralloc.h gen_alloc.h subfd.h substdio.h \
 getln.h cdbmss.h cdbmake.h uint32.h exit.h \
-readwrite.h open.h error.h case.h auto_qmail.h
+readwrite.h open.h error.h auto_qmail.h
 	./compile qmail-newu.c
 
 qmail-pop3d: \
@@ -1330,9 +1304,9 @@ fs.a socket.lib
 	substdio.a error.a str.a fs.a  `cat socket.lib`
 
 qmail-popup.o: \
-compile qmail-popup.c commands.h fd.h sig.h stralloc.h gen_alloc.h \
-substdio.h wait.h str.h now.h datetime.h fmt.h exit.h \
-readwrite.h timeoutread.h timeoutwrite.h
+compile qmail-popup.c commands.h fd.h sig.h stralloc.h gen_alloc.h
+#substdio.h wait.h str.h now.h datetime.h fmt.h exit.h \
+#readwrite.h timeoutread.h timeoutwrite.h
 	./compile qmail-popup.c
 
 qmail-pw2u: \
@@ -1369,7 +1343,7 @@ env.a substdio.a sig.a error.a wait.a fd.a str.a datetime.a fs.a
 
 qmail-qmqpd.o: \
 compile qmail-qmqpd.c auto_qmail.h qmail.h substdio.h received.h \
-sig.h readwrite.h exit.h now.h datetime.h fmt.h env.h case.h
+sig.h readwrite.h exit.h now.h datetime.h fmt.h env.h
 	./compile qmail-qmqpd.c
 
 qmail-qmtpd: \
@@ -1425,10 +1399,10 @@ str.a fs.a auto_qmail.o auto_split.o auto_uids.o
 
 qmail-queue.o: \
 compile qmail-queue.c readwrite.h sig.h exit.h open.h seek.h fmt.h \
-env.h wait.h \
 alloc.h substdio.h datetime.h now.h datetime.h triggerpull.h extra.h \
 auto_qmail.h auto_uids.h date822fmt.h fmtqfn.h
 	./compile qmail-queue.c
+#env.h wait.h \
 
 qmail-remote: \
 load qmail-remote.o control.o constmap.o timeoutread.o timeoutwrite.o \
@@ -1447,7 +1421,7 @@ substdio.a error.a str.a fs.a auto_qmail.o socket6_if.o dns.lib socket.lib idn2.
 
 qmail-remote.o: \
 compile qmail-remote.c sig.h stralloc.h gen_alloc.h substdio.h \
-subfd.h scan.h case.h error.h auto_qmail.h control.h dns.h \
+subfd.h scan.h error.h auto_qmail.h control.h dns.h \
 alloc.h quote.h ip.h ipalloc.h gen_alloc.h ipme.h \
 gen_alloc.h gen_allocdefs.h str.h now.h datetime.h exit.h constmap.h \
 tcpto.h readwrite.h timeoutconn.h timeoutread.h timeoutwrite.h \
@@ -1464,9 +1438,9 @@ auto_qmail.o auto_uids.o auto_spawn.o
 	auto_spawn.o 
 
 qmail-rspawn.o: \
-compile qmail-rspawn.c fd.h wait.h substdio.h exit.h error.h \
-tcpto.h uint32.h
+compile qmail-rspawn.c tcpto.h uint32.h
 	./compile qmail-rspawn.c
+# fd.h wait.h substdio.h exit.h error.h \
 
 qmail-send: \
 load qmail-send.o qsutil.o control.o constmap.o newfield.o prioq.o \
@@ -1484,7 +1458,7 @@ qmail-send.o: \
 compile qmail-send.c readwrite.h sig.h control.h select.h \
 open.h seek.h exit.h lock.h ndelay.h now.h datetime.h getln.h \
 substdio.h error.h stralloc.h gen_alloc.h str.h fmt.h \
-scan.h case.h auto_qmail.h trigger.h newfield.h quote.h \
+scan.h auto_qmail.h trigger.h newfield.h quote.h \
 qmail.h qsutil.h prioq.h datetime.h gen_alloc.h constmap.h \
 fmtqfn.h readsubdir.h
 	./compile qmail-send.c
@@ -1524,10 +1498,10 @@ qmail-smtpd.o: \
 compile qmail-smtpd.c sig.h readwrite.h stralloc.h gen_alloc.h \
 substdio.h auto_qmail.h control.h received.h constmap.h \
 error.h ipme.h ip.h ipalloc.h gen_alloc.h qmail.h spf.h \
-str.h fmt.h scan.h case.h env.h now.h datetime.h \
-exit.h rcpthosts.h timeoutread.h timeoutwrite.h commands.h wait.h \
+str.h fmt.h scan.h env.h now.h datetime.h \
 fd.h base64.h recipients.h mfrules.h smtpdlog.h
 	./compile qmail-smtpd.c
+#exit.h rcpthosts.h timeoutread.h timeoutwrite.h commands.h wait.h \
 
 qmail-start: \
 load qmail-start.o prot.o fd.a auto_uids.o
@@ -1583,9 +1557,9 @@ qmail-upq: warn-auto.sh qmail-upq.sh
 	chmod 755 qmail-upq
 
 qmail.o: \
-compile qmail.c substdio.h readwrite.h wait.h exit.h fd.h \
-qmail.h auto_qmail.h
+compile qmail.c qmail.h auto_qmail.h
 	./compile qmail.c
+# substdio.h readwrite.h wait.h exit.h fd.h \
 
 qreceipt: \
 load qreceipt.o headerbody.o hfield.o quote.o token822.o qmail.o \
@@ -1618,7 +1592,7 @@ constmap.h stralloc.h gen_alloc.h rcpthosts.h
 
 recipients.o: \
 compile recipients.c cdb.h uint32.h open.h error.h control.h str.h \
-case.h constmap.h stralloc.h gen_alloc.h recipients.h substdio.h auto_break.h
+constmap.h stralloc.h gen_alloc.h recipients.h substdio.h auto_break.h
 	./compile recipients.c
 
 recipients: \
@@ -1750,7 +1724,7 @@ alloc.a error.a str.a seek.a open.a case.a
 
 setforward.o: \
 compile setforward.c substdio.h subfd.h substdio.h strerr.h \
-stralloc.h gen_alloc.h open.h case.h readwrite.h cdbmss.h cdbmake.h \
+stralloc.h gen_alloc.h open.h readwrite.h cdbmss.h cdbmake.h \
 uint32.h substdio.h
 	./compile setforward.c
 
@@ -1778,52 +1752,53 @@ sha256.o : \
 compile sha256.c sha256.h
 	./compile sha256.c
 
-sig.a: \
-makelib sig_alarm.o sig_block.o sig_catch.o sig_pause.o sig_pipe.o \
-sig_child.o sig_hup.o sig_term.o sig_bug.o sig_misc.o
-	./makelib sig.a sig_alarm.o sig_block.o sig_catch.o \
-	sig_pause.o sig_pipe.o sig_child.o sig_hup.o sig_term.o \
-	sig_bug.o sig_misc.o
+sig.a:
+	cp qlibs/sig.a sig.a
+#makelib sig_alarm.o sig_block.o sig_catch.o sig_pause.o sig_pipe.o \
+#sig_child.o sig_hup.o sig_term.o sig_bug.o sig_misc.o
+#	./makelib sig.a sig_alarm.o sig_block.o sig_catch.o \
+#	sig_pause.o sig_pipe.o sig_child.o sig_hup.o sig_term.o \
+#	sig_bug.o sig_misc.o
 
-sig_alarm.o: \
-compile sig_alarm.c sig.h
-	./compile sig_alarm.c
+#sig_alarm.o: \
+#compile sig_alarm.c sig.h
+#	./compile sig_alarm.c
 
-sig_block.o: \
-compile sig_block.c sig.h hassgprm.h
-	./compile sig_block.c
+#sig_block.o: \
+#compile sig_block.c sig.h hassgprm.h
+#	./compile sig_block.c
 
-sig_bug.o: \
-compile sig_bug.c sig.h
-	./compile sig_bug.c
+#sig_bug.o: \
+#compile sig_bug.c sig.h
+#	./compile sig_bug.c
 
-sig_catch.o: \
-compile sig_catch.c sig.h hassgact.h
-	./compile sig_catch.c
+#sig_catch.o: \
+#compile sig_catch.c sig.h hassgact.h
+#	./compile sig_catch.c
 
-sig_child.o: \
-compile sig_child.c sig.h
-	./compile sig_child.c
+#sig_child.o: \
+#compile sig_child.c sig.h
+#	./compile sig_child.c
 
-sig_hup.o: \
-compile sig_hup.c sig.h
-	./compile sig_hup.c
+#sig_hup.o: \
+#compile sig_hup.c sig.h
+#	./compile sig_hup.c
 
-sig_misc.o: \
-compile sig_misc.c sig.h
-	./compile sig_misc.c
+#sig_misc.o: \
+#compile sig_misc.c sig.h
+#	./compile sig_misc.c
 
-sig_pause.o: \
-compile sig_pause.c sig.h hassgprm.h
-	./compile sig_pause.c
+#sig_pause.o: \
+#compile sig_pause.c sig.h hassgprm.h
+#	./compile sig_pause.c
 
-sig_pipe.o: \
-compile sig_pipe.c sig.h
-	./compile sig_pipe.c
+#sig_pipe.o: \
+#compile sig_pipe.c sig.h
+#	./compile sig_pipe.c
 
-sig_term.o: \
-compile sig_term.c sig.h
-	./compile sig_term.c
+#sig_term.o: \
+#compile sig_term.c sig.h
+#	./compile sig_term.c
 
 slurpclose.o:
 	ln -sf qlibs/readclose.o slurpclose.o
@@ -1843,19 +1818,20 @@ compile socket6_if.c socket6_if.h uint32.h
 	./compile socket6_if.c
 
 spawn.o: \
-compile chkspawn spawn.c sig.h wait.h substdio.h str.h \
+compile chkspawn spawn.c \
 stralloc.h gen_alloc.h select.h exit.h coe.h open.h error.h \
 auto_qmail.h auto_uids.h auto_spawn.h
 	./chkspawn
 	./compile spawn.c
+# sig.h wait.h substdio.h str.h \
 
-spfdinsip.o: \
+spfdinsip.o:
 #compile spfdnsip.c spf.h
 	./compile spfdnsip.c
 
 spf.o: \
 compile spf.c stralloc.h gen_alloc.h ipme.h ip.h ipalloc.h \
-stralloc.h strsalloc.h str.h fmt.h scan.h now.h case.h
+stralloc.h strsalloc.h str.h fmt.h scan.h now.h
 	./compile spf.c
 
 spfquery: \
@@ -2096,7 +2072,7 @@ compile tls_errors.c tls_errors.h stralloc.h
 	./compile tls_errors.c
 
 tls_remote.o: \
-compile tls_remote.c tls_remote.h select.h error.h ndelay.h str.h case.h
+compile tls_remote.c tls_remote.h select.h error.h ndelay.h str.h
 	./compile tls_remote.c
 
 tls_start.o: \
@@ -2131,20 +2107,21 @@ tryulong32.c compile load uint32.h1 uint32.h2
 	&& cat uint32.h2 || cat uint32.h1 ) > uint32.h
 	rm -f tryulong32.o tryulong32
 
-wait.a: \
-makelib wait_pid.o wait_nohang.o
-	./makelib wait.a wait_pid.o wait_nohang.o
+wait.a:
+#makelib wait_pid.o wait_nohang.o
+#	./makelib wait.a wait_pid.o wait_nohang.o
+	ln -sf qlibs/wait.a wait.a
 
-wait_nohang.o: \
-compile wait_nohang.c haswaitp.h
-	./compile wait_nohang.c
+#wait_nohang.o: \
+#compile wait_nohang.c haswaitp.h
+#	./compile wait_nohang.c
 
-wait_pid.o: \
-compile wait_pid.c error.h haswaitp.h
-	./compile wait_pid.c
+#wait_pid.o: \
+#compile wait_pid.c error.h haswaitp.h
+#	./compile wait_pid.c
 
-wildmat.o: \
-compile wildmat.c
+wildmat.o:
+#compile wildmat.c
 	./compile wildmat.c
 
 xqp: \
