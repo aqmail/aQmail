@@ -1,7 +1,7 @@
 #ifndef STRSALLOC_H
 #define STRSALLOC_H
 
-#include "stralloc.h"
+#include "qlibs/include/stralloc.h"
 #include "gen_alloc.h"
 
 GEN_ALLOC_typedef(strsalloc,stralloc,sa,len,a)
