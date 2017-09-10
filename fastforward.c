@@ -16,7 +16,7 @@
 #include "fmt.h"
 #include "case.h"
 #include "alloc.h"
-#include "coe.h"
+//#include "coe.h"
 #include "seek.h"
 #include "wait.h"
 //#include "fork.h"
@@ -310,7 +310,8 @@ int main(int argc,char **argv)
   if (!fncdb) usage();
   fdcdb = open_read(fncdb);
   if (fdcdb == -1) cdbreaderror();
-  coe(fdcdb);
+//  coe(fdcdb);
+  fd_coe(fdcdb);
 
   if (flagdefault) {
     x = env_get("DEFAULT");

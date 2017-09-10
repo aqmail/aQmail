@@ -23,7 +23,7 @@ libs:
 	cp ucspissl/ucspissl.a ucspissl.a
 	cp ucspissl/ssl.lib ssl.lib
 
-alloc.h:
+#alloc.h:
 
 alloc.a:
 	ln -s qlibs/alloc.a alloc.a
@@ -252,15 +252,15 @@ compile chkspawn.c substdio.h subfd.h fmt.h select.h \
 exit.h auto_spawn.h
 	./compile chkspawn.c
 
-coe.o: \
-compile coe.c coe.h
-	./compile coe.c
+#coe.o: \
+#compile coe.c coe.h
+#	./compile coe.c
 
-columnt: \
-strerr.a substdio.a stralloc.a alloc.a error.a slurpclose.o
+columnt:
+#strerr.a substdio.a stralloc.a alloc.a error.a slurpclose.o
 	$(COMPILE) columnt.c
-	./load columnt slurpclose.o strerr.a substdio.a qlibs/stralloc.a \
-	alloc.a error.a qlibs/str.a qlibs/buffer.a qlibs/open.o
+	./load columnt qlibs/slurpclose.o qlibs/strerr.a qlibs/substdio.a qlibs/stralloc.a \
+	qlibs/alloc.a qlibs/error.a qlibs/str.a qlibs/buffer.a qlibs/open.o
 
 commands.o:
 	./compile commands.c
@@ -494,26 +494,30 @@ warn-auto.sh failures.sh
 	chmod 755 failures
 
 fastforward: \
-load coe.o strset.o qmail.o auto_qmail.o \
+load strset.o qmail.o auto_qmail.o \
 getopt.a cdb.a env.a strerr.a substdio.a stralloc.a alloc.a error.a \
 case.a str.a fs.a sig.a wait.a seek.a open.a fd.a
 	$(COMPILE) fastforward.c
-	./load fastforward slurpclose.o coe.o strset.o qmail.o \
+	./load fastforward slurpclose.o strset.o qmail.o \
 	auto_qmail.o getopt.a cdb.a env.a strerr.a substdio.a \
 	stralloc.a alloc.a error.a case.a str.a fs.a sig.a wait.a \
 	seek.a open.a fd.a
+#load coe.o strset.o qmail.o auto_qmail.o \
 
-fd.a: \
-makelib fd_copy.o fd_move.o
-	./makelib fd.a fd_copy.o fd_move.o
+fd.a:
+	cp qlibs/fd.a fd.a
+#makelib fd_copy.o fd_move.o
+#	./makelib fd.a fd_copy.o fd_move.o
 
-fd_copy.o: \
-compile fd_copy.c fd.h
-	./compile fd_copy.c
+#fd_copy.o: \
+#compile fd_copy.c
+# fd.h
+#	./compile fd_copy.c
 
-fd_move.o: \
-compile fd_move.c fd.h
-	./compile fd_move.c
+#fd_move.o: \
+#compile fd_move.c
+# fd.h
+#	./compile fd_move.c
 
 fifo.o: \
 compile fifo.c hasmkffo.h fifo.h
@@ -872,7 +876,7 @@ matchup: \
 load matchup.o strerr.a getln.a substdio.a stralloc.a alloc.a error.a \
 str.a fs.a case.a
 	./load matchup strerr.a getln.a substdio.a stralloc.a \
-	alloc.a error.a str.a fs.a case.a 
+	alloc.a qlibs/error.a str.a fs.a case.a   qlibs/buffer.a qlibs/errmsg.a error.a
 
 matchup.o: \
 #compile matchup.c gen_alloc.h gen_alloc.h gen_allocdefs.h
@@ -1096,23 +1100,25 @@ fs.a datetime.a auto_qmail.o auto_patrn.o socket.lib
 	slurpclose.o case.a getln.a getopt.a sig.a open.a seek.a \
 	lock.a fd.a wait.a env.a stralloc.a alloc.a strerr.a \
 	substdio.a error.a str.a fs.a datetime.a auto_qmail.o \
-	auto_patrn.o `cat socket.lib`
+	auto_patrn.o `cat socket.lib` qlibs/buffer.a qlibs/errmsg.a
+#	substdio.a qlibs/error.a str.a fs.a datetime.a auto_qmail.o \
 
 qmail-lspawn: \
-load qmail-lspawn.o spawn.o prot.o slurpclose.o coe.o sig.a wait.a \
+load qmail-lspawn.o spawn.o prot.o slurpclose.o sig.a wait.a \
 case.a cdb.a fd.a open.a stralloc.a alloc.a substdio.a error.a str.a \
 fs.a auto_qmail.o auto_uids.o auto_spawn.o
-	./load qmail-lspawn spawn.o prot.o slurpclose.o coe.o \
+	./load qmail-lspawn spawn.o prot.o slurpclose.o \
 	sig.a wait.a case.a cdb.a fd.a open.a stralloc.a alloc.a \
 	substdio.a error.a str.a fs.a auto_qmail.o auto_uids.o \
-	auto_spawn.o 
+	auto_spawn.o
+#load qmail-lspawn.o spawn.o prot.o slurpclose.o sig.a wait.a \
 
 qmail-lspawn.o: \
-compile qmail-lspawn.c fd.h prot.h substdio.h \
+compile qmail-lspawn.c prot.h substdio.h \
 gen_alloc.h scan.h exit.h error.h cdb.h uint32.h \
 auto_qmail.h auto_uids.h qlx.h
 	./compile qmail-lspawn.c
-#slurpclose.h  wait.h
+#fd.h slurpclose.h  wait.h
 
 qmail-badmimetypes: \
 cdbmss.o getln.a open.a cdbmake.a seek.a case.a \
@@ -1190,9 +1196,10 @@ stralloc.a str.a
 
 qmail-vmailuser.o: \
 compile qmail-vmailuser.c auto_qmail.h constmap.h control.h \
-error.h exit.h fd.h fmt.h gen_alloc.h global.h getln.h \
+error.h exit.h fmt.h gen_alloc.h global.h getln.h \
 open.h readwrite.h scan.h substdio.h
 	./compile qmail-vmailuser.c
+#error.h exit.h fd.h fmt.h gen_alloc.h global.h getln.h \
 
 qmail-smtpam: \
 load qmail-smtpam.o control.o constmap.o strsalloc.o timeoutread.o timeoutwrite.o \
@@ -1209,12 +1216,14 @@ tls_timeoutio.o tls_errors.o tls_remote.o
 
 qmail-smtpam.o: \
 compile qmail-smtpam.c gen_alloc.h substdio.h \
-subfd.h scan.h error.h auto_qmail.h control.h dns.h \
-alloc.h quote.h ip.h ipalloc.h gen_alloc.h ipme.h \
+subfd.h scan.h auto_qmail.h control.h dns.h \
+quote.h ip.h ipalloc.h gen_alloc.h ipme.h \
 gen_alloc.h gen_allocdefs.h now.h datetime.h exit.h constmap.h \
 tcpto.h readwrite.h timeoutconn.h timeoutread.h timeoutwrite.h \
 tls_start.h tls_remote.h tls_errors.h
 	./compile qmail-smtpam.c
+#subfd.h scan.h error.h auto_qmail.h control.h dns.h \
+#alloc.h quote.h ip.h ipalloc.h gen_alloc.h ipme.h \
 
 qmail-mfrules: \
 load qmail-mfrules.o case.a cdbmss.o getln.a open.a cdbmake.a seek.a  \
@@ -1289,7 +1298,8 @@ fs.a socket.lib
 	substdio.a error.a str.a fs.a  `cat socket.lib`
 
 qmail-popup.o: \
-compile qmail-popup.c commands.h fd.h gen_alloc.h
+compile qmail-popup.c commands.h
+# fd.h gen_alloc.h
 #substdio.h wait.h now.h datetime.h fmt.h exit.h \
 #readwrite.h timeoutread.h timeoutwrite.h
 	./compile qmail-popup.c
@@ -1384,10 +1394,10 @@ str.a fs.a auto_qmail.o auto_split.o auto_uids.o
 
 qmail-queue.o: \
 compile qmail-queue.c readwrite.h exit.h open.h seek.h fmt.h \
-alloc.h substdio.h datetime.h now.h datetime.h triggerpull.h extra.h \
+substdio.h datetime.h now.h datetime.h triggerpull.h extra.h \
 auto_qmail.h auto_uids.h date822fmt.h fmtqfn.h
 	./compile qmail-queue.c
-#env.h wait.h \
+#alloc.h env.h wait.h \
 
 qmail-remote: \
 load qmail-remote.o control.o constmap.o timeoutread.o timeoutwrite.o \
@@ -1407,20 +1417,23 @@ substdio.a error.a str.a fs.a auto_qmail.o socket6_if.o dns.lib socket.lib idn2.
 qmail-remote.o: \
 compile qmail-remote.c gen_alloc.h substdio.h \
 subfd.h scan.h error.h auto_qmail.h control.h dns.h \
-alloc.h quote.h ip.h ipalloc.h gen_alloc.h ipme.h \
+quote.h ip.h ipalloc.h gen_alloc.h ipme.h \
 gen_alloc.h gen_allocdefs.h now.h datetime.h exit.h constmap.h \
 tcpto.h readwrite.h timeoutconn.h timeoutread.h timeoutwrite.h \
 tls_start.h tls_remote.h tls_errors.h
 	./compile qmail-remote.c
+#alloc.h quote.h ip.h ipalloc.h gen_alloc.h ipme.h \
 
 qmail-rspawn: \
-load qmail-rspawn.o spawn.o tcpto_clean.o now.o coe.o sig.a open.a \
-seek.a lock.a wait.a fd.a stralloc.a alloc.a substdio.a error.a str.a \
+load qmail-rspawn.o spawn.o tcpto_clean.o now.o sig.a open.a \
+seek.a lock.a wait.a stralloc.a alloc.a substdio.a error.a str.a \
 auto_qmail.o auto_uids.o auto_spawn.o
-	./load qmail-rspawn spawn.o tcpto_clean.o now.o coe.o \
+	./load qmail-rspawn spawn.o tcpto_clean.o now.o \
 	sig.a open.a seek.a lock.a wait.a fd.a stralloc.a alloc.a \
 	substdio.a error.a str.a auto_qmail.o auto_uids.o \
-	auto_spawn.o 
+	auto_spawn.o
+#load qmail-rspawn.o spawn.o tcpto_clean.o now.o sig.a open.a \
+#seek.a lock.a wait.a fd.a stralloc.a alloc.a substdio.a error.a str.a \
 
 qmail-rspawn.o: \
 compile qmail-rspawn.c tcpto.h uint32.h
@@ -1484,16 +1497,17 @@ compile qmail-smtpd.c readwrite.h gen_alloc.h \
 substdio.h auto_qmail.h control.h received.h constmap.h \
 error.h ipme.h ip.h ipalloc.h gen_alloc.h qmail.h spf.h \
 fmt.h scan.h env.h now.h datetime.h \
-fd.h base64.h recipients.h mfrules.h smtpdlog.h
+base64.h recipients.h mfrules.h smtpdlog.h
 	./compile qmail-smtpd.c
 #exit.h rcpthosts.h timeoutread.h timeoutwrite.h commands.h wait.h \
+#fd.h base64.h recipients.h mfrules.h smtpdlog.h
 
 qmail-start: \
 load qmail-start.o prot.o fd.a auto_uids.o
 	./load qmail-start prot.o fd.a auto_uids.o 
 
 qmail-start.o: \
-compile qmail-start.c fd.h prot.h exit.h auto_uids.h
+compile qmail-start.c prot.h exit.h auto_uids.h
 	./compile qmail-start.c
 
 qmail-tcpok: \
@@ -1700,7 +1714,7 @@ auto_qmail.o
 
 sendmail.o: \
 compile sendmail.c sgetopt.h subgetopt.h substdio.h subfd.h \
-alloc.h auto_qmail.h exit.h env.h
+auto_qmail.h exit.h env.h
 	./compile sendmail.c
 
 setforward: \
@@ -1804,12 +1818,20 @@ socket6_if.o: \
 compile socket6_if.c socket6_if.h uint32.h
 	./compile socket6_if.c
 
-spawn.o: \
-compile chkspawn spawn.c \
-gen_alloc.h select.h exit.h coe.h open.h error.h \
-auto_qmail.h auto_uids.h auto_spawn.h
+#spawn.o: \
+#compile chkspawn spawn.c \
+#gen_alloc.h select.h exit.h error.h \
+#auto_qmail.h auto_uids.h auto_spawn.h
+#	./chkspawn
+#	./compile spawn.c
+##gen_alloc.h select.h exit.h coe.h open.h error.h \
+
+spawn.o: compile chkspawn spawn.c
+#gen_alloc.h select.h exit.h error.h \
+#auto_qmail.h auto_uids.h auto_spawn.h
 	./chkspawn
 	./compile spawn.c
+#gen_alloc.h select.h exit.h coe.h open.h error.h \
 
 spfdinsip.o:
 #compile spfdnsip.c spf.h
