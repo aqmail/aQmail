@@ -123,13 +123,13 @@ compile cdb_make.c readwrite.h seek.h error.h cdb.h uint32.h \
 cdb_make.h buffer.h uint32.h
 	./compile cdb_make.c
 
-chkshsgr: \
-load chkshsgr.o
-	./load chkshsgr 
+#chkshsgr: \
+#load chkshsgr.o
+#	./load chkshsgr 
 
-chkshsgr.o: \
-compile chkshsgr.c exit.h
-	./compile chkshsgr.c
+#chkshsgr.o: \
+#compile chkshsgr.c exit.h
+#	./compile chkshsgr.c
 
 columnt:
 #strerr.a substdio.a stralloc.a alloc.a error.a slurpclose.o
@@ -442,12 +442,12 @@ gfrom.o: \
 compile gfrom.c gfrom.h
 	./compile gfrom.c
 
-hasflock.h: \
-tryflock.c compile load
-	( ( ./compile tryflock.c && ./load tryflock ) >/dev/null \
-	2>&1 \
-	&& echo \#define HASFLOCK 1 || exit 0 ) > hasflock.h
-	rm -f tryflock.o tryflock
+#hasflock.h: \
+#tryflock.c compile load
+#	( ( ./compile tryflock.c && ./load tryflock ) >/dev/null \
+#	2>&1 \
+#	&& echo \#define HASFLOCK 1 || exit 0 ) > hasflock.h
+#	rm -f tryflock.o tryflock
 
 hasmkffo.h: \
 trymkffo.c compile load
@@ -498,14 +498,14 @@ trysgprm.c compile load
 	&& echo \#define HASSIGPROCMASK 1 || exit 0 ) > hassgprm.h
 	rm -f trysgprm.o trysgprm
 
-hasshsgr.h: \
-chkshsgr warn-shsgr tryshsgr.c compile load
-	./chkshsgr || ( cat warn-shsgr; exit 1 )
-	( ( ./compile tryshsgr.c \
-	&& ./load tryshsgr && ./tryshsgr ) >/dev/null 2>&1 \
-	&& echo \#define HASSHORTSETGROUPS 1 || exit 0 ) > \
-	hasshsgr.h
-	rm -f tryshsgr.o tryshsgr
+#hasshsgr.h: \
+#chkshsgr warn-shsgr tryshsgr.c compile load
+#	./chkshsgr || ( cat warn-shsgr; exit 1 )
+#	( ( ./compile tryshsgr.c \
+#	&& ./load tryshsgr && ./tryshsgr ) >/dev/null 2>&1 \
+#	&& echo \#define HASSHORTSETGROUPS 1 || exit 0 ) > \
+#	hasshsgr.h
+#	rm -f tryshsgr.o tryshsgr
 
 haswaitp.h: \
 trywaitp.c compile load
@@ -655,17 +655,17 @@ lock.a:
 #	./makelib lock.a lock_ex.o lock_exnb.o lock_un.o
 	cp qlibs/lock.a lock.a
 
-lock_ex.o: \
-compile lock_ex.c hasflock.h lock.h
-	./compile lock_ex.c
+#lock_ex.o: \
+#compile lock_ex.c hasflock.h lock.h
+#	./compile lock_ex.c
 
-lock_exnb.o: \
-compile lock_exnb.c hasflock.h lock.h
-	./compile lock_exnb.c
+#lock_exnb.o: \
+#compile lock_exnb.c hasflock.h lock.h
+#	./compile lock_exnb.c
 
-lock_un.o: \
-compile lock_un.c hasflock.h lock.h
-	./compile lock_un.c
+#lock_un.o: \
+#compile lock_un.c hasflock.h lock.h
+#	./compile lock_un.c
 
 maildir.o: \
 compile maildir.c prioq.h datetime.h gen_alloc.h env.h \
@@ -880,9 +880,11 @@ compile prioq.c gen_allocdefs.h prioq.h datetime.h \
 gen_alloc.h
 	./compile prioq.c
 
-prot.o: \
-compile prot.c hasshsgr.h prot.h
-	./compile prot.c
+prot.o:
+#compile prot.c
+# hasshsgr.h prot.h
+#	$(COMPILE) prot.c
+	cp qlibs/prot.o prot.o
 
 qmail-authuser: \
 auto_qmail.o alloc.a case.a control.o constmap.o \
@@ -1124,7 +1126,7 @@ load qmail-newu.o cdbmss.o getln.a open.a seek.a cdbmake.a case.a \
 stralloc.a alloc.a substdio.a error.a str.a auto_qmail.o
 	./load qmail-newu cdbmss.o getln.a open.a seek.a cdbmake.a \
 	case.a stralloc.a alloc.a substdio.a error.a str.a \
-	auto_qmail.o 
+	auto_qmail.o
 
 qmail-newu.o: \
 compile qmail-newu.c
@@ -1380,7 +1382,8 @@ load qmail-start.o prot.o fd.a auto_uids.o
 	./load qmail-start prot.o fd.a auto_uids.o 
 
 qmail-start.o: \
-compile qmail-start.c prot.h exit.h auto_uids.h
+compile qmail-start.c
+# prot.h exit.h auto_uids.h
 	./compile qmail-start.c
 
 qmail-tcpok: \
@@ -1809,8 +1812,9 @@ compile tai64nfrac.c
 	./compile tai64nfrac.c
 
 tcpto.o: \
-compile tcpto.c tcpto.h open.h lock.h seek.h now.h datetime.h ip.h \
-datetime.h readwrite.h
+compile tcpto.c
+# tcpto.h open.h lock.h seek.h now.h datetime.h ip.h \
+#datetime.h readwrite.h
 	./compile tcpto.c
 
 tcpto_clean.o: \

@@ -68,16 +68,11 @@ tcprules
 
 # begin s/qmail
 
-auto-gid
-auto-int
-auto-int8
-auto-str
-auto-uid
+#auto-gid
+#auto-uid
 check
 config
 config-fast
-chkshsgr
-chkspawn
 columnt
 crypt.lib
 ddist
@@ -91,7 +86,6 @@ dnstxt
 except
 failures
 fastforward
-find-systype
 hostname
 idedit
 install
@@ -133,7 +127,7 @@ suids
 systype
 tai64nfrac
 tryidn2
-tryshsgr
+#tryshsgr
 ucspissl.h
 uint32.h
 xqp
