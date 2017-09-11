@@ -9,7 +9,6 @@
 #include "error.h"
 #include "cdb.h"
 #include "case.h"
-//#include "slurpclose.h"
 #include "readclose.h"
 #include "auto_qmail.h"
 #include "auto_uids.h"

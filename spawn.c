@@ -11,9 +11,7 @@
 #include "stralloc.h"
 #include "select.h"
 #include "exit.h"
-//#include "coe.h"
 #include "fd.h"
-//#include "qlibs/include/fd.h"    // Kai
 #include "open.h"
 #include "error.h"
 #include "auto_qmail.h"

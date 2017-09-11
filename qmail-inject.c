@@ -11,8 +11,6 @@
 #include "token822.h"
 #include "control.h"
 #include "env.h"
-#include "gen_alloc.h"
-#include "gen_allocdefs.h"
 #include "error.h"
 #include "qmail.h"
 #include "now.h"

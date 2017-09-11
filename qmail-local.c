@@ -25,7 +25,6 @@
 #include "case.h"
 #include "quote.h"
 #include "qmail.h"
-//#include "slurpclose.h"
 #include "readclose.h"
 #include "myctime.h"
 #include "gfrom.h"

@@ -1,5 +1,4 @@
 #include "fd.h"
-//#include "qlibs/include/fd.h"
 #include "wait.h"
 #include "substdio.h"
 #include "exit.h"

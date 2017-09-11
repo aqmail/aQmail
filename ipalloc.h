@@ -12,7 +12,7 @@ struct ip_mx {
   int pref;
 };
 
-#include "gen_alloc.h"
+#include "stralloc.h"
 
 GEN_ALLOC_typedef(ipalloc,struct ip_mx,ix,len,a)
 int ipalloc_readyplus();

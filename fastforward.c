@@ -1,6 +1,5 @@
 #include <sys/types.h>
 #include <sys/stat.h>
-//#include "slurpclose.h"
 #include "readclose.h"
 #include "stralloc.h"
 #include "substdio.h"
@@ -16,7 +15,6 @@
 #include "fmt.h"
 #include "case.h"
 #include "alloc.h"
-//#include "coe.h"
 #include "seek.h"
 #include "wait.h"
 //#include "fork.h"

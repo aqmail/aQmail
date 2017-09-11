@@ -1,6 +1,4 @@
 #include "stralloc.h"
-#include "gen_alloc.h"
-#include "gen_allocdefs.h"
 #include "strerr.h"
 #include "getln.h"
 #include "substdio.h"

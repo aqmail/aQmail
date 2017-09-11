@@ -23,8 +23,6 @@
 #include "ip.h"
 #include "ipalloc.h"
 #include "ipme.h"
-#include "gen_alloc.h"
-#include "gen_allocdefs.h"
 #include "str.h"
 #include "now.h"
 #include "exit.h"
