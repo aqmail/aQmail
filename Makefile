@@ -318,32 +318,35 @@ stralloc.a alloc.a substdio.a error.a str.a fs.a dns.lib socket.lib
 dnstxt.o:
 	$(COMPILE) dnstxt.c
 
-env.a: \
-makelib env.o envread.o
-	./makelib env.a env.o envread.o
+env.a:
+	cp qlibs/env.a env.a
+#makelib env.o envread.o
+#	./makelib env.a env.o envread.o
 
-env.o: \
-compile env.c env.h
-	./compile env.c
+#env.o: \
+#compile env.c env.h
+#	./compile env.c
 
-envread.o: \
-compile envread.c env.h 
-	./compile envread.c
+#envread.o: \
+#compile envread.c env.h 
+#	./compile envread.c
 
-error.a: \
-makelib error.o error_str.o error_temp.o
+error.a: makelib error.o error_str.o error_temp.o
 	./makelib error.a error.o error_str.o error_temp.o
 
 error.o: \
-compile error.c error.h
+compile error.c
+# error.h
 	./compile error.c
 
 error_str.o: \
-compile error_str.c error.h
+compile error_str.c
+# error.h
 	./compile error_str.c
 
 error_temp.o: \
-compile error_temp.c error.h
+compile error_temp.c
+# error.h
 	./compile error_temp.c
 
 except: \
@@ -550,7 +553,7 @@ install: \
 load install.o fifo.o hier.o auto_qmail.o auto_split.o auto_uids.o \
 strerr.a substdio.a open.a error.a str.a fs.a
 	./load install fifo.o hier.o auto_qmail.o auto_split.o \
-	auto_uids.o strerr.a substdio.a open.a error.a str.a fs.a 
+	auto_uids.o strerr.a substdio.a open.a error.a str.a fs.a qlibs/buffer.a
 
 install.o: \
 compile install.c
@@ -564,7 +567,8 @@ strerr.a substdio.a error.a str.a fs.a
 	auto_uids.o strerr.a substdio.a error.a str.a fs.a 
 
 instcheck.o: \
-compile instcheck.c strerr.h error.h readwrite.h exit.h
+compile instcheck.c
+# strerr.h error.h readwrite.h exit.h
 	./compile instcheck.c
 
 ip.o:
@@ -668,9 +672,10 @@ lock.a:
 #	./compile lock_un.c
 
 maildir.o: \
-compile maildir.c prioq.h datetime.h gen_alloc.h env.h \
-datetime.h now.h datetime.h maildir.h \
-strerr.h
+compile maildir.c
+# prioq.h datetime.h gen_alloc.h env.h \
+#datetime.h now.h datetime.h maildir.h \
+#strerr.h
 	./compile maildir.c
 
 maildir2mbox: \
@@ -694,7 +699,8 @@ load maildirmake.o strerr.a substdio.a error.a str.a
 	./load maildirmake strerr.a substdio.a error.a str.a 
 
 maildirmake.o: \
-compile maildirmake.c strerr.h exit.h
+compile maildirmake.c
+# strerr.h exit.h
 	./compile maildirmake.c
 
 maildirwatch: \
@@ -833,7 +839,8 @@ pathexec_env.o:
 	./compile pathexec_env.c
 
 pathexec_run.o: \
-compile pathexec_run.c error.h gen_alloc.h env.h pathexec.h
+compile pathexec_run.c
+# error.h gen_alloc.h env.h pathexec.h
 	./compile pathexec_run.c
 
 predate: \
@@ -955,7 +962,7 @@ fs.a datetime.a auto_qmail.o auto_patrn.o socket.lib
 	$(COMPILE) -Iqlibs/include qmail-local.c
 	./load qmail-local qmail.o quote.o now.o gfrom.o myctime.o \
 	slurpclose.o case.a getln.a getopt.a sig.a open.a seek.a \
-	lock.a fd.a wait.a env.a stralloc.a alloc.a strerr.a \
+	lock.a fd.a wait.a env.a stralloc.a alloc.a qlibs/strerr.a \
 	substdio.a error.a str.a fs.a datetime.a auto_qmail.o \
 	auto_patrn.o `cat socket.lib` qlibs/buffer.a qlibs/errmsg.a
 #	substdio.a qlibs/error.a str.a fs.a datetime.a auto_qmail.o \
@@ -1147,20 +1154,21 @@ stralloc.a alloc.a substdio.a error.a str.a fs.a socket.lib
 qmail-pop3d.o: \
 compile qmail-pop3d.c commands.h getln.h gen_alloc.h \
 open.h prioq.h datetime.h gen_alloc.h \
-exit.h maildir.h strerr.h readwrite.h timeoutread.h \
+maildir.h strerr.h readwrite.h timeoutread.h \
 timeoutwrite.h
 	./compile qmail-pop3d.c
 # fmt.h scan.h substdio.h 
 
 qmail-popup: \
 load qmail-popup.o commands.o timeoutread.o timeoutwrite.o now.o \
-envread.o tls_start.o env.a \
+tls_start.o env.a \
 case.a fd.a sig.a wait.a stralloc.a alloc.a substdio.a error.a str.a \
 fs.a socket.lib
 	./load qmail-popup commands.o timeoutread.o timeoutwrite.o \
-	envread.o tls_start.o env.a \
+	tls_start.o env.a \
 	now.o case.a fd.a sig.a wait.a stralloc.a alloc.a \
 	substdio.a error.a str.a fs.a  `cat socket.lib`
+#envread.o tls_start.o env.a \
 
 qmail-popup.o: \
 compile qmail-popup.c commands.h
@@ -1724,7 +1732,8 @@ compile strerr_die.c
 	./compile strerr_die.c
 
 strerr_sys.o: \
-compile strerr_sys.c error.h strerr.h
+compile strerr_sys.c
+# error.h strerr.h
 	./compile strerr_sys.c
 
 strsalloc.o: \

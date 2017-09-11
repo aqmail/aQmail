@@ -152,7 +152,7 @@ void dohelo(char *arg)
     if (flagbadhelo == -3) flagbadhelo = 0;
   }
   if (!env_unset("HELOHOST")) die_read();
-  if (!env_put2("HELOHOST",helohost.s)) die_nomem();
+  if (!env_put("HELOHOST",helohost.s)) die_nomem();
 }
 
 int liphostok = 0;
@@ -396,13 +396,13 @@ void setup()
 void auth_info(char *method)
 {
  if (!env_unset("AUTHPROTOCOL")) die_read();
- if (!env_put2("AUTHPROTOCOL",method)) die_nomem();
+ if (!env_put("AUTHPROTOCOL",method)) die_nomem();
 
  if (!env_unset("AUTHUSER")) die_read();
- if (!env_put2("AUTHUSER",remoteinfo)) die_nomem();
+ if (!env_put("AUTHUSER",remoteinfo)) die_nomem();
 
  if (!env_unset("TCPREMOTEINFO")) die_read();
- if (!env_put2("TCPREMOTEINFO",remoteinfo)) die_nomem();
+ if (!env_put("TCPREMOTEINFO",remoteinfo)) die_nomem();
 
  if (!stralloc_append(&protocol,"A")) die_nomem();
 }
@@ -787,34 +787,34 @@ int spf_check(int flag)
   switch (r) {
     case SPF_ME:
     case SPF_OK:   
-      env_put2("SPFRESULT","pass"); 
+      env_put("SPFRESULT","pass"); 
       flagspf = 10;
       break;
     case SPF_LOOP:
     case SPF_ERROR: 
     case SPF_SYNTAX:
     case SPF_EXHAUST:
-      env_put2("SPFRESULT","error");
+      env_put("SPFRESULT","error");
       if (flagspf < 2) break;
       out("451 SPF lookup failure (#4.3.0)\r\n");
       return -1;
     case SPF_NONE: 
-      env_put2("SPFRESULT","none");
+      env_put("SPFRESULT","none");
       flagspf = 0;
     case SPF_UNKNOWN:
-      env_put2("SPFRESULT","unknown");
+      env_put("SPFRESULT","unknown");
       if (flagspf < 6) break;
       else return 4;
     case SPF_NEUTRAL:
-      env_put2("SPFRESULT","neutral");
+      env_put("SPFRESULT","neutral");
       if (flagspf < 5) break;
       else return 3;
     case SPF_SOFTFAIL:
-      env_put2("SPFRESULT","softfail");
+      env_put("SPFRESULT","softfail");
       if (flagspf < 4) break;
       else return 2;
     case SPF_FAIL:
-      env_put2("SPFRESULT","fail");
+      env_put("SPFRESULT","fail");
       if (flagspf < 3) break;
       if (!spf_parse(&spfbounce,spfexpmsg.s,expdomain.s)) die_nomem();
       if (!stralloc_0(&spfbounce)) die_nomem();
@@ -862,9 +862,9 @@ void mailfrom_auth(char *arg,int len)
   if (!remoteinfo) {
     remoteinfo = fuser.s;
     if (!env_unset("TCPREMOTEINFO")) die_read();
-    if (!env_put2("TCPREMOTEINFO",remoteinfo)) die_nomem();
+    if (!env_put("TCPREMOTEINFO",remoteinfo)) die_nomem();
     if (!env_unset("TCP6REMOTEINFO")) die_read();
-    if (!env_put2("TCP6REMOTEINFO",remoteinfo)) die_nomem();
+    if (!env_put("TCP6REMOTEINFO",remoteinfo)) die_nomem();
   }
 }
 
@@ -963,7 +963,7 @@ void smtp_mail(char *arg)
   if (!stralloc_copy(&mailfrom,&addr)) die_nomem();
 
   if (!env_unset("MAILFROM")) die_read();
-  if (!env_put2("MAILFROM",mailfrom.s)) die_nomem();
+  if (!env_put("MAILFROM",mailfrom.s)) die_nomem();
 
   flagbarf = bmfcheck();
   if (flagbarf != -110) if (mfdnscheck) flagdnsmf = dnsq(mailfrom.s,"M");
@@ -1094,7 +1094,7 @@ void smtp_rcpt(char *arg)
   if (!stralloc_0(&deliverto)) die_nomem();
 
   if (!env_unset("RCPTTO")) die_read();
-  if (!env_put2("RCPTTO",deliverto.s)) die_nomem();
+  if (!env_put("RCPTTO",deliverto.s)) die_nomem();
 
 /* this file is too long --------------------------------- Additional logging */
 
@@ -1400,7 +1400,7 @@ int authenticate(void)
   if (!stralloc_0(&user)) die_nomem();
   if (!stralloc_0(&pass)) die_nomem();
   if (!stralloc_0(&chal)) die_nomem();
-  if (!env_put2("AUTHUSER",user.s)) die_nomem();
+  if (!env_put("AUTHUSER",user.s)) die_nomem();
 
   if (pipe(pi) == -1) return err_pipe();
   switch (child = fork()) {

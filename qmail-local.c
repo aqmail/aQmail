@@ -416,7 +416,7 @@ void qmesearch(int *fd,int *cutable)
       i = safeext.len - 7;
       if (!byte_diff("default",7,safeext.s + i))
 	if (i <= str_len(ext)) /* paranoia */
-	  if (!env_put2("DEFAULT",ext + i)) temp_nomem();
+	  if (!env_put("DEFAULT",ext + i)) temp_nomem();
     }
     return;
   }
@@ -429,7 +429,7 @@ void qmesearch(int *fd,int *cutable)
       if (!stralloc_cats(&qme,"default")) temp_nomem();
       if (qmeexists(fd,cutable)) {
 	if (i <= str_len(ext)) /* paranoia */
-	  if (!env_put2("DEFAULT",ext + i)) temp_nomem();
+	  if (!env_put("DEFAULT",ext + i)) temp_nomem();
         return;
       }
     }
@@ -509,10 +509,10 @@ int main(int argc,char **argv)
     strerr_die5x(111,"Unable to switch to ",homedir,": ",error_str(errno),". (#4.3.0)");
   checkhome();
 
-  if (!env_put2("HOST",host)) temp_nomem();
-  if (!env_put2("HOME",homedir)) temp_nomem();
-  if (!env_put2("USER",user)) temp_nomem();
-  if (!env_put2("LOCAL",local)) temp_nomem();
+  if (!env_put("HOST",host)) temp_nomem();
+  if (!env_put("HOME",homedir)) temp_nomem();
+  if (!env_put("USER",user)) temp_nomem();
+  if (!env_put("LOCAL",local)) temp_nomem();
 
   if (!stralloc_copys(&envrecip,local)) temp_nomem();
   if (!stralloc_cats(&envrecip,"@")) temp_nomem();
@@ -520,7 +520,7 @@ int main(int argc,char **argv)
 
   if (!stralloc_copy(&foo,&envrecip)) temp_nomem();
   if (!stralloc_0(&foo)) temp_nomem();
-  if (!env_put2("RECIPIENT",foo.s)) temp_nomem();
+  if (!env_put("RECIPIENT",foo.s)) temp_nomem();
 
   if (!stralloc_copys(&dtline,"Delivered-To: ")) temp_nomem();
   if (!stralloc_cat(&dtline,&envrecip)) temp_nomem();
@@ -529,12 +529,12 @@ int main(int argc,char **argv)
 
   if (!stralloc_copy(&foo,&dtline)) temp_nomem();
   if (!stralloc_0(&foo)) temp_nomem();
-  if (!env_put2("DTLINE",foo.s)) temp_nomem();
+  if (!env_put("DTLINE",foo.s)) temp_nomem();
 
   if (flagdoit)
     bouncexf();
 
-  if (!env_put2("SENDER",sender)) temp_nomem();
+  if (!env_put("SENDER",sender)) temp_nomem();
 
   if (!quote2(&foo,sender)) temp_nomem();
   if (!stralloc_copys(&rpline,"Return-Path: <")) temp_nomem();
@@ -544,7 +544,7 @@ int main(int argc,char **argv)
 
   if (!stralloc_copy(&foo,&rpline)) temp_nomem();
   if (!stralloc_0(&foo)) temp_nomem();
-  if (!env_put2("RPLINE",foo.s)) temp_nomem();
+  if (!env_put("RPLINE",foo.s)) temp_nomem();
 
   if (!stralloc_copys(&ufline,"From ")) temp_nomem();
 
@@ -569,16 +569,16 @@ int main(int argc,char **argv)
 
   if (!stralloc_copy(&foo,&ufline)) temp_nomem();
   if (!stralloc_0(&foo)) temp_nomem();
-  if (!env_put2("UFLINE",foo.s)) temp_nomem();
+  if (!env_put("UFLINE",foo.s)) temp_nomem();
 
   x = ext;
-  if (!env_put2("EXT",x)) temp_nomem();
+  if (!env_put("EXT",x)) temp_nomem();
   x += str_chr(x,'-'); if (*x) ++x;
-  if (!env_put2("EXT2",x)) temp_nomem();
+  if (!env_put("EXT2",x)) temp_nomem();
   x += str_chr(x,'-'); if (*x) ++x;
-  if (!env_put2("EXT3",x)) temp_nomem();
+  if (!env_put("EXT3",x)) temp_nomem();
   x += str_chr(x,'-'); if (*x) ++x;
-  if (!env_put2("EXT4",x)) temp_nomem();
+  if (!env_put("EXT4",x)) temp_nomem();
 
   if (!stralloc_copys(&safeext,ext)) temp_nomem();
   case_lowerb(safeext.s,safeext.len);
@@ -591,15 +591,15 @@ int main(int argc,char **argv)
   i = byte_rchr(host,i,'.');
   if (!stralloc_copyb(&foo,host,i)) temp_nomem();
   if (!stralloc_0(&foo)) temp_nomem();
-  if (!env_put2("HOST2",foo.s)) temp_nomem();
+  if (!env_put("HOST2",foo.s)) temp_nomem();
   i = byte_rchr(host,i,'.');
   if (!stralloc_copyb(&foo,host,i)) temp_nomem();
   if (!stralloc_0(&foo)) temp_nomem();
-  if (!env_put2("HOST3",foo.s)) temp_nomem();
+  if (!env_put("HOST3",foo.s)) temp_nomem();
   i = byte_rchr(host,i,'.');
   if (!stralloc_copyb(&foo,host,i)) temp_nomem();
   if (!stralloc_0(&foo)) temp_nomem();
-  if (!env_put2("HOST4",foo.s)) temp_nomem();
+  if (!env_put("HOST4",foo.s)) temp_nomem();
 
   flagforwardonly = 0;
   qmesearch(&fd,&flagforwardonly);
@@ -624,7 +624,7 @@ int main(int argc,char **argv)
         }
       }
   if (!stralloc_0(&ueo)) temp_nomem();
-  if (!env_put2("NEWSENDER",ueo.s)) temp_nomem();
+  if (!env_put("NEWSENDER",ueo.s)) temp_nomem();
 
   if (!stralloc_ready(&cmds,0)) temp_nomem();
   cmds.len = 0;

@@ -3,7 +3,7 @@
 # Check for external tools
 
 # check for system tools (required) !!!
-for f in bash hostname [ test make perl awk
+for f in bash hostname [ test make perl awk php
 do
   echo -n "Checking for $f ... "
   which $f 2>/dev/null

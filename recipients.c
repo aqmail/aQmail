@@ -1,3 +1,4 @@
+//#include <unistd.h>
 #include "cdb.h"
 #include "byte.h"
 #include "open.h"
@@ -14,6 +15,10 @@
 #include "readwrite.h"
 #include "substdio.h"
 #include "auto_break.h"
+
+#include "fd.h"
+#include "sig.h"
+
 #define FDAUTH 3
 
 static stralloc key = {0};
