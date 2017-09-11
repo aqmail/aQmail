@@ -33,111 +33,69 @@ auto-ccld.sh:
 #	echo LD=\'`head -1 ../conf-ld`\' \
 #	) > auto-ccld.sh
 
-auto-gid: \
-load auto-gid.o substdio.a error.a str.a fs.a
-	./load auto-gid substdio.a error.a str.a fs.a 
+#auto-gid: \
+#load auto-gid.o substdio.a error.a str.a fs.a
+#	./load auto-gid substdio.a error.a str.a fs.a 
 
-auto-gid.o: \
-compile auto-gid.c subfd.h substdio.h readwrite.h exit.h \
-scan.h fmt.h
-	./compile auto-gid.c
+#auto-gid.o: \
+#compile auto-gid.c subfd.h substdio.h readwrite.h exit.h \
+#scan.h fmt.h
+#	./compile auto-gid.c
 
-auto-int: \
-load auto-int.o substdio.a error.a str.a fs.a
-	./load auto-int substdio.a error.a str.a fs.a 
+#auto-int: \
+#load auto-int.o substdio.a error.a str.a fs.a
+#	./load auto-int substdio.a error.a str.a fs.a 
 
-auto-int.o: \
-compile auto-int.c substdio.h readwrite.h exit.h scan.h fmt.h
-	./compile auto-int.c
+#auto-int.o: \
+#compile auto-int.c substdio.h readwrite.h exit.h scan.h fmt.h
+#	./compile auto-int.c
 
-auto-int8: \
-load auto-int8.o substdio.a error.a str.a fs.a
-	./load auto-int8 substdio.a error.a str.a fs.a 
+#auto-int8: \
+#load auto-int8.o substdio.a error.a str.a fs.a
+#	./load auto-int8 substdio.a error.a str.a fs.a 
 
-auto-int8.o: \
-compile auto-int8.c substdio.h readwrite.h exit.h scan.h fmt.h
-	./compile auto-int8.c
+#auto-int8.o: \
+#compile auto-int8.c substdio.h readwrite.h exit.h scan.h fmt.h
+#	./compile auto-int8.c
 
-auto-str: \
-load auto-str.o substdio.a error.a str.a
-	./load auto-str substdio.a error.a str.a 
+#auto-str: \
+#load auto-str.o substdio.a error.a str.a
+#	./load auto-str substdio.a error.a str.a 
 
-auto-str.o: \
-compile auto-str.c substdio.h readwrite.h exit.h
-	./compile auto-str.c
+#auto-str.o: \
+#compile auto-str.c substdio.h readwrite.h exit.h
+#	./compile auto-str.c
 
-auto-uid: \
-load auto-uid.o substdio.a error.a str.a fs.a
-	./load auto-uid substdio.a error.a str.a fs.a 
+#auto-uid: \
+#load auto-uid.o substdio.a error.a str.a fs.a
+#	./load auto-uid substdio.a error.a str.a fs.a 
 
-auto-uid.o: \
-compile auto-uid.c subfd.h substdio.h readwrite.h exit.h \
-scan.h fmt.h
-	./compile auto-uid.c
-
-#auto_break.c: \
-#auto-str
-#	./auto-str auto_break \
-#	"`head -1 conf-break`" > auto_break.c
+#auto-uid.o: \
+#compile auto-uid.c subfd.h substdio.h readwrite.h exit.h \
+#scan.h fmt.h
+#	./compile auto-uid.c
 
 auto_break.o:
 	$(COMPILE) auto_break.c
 
-#auto_patrn.c: \
-#auto-int8
-#	./auto-int8 auto_patrn `head -1 conf-patrn` > auto_patrn.c
-
 auto_patrn.o:
-#compile auto_patrn.c
 	$(COMPILE) auto_patrn.c
 
-auto_qmail.c: auto-str
-	./auto-str auto_qmail `head -1 conf-home` > auto_qmail.c
-
-auto_qmail.o: compile auto_qmail.c
+auto_qmail.o:
 	./compile auto_qmail.c
 
-#auto_spawn.c: \
-#auto-int
-#	./auto-int auto_spawn `head -1 conf-spawn` > auto_spawn.c
-
 auto_spawn.o:
-#compile auto_spawn.c
 	$(COMPILE) auto_spawn.c
 
-#auto_split.c: \
-#auto-int
-#	./auto-int auto_split `head -1 conf-split` > auto_split.c
-
 auto_split.o:
-#compile auto_split.c
 	$(COMPILE) auto_split.c
 
-#auto_uids.c: \
-#auto-uid auto-gid
-#	( ./auto-uid auto_uida `head -1 conf-users` \
-#	&&./auto-uid auto_uidd `head -2 conf-users | tail -1` \
-#	&&./auto-uid auto_uidl `head -3 conf-users | tail -1` \
-#	&&./auto-uid auto_uido `head -4 conf-users | tail -1` \
-#	&&./auto-uid auto_uidp `head -5 conf-users | tail -1` \
-#	&&./auto-uid auto_uidq `head -6 conf-users | tail -1` \
-#	&&./auto-uid auto_uidr `head -7 conf-users | tail -1` \
-#	&&./auto-uid auto_uids `head -8 conf-users | tail -1` \
-#	&&./auto-gid auto_gidq `head -1 conf-groups` \
-#	&&./auto-gid auto_gidn `head -2 conf-groups | tail -1` \
-#	) > auto_uids.c.tmp && mv auto_uids.c.tmp auto_uids.c
-
 auto_uids.o:
-#compile auto_uids.c
 	./compile auto_uids.c
 
-#auto_usera.c: \
-#auto-str
-#	./auto-str auto_usera `head -1 conf-users` > auto_usera.c
-
 auto_usera.o:
-#compile auto_usera.c
 	./compile auto_usera.c
+
 
 base64.o: \
 compile base64.c base64.h substdio.h
@@ -152,7 +110,6 @@ compile hmac_md5.c hmac_md5.h global.h
 	./compile hmac_md5.c
 
 bouncesaying:
-#strerr.a error.a substdio.a str.a
 	$(COMPILE) bouncesaying.c
 	$(LOAD) bouncesaying strerr.a error.a substdio.a str.a wait.a
 
@@ -364,7 +321,6 @@ warn-auto.sh deferrals.sh
 dns.o: \
 compile dns.c ip.h ipalloc.h gen_alloc.h fmt.h \
 strsalloc.h gen_alloc.h dns.h
-# case.h
 	./compile dns.c
 
 dnscname: \
@@ -476,10 +432,8 @@ except: \
 load except.o strerr.a error.a substdio.a str.a wait.a
 	./load except strerr.a error.a substdio.a str.a wait.a 
 
-except.o: \
-compile except.c
-# strerr.h wait.h error.h exit.h
-	./compile except.c
+except.o:
+	$(COMPILE) except.c
 
 failures: \
 warn-auto.sh failures.sh
@@ -501,18 +455,6 @@ case.a str.a fs.a sig.a wait.a seek.a open.a fd.a
 
 fd.a:
 	cp qlibs/fd.a fd.a
-#makelib fd_copy.o fd_move.o
-#	./makelib fd.a fd_copy.o fd_move.o
-
-#fd_copy.o: \
-#compile fd_copy.c
-# fd.h
-#	./compile fd_copy.c
-
-#fd_move.o: \
-#compile fd_move.c
-# fd.h
-#	./compile fd_move.c
 
 fifo.o: \
 compile fifo.c hasmkffo.h fifo.h
