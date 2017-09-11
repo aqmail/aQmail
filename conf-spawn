@@ -1,1 +1,6 @@
-conf.tmp/conf-spawn
+120
+
+This is a silent concurrency limit. You can't set it above 1024. 
+On some systems you can't set it above 124 or you need to adjust 
+kernel parameters.
+s/qmail will refuse to compile if the limit is too high.

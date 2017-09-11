@@ -12,7 +12,7 @@ it-mbox it-forward it-pop it-queue \
 it-clients it-user it-dns it-server it-log
 
 clean:
-	rm -f *.a *.o *.lib `cat TARGETS`
+	rm -f *.a *.o *.lib *.tmp `cat TARGETS`
 	cd ucspissl ; make clean
 #	cd qlibs ; make clean
 
@@ -238,14 +238,14 @@ chkshsgr.o: \
 compile chkshsgr.c exit.h
 	./compile chkshsgr.c
 
-chkspawn: \
-load chkspawn.o substdio.a error.a str.a fs.a auto_spawn.o
-	./load chkspawn substdio.a error.a str.a fs.a auto_spawn.o 
+#chkspawn: \
+#load chkspawn.o substdio.a error.a str.a fs.a auto_spawn.o
+#	./load chkspawn substdio.a error.a str.a fs.a auto_spawn.o 
 
-chkspawn.o: \
-compile chkspawn.c substdio.h subfd.h fmt.h select.h \
-exit.h auto_spawn.h
-	./compile chkspawn.c
+#chkspawn.o: \
+#compile chkspawn.c substdio.h subfd.h fmt.h select.h \
+#exit.h auto_spawn.h
+#	./compile chkspawn.c
 
 #coe.o: \
 #compile coe.c coe.h
@@ -1823,11 +1823,12 @@ compile socket6_if.c socket6_if.h uint32.h
 #	./compile spawn.c
 ##gen_alloc.h select.h exit.h coe.h open.h error.h \
 
-spawn.o: compile chkspawn spawn.c
+spawn.o:
+# compile chkspawn spawn.c
 #gen_alloc.h select.h exit.h error.h \
 #auto_qmail.h auto_uids.h auto_spawn.h
-	./chkspawn
-	./compile spawn.c
+#	./chkspawn
+	$(COMPILE) spawn.c
 #gen_alloc.h select.h exit.h coe.h open.h error.h \
 
 spfdinsip.o:
