@@ -776,9 +776,10 @@ str.a fs.a seek.a open.a case.a
 	alloc.a error.a str.a fs.a seek.a open.a case.a
 
 newaliases.o: \
-compile newaliases.c strerr.h gen_alloc.h \
-getln.h open.h readwrite.h token822.h gen_alloc.h control.h \
-auto_qmail.h cdbmss.h cdbmake.h uint32.h
+compile newaliases.c
+# strerr.h gen_alloc.h \
+#getln.h open.h readwrite.h token822.h gen_alloc.h control.h \
+#auto_qmail.h cdbmss.h cdbmake.h uint32.h
 # substdio.h
 	./compile newaliases.c
 
@@ -806,31 +807,32 @@ now.o: \
 compile now.c datetime.h now.h datetime.h
 	./compile now.c
 
-open.a: \
-makelib open_append.o open_excl.o open_read.o open_trunc.o \
-open_write.o
-	./makelib open.a open_append.o open_excl.o open_read.o \
-	open_trunc.o open_write.o
+open.a:
+	cp qlibs/open.a open.a
+#makelib open_append.o open_excl.o open_read.o open_trunc.o \
+#open_write.o
+#	./makelib open.a open_append.o open_excl.o open_read.o \
+#	open_trunc.o open_write.o
 
-open_append.o: \
-compile open_append.c open.h
-	./compile open_append.c
+#open_append.o: \
+#compile open_append.c open.h
+#	./compile open_append.c
 
-open_excl.o: \
-compile open_excl.c open.h
-	./compile open_excl.c
+#open_excl.o: \
+#compile open_excl.c open.h
+#	./compile open_excl.c
 
-open_read.o: \
-compile open_read.c open.h
-	./compile open_read.c
+#open_read.o: \
+#compile open_read.c open.h
+#	./compile open_read.c
 
-open_trunc.o: \
-compile open_trunc.c open.h
-	./compile open_trunc.c
+#open_trunc.o: \
+#compile open_trunc.c open.h
+#	./compile open_trunc.c
 
-open_write.o: \
-compile open_write.c open.h
-	./compile open_write.c
+#open_write.o: \
+#compile open_write.c open.h
+#	./compile open_write.c
 
 pathexec.o:
 	cp qlibs/pathexec.o pathexec.o
@@ -1154,10 +1156,11 @@ stralloc.a alloc.a substdio.a error.a str.a fs.a socket.lib
 	fs.a  `cat socket.lib`
 
 qmail-pop3d.o: \
-compile qmail-pop3d.c commands.h getln.h gen_alloc.h \
-open.h prioq.h datetime.h gen_alloc.h \
-maildir.h strerr.h readwrite.h timeoutread.h \
-timeoutwrite.h
+compile qmail-pop3d.c
+# commands.h getln.h gen_alloc.h \
+#open.h prioq.h datetime.h gen_alloc.h \
+#maildir.h strerr.h readwrite.h timeoutread.h \
+#timeoutwrite.h
 	./compile qmail-pop3d.c
 # fmt.h scan.h substdio.h 
 
@@ -1476,12 +1479,12 @@ quote.o:
 	./compile quote.c
 
 rcpthosts.o: \
-compile rcpthosts.c cdb.h uint32.h open.h error.h control.h \
+compile rcpthosts.c cdb.h uint32.h error.h control.h \
 constmap.h gen_alloc.h rcpthosts.h
 	./compile rcpthosts.c
 
 recipients.o: \
-compile recipients.c cdb.h uint32.h open.h error.h control.h \
+compile recipients.c cdb.h uint32.h error.h control.h \
 constmap.h gen_alloc.h recipients.h auto_break.h
 	./compile recipients.c
 # substdio.h
@@ -1868,11 +1871,13 @@ gen_alloc.h gen_allocdefs.h
 	./compile token822.c
 
 trigger.o: \
-compile trigger.c select.h open.h trigger.h hasnpbg1.h
+compile trigger.c
+# select.h open.h trigger.h hasnpbg1.h
 	./compile trigger.c
 
 triggerpull.o: \
-compile triggerpull.c ndelay.h open.h triggerpull.h
+compile triggerpull.c
+# ndelay.h open.h triggerpull.h
 	./compile triggerpull.c
 
 uint32_unpack.o: \
