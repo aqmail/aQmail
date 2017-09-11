@@ -5,7 +5,7 @@
 #include "ipalloc.h"
 #include "ipme.h"
 #include "qlibs/include/str.h"
-#include "fmt.h"
+#include "qlibs/include/fmt.h"
 #include "scan.h"
 #include "qlibs/include/byte.h"
 #include "now.h"
