@@ -15,11 +15,11 @@ echo "build on "${ARCH}"!"
 
 #********************************************************************************
 # check for external system tools
-#. cfg/exttools.inc
+. configure.in/exttools.inc
 
 #********************************************************************************
 # Checking conf-* files
-#. cfg/conf-files.inc
+. configure.in/conf-files.inc
 
 #********************************************************************************
 # Check headers
@@ -31,7 +31,7 @@ echo "build on "${ARCH}"!"
 
 #********************************************************************************
 # Checking for shared libraries
-#. cfg/shared-libs.inc
+. configure.in/shared-libs.inc
 
 #********************************************************************************
 #
