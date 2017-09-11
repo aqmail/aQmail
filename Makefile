@@ -832,16 +832,19 @@ open_write.o: \
 compile open_write.c open.h
 	./compile open_write.c
 
-pathexec_env.o:
-#compile pathexec_env.c
-# stralloc.h gen_alloc.h str.h \
-#env.h pathexec.h
-	./compile pathexec_env.c
+pathexec.o:
+	cp qlibs/pathexec.o pathexec.o
 
-pathexec_run.o: \
-compile pathexec_run.c
-# error.h gen_alloc.h env.h pathexec.h
-	./compile pathexec_run.c
+#pathexec_env.o:
+##compile pathexec_env.c
+## stralloc.h gen_alloc.h str.h \
+##env.h pathexec.h
+#	./compile pathexec_env.c
+
+#pathexec_run.o: \
+#compile pathexec_run.c
+## error.h gen_alloc.h env.h pathexec.h
+#	./compile pathexec_run.c
 
 predate: \
 load predate.o datetime.a strerr.a sig.a fd.a wait.a substdio.a \
@@ -873,7 +876,6 @@ error.a str.a
 	./compile printforward.c
 	./load printforward cdb.a strerr.a substdio.a qlibs/stralloc.a \
 	alloc.a error.a str.a
-#load printforward.o cdb.a strerr.a substdio.a stralloc.a alloc.a \
 
 printmaillist: \
 getln.a strerr.a substdio.a stralloc.a alloc.a \
@@ -896,11 +898,11 @@ prot.o:
 qmail-authuser: \
 auto_qmail.o alloc.a case.a control.o constmap.o \
 env.a error.a fd.a fs.a getln.a hmac_md5.o md5c.o substdio.a open.a seek.a \
-stralloc.a str.a pathexec_env.o pathexec_run.o prot.o shadow.lib crypt.lib \
+stralloc.a str.a pathexec.o prot.o shadow.lib crypt.lib \
 s.lib sha1.o sha256.o sig.a wait.a
 	$(COMPILE) qmail-authuser.c
 	./load qmail-authuser auto_qmail.o control.o constmap.o \
-	pathexec_env.o pathexec_run.o prot.o \
+	pathexec.o prot.o \
 	hmac_md5.o md5c.o sha1.o sha256.o \
 	stralloc.a alloc.a case.a error.a env.a fd.a fs.a getln.a \
 	sig.a substdio.a open.a seek.a str.a substdio.a stralloc.a \
