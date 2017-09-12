@@ -3,7 +3,11 @@
 *.bck
 *.orig
 *.bck.c
+*.bck.h
+*.diff
+*.patch
 
+qlibs.bck
 #qlibs
 #qlibs/*
 #qlibs/.*

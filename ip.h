@@ -1,8 +1,9 @@
 #ifndef IP_H
 #define IP_H
 
-#include "uint32.h"
-#include "qlibs/include/stralloc.h"
+//#include "uint32.h"
+#include "uint_t.h"
+#include "stralloc.h"
 
 #define IPFMT 40
 #define V4MAPPREFIX "::ffff:"

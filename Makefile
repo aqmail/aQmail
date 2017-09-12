@@ -77,19 +77,23 @@ makelib cdb.o cdb_hash.o cdb_unpack.o cdb_seek.o cdb_make.o
 	./makelib cdb.a cdb.o cdb_hash.o cdb_unpack.o cdb_seek.o cdb_make.o
 
 cdb.o: \
-compile cdb.c readwrite.h error.h seek.h
+compile cdb.c
+# readwrite.h error.h seek.h
 	./compile cdb.c
 
 cdb_hash.o: \
-compile cdb_hash.c cdb.h uint32.h
+compile cdb_hash.c
+# cdb.h uint32.h
 	./compile cdb_hash.c
 
 cdb_seek.o: \
-compile cdb_seek.c cdb.h uint32.h
+compile cdb_seek.c
+# cdb.h uint32.h
 	./compile cdb_seek.c
 
 cdb_unpack.o: \
-compile cdb_unpack.c cdb.h uint32.h
+compile cdb_unpack.c
+# cdb.h uint32.h
 	./compile cdb_unpack.c
 
 cdbmake.a: \
@@ -98,15 +102,18 @@ makelib cdbmake_pack.o cdbmake_hash.o cdbmake_add.o
 	cdbmake_add.o
 
 cdbmake_add.o: \
-compile cdbmake_add.c cdbmake.h uint32.h
+compile cdbmake_add.c
+# cdbmake.h uint32.h
 	./compile cdbmake_add.c
 
 cdbmake_hash.o: \
-compile cdbmake_hash.c cdbmake.h uint32.h
+compile cdbmake_hash.c
+# cdbmake.h uint32.h
 	./compile cdbmake_hash.c
 
 cdbmake_pack.o: \
-compile cdbmake_pack.c cdbmake.h uint32.h
+compile cdbmake_pack.c
+# cdbmake.h uint32.h
 	./compile cdbmake_pack.c
 
 cdbmss.o: \
@@ -116,8 +123,10 @@ compile cdbmss.c
 	./compile cdbmss.c
 
 cdb_make.o: \
-compile cdb_make.c readwrite.h seek.h error.h cdb.h uint32.h \
-cdb_make.h buffer.h uint32.h
+compile cdb_make.c
+# uint32.h
+# readwrite.h seek.h error.h cdb.h uint32.h \
+#cdb_make.h buffer.h
 	./compile cdb_make.c
 
 columnt:
@@ -1051,7 +1060,6 @@ compile qmail-queue.c
 #substdio.h datetime.h now.h datetime.h triggerpull.h extra.h \
 #auto_qmail.h auto_uids.h date822fmt.h fmtqfn.h
 	./compile qmail-queue.c
-#alloc.h env.h wait.h \
 
 qmail-remote: \
 control.o constmap.o timeoutread.o timeoutwrite.o \
@@ -1081,7 +1089,8 @@ auto_qmail.o auto_uids.o auto_spawn.o
 #seek.a lock.a wait.a fd.a stralloc.a alloc.a substdio.a error.a str.a \
 
 qmail-rspawn.o: \
-compile qmail-rspawn.c tcpto.h uint32.h
+compile qmail-rspawn.c
+# tcpto.h uint32.h
 	./compile qmail-rspawn.c
 # fd.h wait.h substdio.h exit.h error.h \
 
@@ -1127,17 +1136,18 @@ compile qmail-showctl.c
 qmail-smtpd: \
 load qmail-smtpd.o auto_break.o rcpthosts.o commands.o timeoutread.o \
 timeoutwrite.o ip.o ipme.o ipalloc.o control.o constmap.o received.o \
-recipients.o mfrules.o uint32_unpack.o tls_start.o smtpdlog.o dns.o \
+recipients.o mfrules.o tls_start.o smtpdlog.o dns.o \
 date822fmt.o now.o qmail.o wildmat.o spf.o spfdnsip.o strsalloc.o \
 cdb.a fd.a wait.a datetime.o getln.a open.a sig.a case.a env.a stralloc.a \
 alloc.a substdio.a error.a str.a seek.a fs.a auto_qmail.o base64.o socket.lib
 	./load qmail-smtpd rcpthosts.o recipients.o commands.o timeoutread.o \
-	mfrules.o uint32_unpack.o tls_start.o auto_break.o smtpdlog.o \
+	mfrules.o tls_start.o auto_break.o smtpdlog.o \
 	timeoutwrite.o ip.o ipme.o ipalloc.o control.o constmap.o dns.o \
 	spf.o spfdnsip.o received.o date822fmt.o now.o qmail.o wildmat.o \
 	base64.o strsalloc.o cdb.a seek.a fd.a wait.a datetime.o getln.a \
 	open.a sig.a case.a  env.a stralloc.a alloc.a substdio.a str.a \
-	fs.a error.a auto_qmail.o `cat dns.lib` `cat socket.lib`    qlibs/buffer.a
+	fs.a error.a auto_qmail.o `cat dns.lib` `cat socket.lib`    qlibs/buffer.a qlibs/uint32p.o
+#	mfrules.o uint32_unpack.o tls_start.o auto_break.o smtpdlog.o \
 
 qmail-smtpd.o: \
 compile qmail-smtpd.c
@@ -1241,13 +1251,15 @@ quote.o:
 	./compile quote.c
 
 rcpthosts.o: \
-compile rcpthosts.c cdb.h uint32.h
+compile rcpthosts.c
+# cdb.h uint32.h
 # error.h control.h \
 #constmap.h gen_alloc.h rcpthosts.h
 	./compile rcpthosts.c
 
 recipients.o: \
-compile recipients.c cdb.h uint32.h
+compile recipients.c
+# cdb.h uint32.h
 # error.h control.h \
 #constmap.h gen_alloc.h recipients.h auto_break.h
 	./compile recipients.c
@@ -1325,26 +1337,27 @@ compile received.c
 #datetime.h date822fmt.h received.h
 	./compile received.c
 
-seek.a: \
-makelib seek_cur.o seek_end.o seek_set.o seek_trunc.o
-	./makelib seek.a seek_cur.o seek_end.o seek_set.o \
-	seek_trunc.o
+seek.a:
+	cp qlibs/seek.a seek.a
+#makelib seek_cur.o seek_end.o seek_set.o seek_trunc.o
+#	./makelib seek.a seek_cur.o seek_end.o seek_set.o \
+#	seek_trunc.o
 
-seek_cur.o: \
-compile seek_cur.c seek.h
-	./compile seek_cur.c
+#seek_cur.o: \
+#compile seek_cur.c seek.h
+#	./compile seek_cur.c
 
-seek_end.o: \
-compile seek_end.c seek.h
-	./compile seek_end.c
+#seek_end.o: \
+#compile seek_end.c seek.h
+#	./compile seek_end.c
 
-seek_set.o: \
-compile seek_set.c seek.h
-	./compile seek_set.c
+#seek_set.o: \
+#compile seek_set.c seek.h
+#	./compile seek_set.c
 
-seek_trunc.o: \
-compile seek_trunc.c seek.h
-	./compile seek_trunc.c
+#seek_trunc.o: \
+#compile seek_trunc.c seek.h
+#	./compile seek_trunc.c
 
 select.h: \
 compile trysysel.c select.h1 select.h2
@@ -1371,7 +1384,8 @@ alloc.a error.a str.a seek.a open.a case.a
 	stralloc.a alloc.a error.a str.a seek.a open.a case.a
 
 setforward.o: \
-compile setforward.c uint32.h
+compile setforward.c
+# uint32.h
 # substdio.h subfd.h substdio.h strerr.h \
 #gen_alloc.h open.h readwrite.h cdbmss.h cdbmake.h \
 # substdio.h
@@ -1412,7 +1426,8 @@ trylsock.c compile load
 	rm -f trylsock.o trylsock
 
 socket6_if.o: \
-compile socket6_if.c socket6_if.h uint32.h
+compile socket6_if.c socket6_if.h
+# uint32.h
 	./compile socket6_if.c
 
 spawn.o:
@@ -1492,7 +1507,8 @@ trysyslog.c compile load
 	rm -f trysyslog.o trysyslog
 
 strset.o: \
-compile strset.c strset.h uint32.h
+compile strset.c
+# strset.h uint32.h
 	./compile strset.c
 
 tai64nfrac: \
@@ -1560,16 +1576,16 @@ compile trigger.c
 triggerpull.o:
 	$(COMPILE) triggerpull.c
 
-uint32_unpack.o: \
-compile uint32_unpack.c uint32.h
-	./compile uint32_unpack.c
+#uint32_unpack.o: \
+#compile uint32_unpack.c uint32.h
+#	./compile uint32_unpack.c
 
-uint32.h: \
-tryulong32.c compile load uint32.h1 uint32.h2
-	( ( ./compile tryulong32.c && ./load tryulong32 && \
-	./tryulong32 ) >/dev/null 2>&1 \
-	&& cat uint32.h2 || cat uint32.h1 ) > uint32.h
-	rm -f tryulong32.o tryulong32
+#uint32.h: \
+#tryulong32.c compile load uint32.h1 uint32.h2
+#	( ( ./compile tryulong32.c && ./load tryulong32 && \
+#	./tryulong32 ) >/dev/null 2>&1 \
+#	&& cat uint32.h2 || cat uint32.h1 ) > uint32.h
+#	rm -f tryulong32.o tryulong32
 
 wait.a:
 	ln -sf qlibs/wait.a wait.a

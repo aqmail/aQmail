@@ -1,7 +1,8 @@
 #ifndef CDBMAKE_H
 #define CDBMAKE_H
 
-#include "uint32.h"
+//#include "uint32.h"
+#include "uint_t.h"
 
 #define CDBMAKE_HPLIST 1000
 

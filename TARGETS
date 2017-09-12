@@ -129,7 +129,7 @@ tai64nfrac
 tryidn2
 #tryshsgr
 ucspissl.h
-uint32.h
+#uint32.h
 xqp
 xrecipient
 xsender

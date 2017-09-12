@@ -1,0 +1,67 @@
+************************ H E A D E R *************************
+CHANGELOG created from git - do not change these hesder lines!
+Last commit: 2617cf3b15ada90b6e8f2f39c08133f2ddebcc8e
+********************* E N D  H E A D E R *********************
+
+20170911:
+    consolidated dateime_un.c into datetime.c
+    switched to qlibs: ndelay.a; a bit Makefile clean up
+    removed files gen_alloc.h, gen_allocdef.h (used stralloc.h instead)
+    switched to qlibs: getln.a
+    switched to qlibs: open.a
+    switched to qlibs: pathexec.o
+    switched to qlibs: env.a
+    switched to qlibs: lock.a, removed obsolete tryshsgr.c
+    switched to qlibs: substdio, removed scan_* functions
+    removed findsystype, removed fmt_* functions
+    removed obsoleted auto-*.c files
+    removed chkspawn.c, code clean up
+    extended configure process
+20170910:
+    moved to qlibs/fd.a
+20170828:
+    switched to qlibs: sig, str, stralloc
+20170826:
+    switched to qlibs: wait.a, case.a, sig.a
+20170824:
+    cast of some pointers
+20170823:
+    removed 'alloc'
+20170821:
+    removed 'fork.h'
+    removed deprechated 'vfork'
+    removed check 'try direntry'
+    removred 'byte.h'
+20170817:
+    initial version which compiles
+20170814:
+    removed qbiff.c
+    reworked TARGETS file
+    update qlibs
+    cleanup structure, new base s/qmail-3.3.10
+20170501:
+    Fixed qmail-smtpd (badmailfrom); updated qmail-remote (addrmangle)
+20170430:
+    update code to s/qmail-3.2.20 src
+Merge: 2894629 ebcc53c
+20170326:
+    Merge pull request #2 from kp-org/dev-kp
+    Added 'qlibs' into master branch
+Merge: b6ce5a2 6070c2a
+    Merge branch 'dev-kp' of https://github.com/kp-org/aQmail into dev-kp
+    qlibs: updated to version 20170326
+    qlibs: updated to version 20170326
+20170323:
+    updated qlibs (20170323)
+20170321:
+    added 'qlibs'
+Merge: e6f5f69 467dede
+20170319:
+    Merge pull request #1 from kp-org/dev-kp
+    README.md
+    README.md
+    Update s/qmail-3.2.18
+    Update s/qmail-3.2.17
+    Update s/qmail-3.2.16
+    Initial s/qmail-3.2.15
+    Initial commit

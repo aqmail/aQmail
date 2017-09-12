@@ -1,7 +1,8 @@
 /* GLOBAL.H - RSAREF types and constants */
 
 #include <string.h>
-#include "uint32.h"
+//#include "uint32.h"
+#include "uint_t.h"
 
 /* Copyright (C) RSA Laboratories, a division of RSA Data Security,
      Inc., created 1991. All rights reserved.
