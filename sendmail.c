@@ -1,4 +1,5 @@
-#include "sgetopt.h"
+//#include "sgetopt.h"
+#include "getoptb.h"
 #include "substdio.h"
 #include "subfd.h"
 #include "alloc.h"

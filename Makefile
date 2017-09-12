@@ -353,7 +353,7 @@ case.a str.a fs.a sig.a wait.a seek.a open.a fd.a
 	./load fastforward slurpclose.o strset.o qmail.o \
 	auto_qmail.o getopt.a cdb.a env.a strerr.a substdio.a \
 	stralloc.a alloc.a error.a case.a str.a fs.a sig.a wait.a \
-	seek.a open.a fd.a
+	seek.a open.a fd.a    qlibs/buffer.a
 
 fd.a:
 	cp qlibs/fd.a fd.a
@@ -381,9 +381,10 @@ fs.a:
 getln.a:
 	cp qlibs/getln.a getln.a
 
-getopt.a: \
-makelib subgetopt.o sgetopt.o
-	./makelib getopt.a subgetopt.o sgetopt.o
+getopt.a:
+	cp qlibs/getopt.a getopt.a
+#makelib subgetopt.o sgetopt.o
+#	./makelib getopt.a subgetopt.o sgetopt.o
 
 gfrom.o: \
 compile gfrom.c gfrom.h
@@ -665,26 +666,15 @@ matchup.o: \
 # case.h
 	./compile matchup.c
 
-myctime.o: \
-#compile myctime.c datetime.h fmt.h myctime.h
+myctime.o:
 	./compile myctime.c
 
-mfrules.o: \
-compile mfrules.c
+mfrules.o:
+#compile mfrules.c
 	./compile mfrules.c
 
 ndelay.a:
 	cp qlibs/ndelay.a ndelay.a
-#makelib ndelay.o ndelay_off.o
-#	./makelib ndelay.a ndelay.o ndelay_off.o
-
-#ndelay.o: \
-#compile ndelay.c ndelay.h
-#	./compile ndelay.c
-
-#ndelay_off.o: \
-#compile ndelay_off.c ndelay.h
-#	./compile ndelay_off.c
 
 newaliases: \
 load auto_qmail.o token822.o control.o cdbmss.o \
@@ -733,7 +723,7 @@ preline: \
 load preline.o strerr.a fd.a wait.a sig.a env.a getopt.a substdio.a \
 error.a str.a
 	./load preline strerr.a fd.a wait.a sig.a env.a getopt.a \
-	substdio.a error.a str.a 
+	substdio.a error.a str.a    qlibs/buffer.a
 
 preline.o: \
 compile preline.c
@@ -1209,14 +1199,14 @@ compile auto_qmail.h
 #scan.h select.h substdio.h trigger.h qsutil.h
 	./compile qmail-todo.c
 
-qmail-upq: warn-auto.sh qmail-upq.sh
-#conf-home ../conf-break ../conf-split
-	cat warn-auto.sh qmail-upq.sh \
-	| sed s}QMAIL}"`head -1 conf-home`"}g \
-	| sed s}BREAK}"`head -1 conf-break`"}g \
-	| sed s}SPLIT}"`head -1 conf-split`"}g \
-	> qmail-upq
-	chmod 755 qmail-upq
+#qmail-upq: warn-auto.sh qmail-upq.sh
+##conf-home ../conf-break ../conf-split
+#	cat warn-auto.sh qmail-upq.sh \
+#	| sed s}QMAIL}"`head -1 conf-home`"}g \
+#	| sed s}BREAK}"`head -1 conf-break`"}g \
+#	| sed s}SPLIT}"`head -1 conf-split`"}g \
+#	> qmail-upq
+#	chmod 755 qmail-upq
 
 qmail-vmailuser: \
 auto_qmail.o alloc.a case.a control.o constmap.o \
@@ -1369,7 +1359,7 @@ sendmail: \
 load sendmail.o env.a getopt.a alloc.a substdio.a error.a str.a \
 auto_qmail.o
 	./load sendmail env.a getopt.a alloc.a substdio.a error.a \
-	str.a auto_qmail.o 
+	str.a auto_qmail.o     qlibs/buffer.a
 
 sendmail.o: \
 compile sendmail.c

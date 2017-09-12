@@ -1,7 +1,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "readwrite.h"
+//#include "readwrite.h"
 #include "sig.h"
 #include "env.h"
 #include "byte.h"
@@ -15,7 +15,8 @@
 #include "getln.h"
 #include "strerr.h"
 #include "subfd.h"
-#include "sgetopt.h"
+//#include "sgetopt.h"
+#include "getoptb.h"
 #include "alloc.h"
 #include "error.h"
 #include "stralloc.h"

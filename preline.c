@@ -1,5 +1,6 @@
 #include "fd.h"
-#include "sgetopt.h"
+//#include "sgetopt.h"
+#include "getoptb.h"
 #include "readwrite.h"
 #include "strerr.h"
 #include "substdio.h"
