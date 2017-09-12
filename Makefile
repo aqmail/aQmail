@@ -315,23 +315,25 @@ dnstxt.o:
 env.a:
 	cp qlibs/env.a env.a
 
-error.a: makelib error.o error_str.o error_temp.o
-	./makelib error.a error.o error_str.o error_temp.o
+error.a:
+	cp qlibs/error.a error.a
+# makelib error.o error_str.o error_temp.o
+#	./makelib error.a error.o error_str.o error_temp.o
 
-error.o: \
-compile error.c
+#error.o: \
+#compile error.c
 # error.h
-	./compile error.c
+#	./compile error.c
 
-error_str.o: \
-compile error_str.c
+#error_str.o: \
+#compile error_str.c
 # error.h
-	./compile error_str.c
+#	./compile error_str.c
 
-error_temp.o: \
-compile error_temp.c
+#error_temp.o: \
+#compile error_temp.c
 # error.h
-	./compile error_temp.c
+#	./compile error_temp.c
 
 except: \
 load except.o strerr.a error.a substdio.a str.a wait.a
@@ -1382,11 +1384,11 @@ error.a str.a open.a
 	./load setmaillist getln.a strerr.a substdio.a stralloc.a \
 	alloc.a error.a str.a open.a    qlibs/buffer.a qlibs/errmsg.a
 
-sgetopt.o: \
-compile sgetopt.c
+#sgetopt.o: \
+#compile sgetopt.c
 # substdio.h subfd.h sgetopt.h subgetopt.h \
 #subgetopt.h
-	./compile sgetopt.c
+#	./compile sgetopt.c
 
 sha1.o : \
 compile sha1.c sha1.h
@@ -1479,9 +1481,9 @@ compile strsalloc.c
 #gen_alloc.h
 	./compile strsalloc.c
 
-subgetopt.o: \
-compile subgetopt.c subgetopt.h
-	./compile subgetopt.c
+#subgetopt.o: \
+#compile subgetopt.c subgetopt.h
+#	./compile subgetopt.c
 
 substdio.a:
 	cp qlibs/substdio.a substdio.a
@@ -1524,11 +1526,13 @@ compile timeoutconn.c
 	./compile timeoutconn.c
 
 timeoutread.o: \
-compile timeoutread.c timeoutread.h select.h error.h readwrite.h
+compile timeoutread.c
+# timeoutread.h select.h error.h readwrite.h
 	./compile timeoutread.c
 
 timeoutwrite.o: \
-compile timeoutwrite.c timeoutwrite.h select.h error.h readwrite.h
+compile timeoutwrite.c
+# timeoutwrite.h select.h error.h readwrite.h
 	./compile timeoutwrite.c
 
 tls_errors.o: \
