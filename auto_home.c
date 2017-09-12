@@ -1,1 +1,1 @@
-char auto_home[] = "/var/qmail";
+char auto_home[] = "/usr/local/aqmail";

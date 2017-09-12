@@ -39,6 +39,7 @@ auto_patrn.o:
 	$(COMPILE) auto_patrn.c
 
 auto_qmail.o:
+	./compile auto_home.c
 	./compile auto_qmail.c
 
 auto_spawn.o:
