@@ -26,7 +26,6 @@
 #include "timeoutread.h"
 #include "timeoutwrite.h"
 #include "commands.h"
-#include "cdb.h"
 #include "dns.h"
 #include "wait.h"
 #include "sig.h"
@@ -34,6 +33,8 @@
 #include "open.h"
 #include "base64.h"
 #include "spf.h"
+#include "cdbread.h"
+
 #define FDAUTH 3
 
 /** @file qmail-smtpd.c -- authenticating ESMTP/ESMTPS server
@@ -1133,7 +1134,8 @@ unsigned int flagblank = 0;
 
 void put(char *ch)
 {
-  uint32 dlen;
+//  uint32 dlen;
+  struct cdb c;
   int i;
 
   if (flagmimetype > 0 || flagloadertype > 0 ) {
@@ -1154,7 +1156,9 @@ void put(char *ch)
         if (!stralloc_0(&base64types)) die_nomem();
 
         if (flagmimetype == 2 || flagmimetype == 3 || flagmimetype == 6) {
-          if (cdb_seek(fdbmt,line.s+1,MIMETYPE_LEN,&dlen)) {
+//          if (cdb_seek(fdbmt,line.s+1,MIMETYPE_LEN,&dlen)) {
+          cdb_init(&c,fdbmt);
+          if (cdb_find(&c,line.s+1,MIMETYPE_LEN)) {
             if (!stralloc_copyb(&badmimetype,line.s+1,MIMETYPE_LEN)) die_nomem();
             if (!stralloc_0(&badmimetype)) die_nomem();
             if (!stralloc_cats(&rcptto,"M")) die_nomem();
@@ -1162,6 +1166,7 @@ void put(char *ch)
             qmail_fail(&qqt);
             flagmimetype = -1;
           }
+          cdb_free(&c);
         }
       }
 
@@ -1169,7 +1174,9 @@ void put(char *ch)
         if (flagloadertype >= 1 || flagmimetype >= 1) {
           for (i = 0; i < line.len - LOADER_LEN; ++i) {
             if (flagloadertype == 1 && *(line.s+i) == *badloaderinit) {          /* badloadertype */
-              if (cdb_seek(fdblt,line.s+i,LOADER_LEN,&dlen)) {
+//              if (cdb_seek(fdblt,line.s+i,LOADER_LEN,&dlen)) {
+              cdb_init(&c,fdblt);
+              if (cdb_find(&c,line.s+i,LOADER_LEN)) {
                 if (!stralloc_copyb(&badloadertype,line.s+i,LOADER_LEN)) die_nomem();
                 if (!stralloc_0(&badloadertype)) die_nomem();
                 if (!stralloc_cats(&rcptto,"L")) die_nomem();
@@ -1177,6 +1184,7 @@ void put(char *ch)
                 qmail_fail(&qqt);
                 flagloadertype = -1;
               }
+              cdb_free(&c);
             }
             if (flagmimetype == 1 || flagmimetype == 3 || flagmimetype == 4) {
               if (*(line.s+i) == ' ' || *(line.s+i) == '\t') {                   /* white spaces */

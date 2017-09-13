@@ -9,7 +9,7 @@
 #include "error.h"
 #include "str.h"
 #include "fmt.h"
-#include "cdb.h"
+//#include "cdb.h"
 #include "fd.h"
 #include "open.h"
 #include "byte.h"

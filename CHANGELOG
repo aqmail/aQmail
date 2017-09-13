@@ -1,8 +1,14 @@
 ************************ H E A D E R *************************
 CHANGELOG created from git - do not change these hesder lines!
-Last commit: 2617cf3b15ada90b6e8f2f39c08133f2ddebcc8e
+Last commit: 74f7325560b6832bec4c9de0eac4ce48dd229c40
 ********************* E N D  H E A D E R *********************
 
+20170912:
+    control.c: switched to buffer
+    qlibs: switched to error.a
+    switched to qlibs: strerr.a
+    switched to qlibs: getopt
+    removed static qlibs, switched to uint_t.h, temoved tai.h, taia.h
 20170911:
     consolidated dateime_un.c into datetime.c
     switched to qlibs: ndelay.a; a bit Makefile clean up
@@ -43,11 +49,9 @@ Last commit: 2617cf3b15ada90b6e8f2f39c08133f2ddebcc8e
     Fixed qmail-smtpd (badmailfrom); updated qmail-remote (addrmangle)
 20170430:
     update code to s/qmail-3.2.20 src
-Merge: 2894629 ebcc53c
 20170326:
     Merge pull request #2 from kp-org/dev-kp
     Added 'qlibs' into master branch
-Merge: b6ce5a2 6070c2a
     Merge branch 'dev-kp' of https://github.com/kp-org/aQmail into dev-kp
     qlibs: updated to version 20170326
     qlibs: updated to version 20170326
@@ -55,7 +59,6 @@ Merge: b6ce5a2 6070c2a
     updated qlibs (20170323)
 20170321:
     added 'qlibs'
-Merge: e6f5f69 467dede
 20170319:
     Merge pull request #1 from kp-org/dev-kp
     README.md

@@ -7,7 +7,8 @@
 #include "readwrite.h"
 #include "open.h"
 #include "auto_qmail.h"
-#include "cdbmss.h"
+//#include "cdbmss.h"
+#include "qlibs/include/cdbmake.h"
 #include "fmt.h"
 #include "scan.h"
 #include "byte.h"
@@ -27,7 +28,8 @@ int fd;
 int fdtemp;
 int match = 1;
 
-struct cdbmss cdbmss;
+//struct cdbmss cdbmss;
+struct cdb_make c;
 
 void die_nomem()
 {
@@ -71,30 +73,32 @@ void doaddressdata()
       if (i < address.len) {
         left = byte_rchr(address.s,i,'.');
         if (left == i) left = 0; else ++left;
-  
+
         ++i;
         right = i + byte_chr(address.s + i,address.len - i,'.');
-  
+
         getnum(address.s + left,i - 1 - left,&bot);
         getnum(address.s + i,right - i,&top);
         if (top > 255) top = 255;
-  
+
         while (bot <= top) {
-	  if (!stralloc_copyb(&key,address.s,left)) die_nomem();
-	  if (!stralloc_catb(&key,strnum,fmt_ulong(strnum,bot))) die_nomem();
-	  if (!stralloc_catb(&key,address.s + right,address.len - right)) die_nomem();
+      if (!stralloc_copyb(&key,address.s,left)) die_nomem();
+      if (!stralloc_catb(&key,strnum,fmt_ulong(strnum,bot))) die_nomem();
+      if (!stralloc_catb(&key,address.s + right,address.len - right)) die_nomem();
           case_lowerb(key.s,key.len);
-          if (cdbmss_add(&cdbmss,key.s,key.len,data.s,data.len) == -1) die_write();
-	  ++bot;
+//          if (cdbmss_add(&cdbmss,key.s,key.len,data.s,data.len) == -1) die_write();
+          if (cdb_make_add(&c,key.s,key.len,data.s,data.len) == -1) die_write();
+      ++bot;
         }
-  
+
         return;
       }
     }
 
   case_lowerb(address.s,address.len);
   case_lowerb(data.s,data.len);
-  if (cdbmss_add(&cdbmss,address.s,address.len,data.s,data.len) == -1) die_write();
+//  if (cdbmss_add(&cdbmss,address.s,address.len,data.s,data.len) == -1) die_write();
+  if (cdb_make_add(&c,address.s,address.len,data.s,data.len) == -1) die_write();
 }
 
 int main()
@@ -119,7 +123,8 @@ int main()
   fdtemp = open_trunc("control/mailfromrules.tmp");
   if (fdtemp == -1) die_write();
 
-  if (cdbmss_start(&cdbmss,fdtemp) == -1) die_write();
+//  if (cdbmss_start(&cdbmss,fdtemp) == -1) die_write();
+  if (cdb_make_start(&c,fdtemp) == -1) die_write();
 
   while (match) {
     if (getln(&ssin,&line,&match,'\n') != 0) die_read();
@@ -162,7 +167,8 @@ int main()
     doaddressdata();
   }
 
-  if (cdbmss_finish(&cdbmss) == -1) die_write();
+//  if (cdbmss_finish(&cdbmss) == -1) die_write();
+  if (cdb_make_finish(&c) == -1) die_write();
   if (fsync(fdtemp) == -1) die_write();
   if (close(fdtemp) == -1) die_write(); /* NFS stupidity */
   if (rename("control/mailfromrules.tmp","control/mailfromrules.cdb") == -1)

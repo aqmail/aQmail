@@ -1,11 +1,14 @@
-#include "substdio.h"
+//#include "substdio.h"
+#include "buffer.h"
 #include "subfd.h"
 #include "strerr.h"
 #include "stralloc.h"
 #include "open.h"
 #include "case.h"
 #include "readwrite.h"
-#include "cdbmss.h"
+//#include "cdbmss.h"
+#include "qlibs/include/cdbmake.h"
+#include "rename.h"
 
 #define FATAL "setforward: fatal: "
 
@@ -41,7 +44,8 @@ void longaddress()
 char *fncdb;
 char *fntmp;
 int fd;
-struct cdbmss cdbmss;
+//struct cdbmss cdbmss;
+struct cdb_make c;
 stralloc key = {0};
 
 stralloc target = {0}; /* always initialized; no NUL */
@@ -65,27 +69,26 @@ int datalen;
   if (!stralloc_copys(&key,prepend)) nomem();
   if (!stralloc_cat(&key,&target)) nomem();
   case_lowerb(key.s,key.len);
-  if (cdbmss_add(&cdbmss,key.s,key.len,data,datalen) == -1)
+//  if (cdbmss_add(&cdbmss,key.s,key.len,data,datalen) == -1)
+  if (cdb_make_add(&c,key.s,key.len,data,datalen) == -1)
     writeerr();
 }
 
-int getch(ch)
-char *ch;
+int getch(char *ch)
 {
   int r;
 
-  r = substdio_get(subfdinsmall,ch,1);
+//  r = substdio_get(subfdinsmall,ch,1);
+  r = buffer_get(buffer_0,ch,1);
   if (r == -1)
     strerr_die2sys(111,FATAL,"unable to read input: ");
   return r;
 }
 
-int main(argc,argv)
-int argc;
-char **argv;
+int main(int argc,char **argv)
 {
   char ch;
-  int r;
+//  int r;
 
   if (!stralloc_copys(&target,"")) nomem();
   if (!stralloc_copys(&command,"")) nomem();
@@ -98,7 +101,8 @@ char **argv;
   if (fd == -1)
     strerr_die4sys(111,FATAL,"unable to create ",fntmp,": ");
 
-  if (cdbmss_start(&cdbmss,fd) == -1) writeerr();
+//  if (cdbmss_start(&cdbmss,fd) == -1) writeerr();
+  if (cdb_make_start(&c,fd) == -1) writeerr();
 
   for (;;) {
     if (!getch(&ch)) goto EOF;
@@ -144,7 +148,7 @@ char **argv;
       if (!stralloc_copys(&command,"")) nomem();
 
       if (ch == ';') {
-	if (instr.len)
+    if (instr.len)
           doit(":",instr.s,instr.len);
 
         if (!stralloc_copys(&target,"")) nomem();
@@ -163,12 +167,13 @@ char **argv;
   if (flagtarget || target.len)
     missingsemicolon();
 
-  if (cdbmss_finish(&cdbmss) == -1) writeerr();
+//  if (cdbmss_finish(&cdbmss) == -1) writeerr();
+  if (cdb_make_finish(&c) == -1) writeerr();
   if (fsync(fd) == -1) writeerr();
   if (close(fd) == -1) writeerr(); /* NFS stupidity */
 
   if (rename(fntmp,fncdb) == -1)
     strerr_die6sys(111,FATAL,"unable to move ",fntmp," to ",fncdb,": ");
-  
+
   _exit(0);
 }

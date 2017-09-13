@@ -22,7 +22,9 @@
 #include "byte.h"
 #include "str.h"
 #include "open.h"
-#include "cdb.h"
+//#include "cdb.h"
+#include "qlibs/include/cdbread.h"
+#include "fd.h"
 
 #define FATAL "fastforward: fatal: "
 
@@ -117,7 +119,8 @@ void dofile(char *fn)
 char *fncdb;
 int fdcdb;
 stralloc key = {0};
-uint32 dlen;
+//uint32 dlen;
+static struct cdb c;
 stralloc data = {0};
 
 void cdbreaderror()
@@ -134,7 +137,9 @@ int findtarget(int flagwild,char *prepend,char *addr)
   if (!stralloc_cats(&key,addr)) nomem();
   case_lowerb(key.s,key.len);
 
-  r = cdb_seek(fdcdb,key.s,key.len,&dlen);
+  cdb_init(&c,fdcdb);
+//  r = cdb_seek(fdcdb,key.s,key.len,&dlen);
+  r = cdb_find(&c,key.s,key.len);
   if (r == -1) cdbreaderror();
   if (r) return 1;
 
@@ -146,7 +151,8 @@ int findtarget(int flagwild,char *prepend,char *addr)
   if (!stralloc_cats(&key,addr + at)) nomem();
   case_lowerb(key.s,key.len);
 
-  r = cdb_seek(fdcdb,key.s,key.len,&dlen);
+//  r = cdb_seek(fdcdb,key.s,key.len,&dlen);
+  r = cdb_find(&c,key.s,key.len);
   if (r == -1) cdbreaderror();
   if (r) return 1;
 
@@ -154,7 +160,8 @@ int findtarget(int flagwild,char *prepend,char *addr)
   if (!stralloc_catb(&key,addr,at + 1)) nomem();
   case_lowerb(key.s,key.len);
 
-  r = cdb_seek(fdcdb,key.s,key.len,&dlen);
+//  r = cdb_seek(fdcdb,key.s,key.len,&dlen);
+  r = cdb_find(&c,key.s,key.len);
   if (r == -1) cdbreaderror();
   if (r) return 1;
 
@@ -165,9 +172,11 @@ int gettarget(int flagwild,char *prepend,char *addr)
 {
   if (!findtarget(flagwild,prepend,addr)) return 0;
 
-  if (!stralloc_ready(&data,(unsigned int) dlen)) nomem();
-  data.len = dlen;
-  if (cdb_bread(fdcdb,data.s,data.len) == -1) cdbreaderror();
+//  if (!stralloc_ready(&data,(unsigned int) dlen)) nomem();
+  if (!stralloc_ready(&data,cdb_datalen(&c))) nomem();
+//  data.len = dlen;
+//  if (cdb_bread(fdcdb,data.s,data.len) == -1) cdbreaderror();
+  if (cdb_read(&c,data.s,data.len,cdb_datalen(&c)) == -1) cdbreaderror();
 
   return 1;
 }

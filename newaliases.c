@@ -1,14 +1,21 @@
-#include "substdio.h"
+#include <unistd.h>
+#include "sys/stat.h"
+//#include "substdio.h"
+#include "buffer.h"
 #include "strerr.h"
+
 #include "stralloc.h"
 #include "getln.h"
 #include "open.h"
-#include "readwrite.h"
+//#include "readwrite.h"
 #include "token822.h"
 #include "control.h"
 #include "auto_qmail.h"
 #include "case.h"
-#include "cdbmss.h"
+//#include "cdbmss.h"
+#include "qlibs/include/cdbmake.h"
+#include "rename.h"
+#include "byte.h"
 
 #define FATAL "newaliases: fatal: "
 
@@ -112,12 +119,12 @@ void gotaddr()
 
   if (!address.len)
     strerr_die2x(111,FATAL,"empty recipient addresses not permitted");
- 
+
   flaghasat = 0;
   for (i = 0;i < tokaddr.len;++i)
     if (tokaddr.t[i].type == TOKEN822_AT)
       flaghasat = 1;
- 
+
   tokaddr.len = 0;
 
   if (!address.len) return;
@@ -194,10 +201,10 @@ void parseline()
   beginning = toks.t;
   t = toks.t + toks.len;
   wordok = 1;
- 
+
   if (!token822_readyplus(&tokaddr,1)) nomem();
   tokaddr.len = 0;
- 
+
   while (t > beginning)
     switch((--t)->type) {
       case TOKEN822_SEMI:
@@ -244,8 +251,10 @@ void parseline()
 }
 
 char inbuf[1024];
-substdio ssin;
-struct cdbmss cdbmss;
+//substdio ssin;
+buffer bin;
+//struct cdbmss cdbmss;
+struct cdb_make c;
 stralloc key = {0};
 
 void doit()
@@ -261,13 +270,15 @@ void doit()
     if (!stralloc_copys(&key,"?")) nomem();
     if (!stralloc_catb(&key,target.s + 6,target.len - 6)) nomem();
     case_lowerb(key.s,key.len);
-    if (cdbmss_add(&cdbmss,key.s,key.len,fulltarget.s,fulltarget.len) == -1) writeerr();
+//    if (cdbmss_add(&cdbmss,key.s,key.len,fulltarget.s,fulltarget.len) == -1) writeerr();
+    if (cdb_make_add(&c,key.s,key.len,fulltarget.s,fulltarget.len) == -1) writeerr();
   }
 
   if (!stralloc_copys(&key,":")) nomem();
   if (!stralloc_cat(&key,&target)) nomem();
   case_lowerb(key.s,key.len);
-  if (cdbmss_add(&cdbmss,key.s,key.len,instr.s,instr.len) == -1) writeerr();
+//  if (cdbmss_add(&cdbmss,key.s,key.len,instr.s,instr.len) == -1) writeerr();
+  if (cdb_make_add(&c,key.s,key.len,instr.s,instr.len) == -1) writeerr();
 }
 
 int main()
@@ -279,16 +290,19 @@ int main()
 
   fd = open_read("/etc/aliases");
   if (fd == -1) readerr();
-  substdio_fdbuf(&ssin,read,fd,inbuf,sizeof(inbuf));
+//  substdio_fdbuf(&ssin,read,fd,inbuf,sizeof(inbuf));
+  buffer_init(&bin,read,fd,inbuf,sizeof(inbuf));
 
   fd = open_trunc("/etc/aliases.tmp");
   if (fd == -1) strerr_die2sys(111,FATAL,"unable to create /etc/aliases.tmp: ");
-  if (cdbmss_start(&cdbmss,fd) == -1) writeerr();
+//  if (cdbmss_start(&cdbmss,fd) == -1) writeerr();
+  if (cdb_make_start(&c,fd) == -1) writeerr();
 
   if (!stralloc_copys(&line,"")) nomem();
 
   for (;;) {
-    if (getln(&ssin,&newline,&match,'\n') != 0) readerr();
+//    if (getln(&ssin,&newline,&match,'\n') != 0) readerr();
+    if (getln(&bin,&newline,&match,'\n') != 0) readerr();
 
     if (match && (newline.s[0] == '\n')) continue;
 
@@ -303,19 +317,20 @@ int main()
         if (!stralloc_copys(&fulltarget,"")) nomem();
         if (!stralloc_copys(&instr,"")) nomem();
         parseline();
-	doit();
+    doit();
       }
 
     if (!match) break;
     if (!stralloc_copy(&line,&newline)) nomem();
   }
 
-  if (cdbmss_finish(&cdbmss) == -1) writeerr();
+//  if (cdbmss_finish(&cdbmss) == -1) writeerr();
+  if (cdb_make_finish(&c) == -1) writeerr();
   if (fsync(fd) == -1) writeerr();
   if (close(fd) == -1) writeerr(); /* NFS stupidity */
 
   if (rename("/etc/aliases.tmp","/etc/aliases.cdb") == -1)
     strerr_die2sys(111,FATAL,"unable to move /etc/aliases.tmp to /etc/aliases.cdb: ");
-  
+
   _exit(0);
 }
