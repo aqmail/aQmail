@@ -1,8 +1,13 @@
 ************************ H E A D E R *************************
 CHANGELOG created from git - do not change these hesder lines!
-Last commit: 74f7325560b6832bec4c9de0eac4ce48dd229c40
+Last commit: d9bfaa0bea847f7ae19590e32257328176a2c8e7
 ********************* E N D  H E A D E R *********************
 
+20170914:
+    added ssl.lib checks to configure, Makefile clean up
+    reworked printforward.c
+20170913:
+    switched to qlibs: cdb.a, partially buffer.a
 20170912:
     control.c: switched to buffer
     qlibs: switched to error.a
