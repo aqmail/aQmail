@@ -1,5 +1,11 @@
-#include "substdio.h"
-#include "readwrite.h"
+/*
+ *  Revision 20170914, Kai Peter
+ *  - switched to buffer
+*/
+#include <unistd.h>
+//#include "substdio.h"
+#include "buffer.h"
+//#include "readwrite.h"
 #include "wait.h"
 #include "exit.h"
 //#include "fork.h"
@@ -27,7 +33,7 @@ int qmail_open(struct qmail *qq)
 
   if (pipe(pim) == -1) return -1;
   if (pipe(pie) == -1) { close(pim[0]); close(pim[1]); return -1; }
- 
+
   switch(qq->pid = fork()) {
     case -1:
       close(pim[0]); close(pim[1]);
@@ -45,7 +51,8 @@ int qmail_open(struct qmail *qq)
 
   qq->fdm = pim[1]; close(pim[0]);
   qq->fde = pie[1]; close(pie[0]);
-  substdio_fdbuf(&qq->ss,write,qq->fdm,qq->buf,sizeof(qq->buf));
+//  substdio_fdbuf(&qq->ss,write,qq->fdm,qq->buf,sizeof(qq->buf));
+  buffer_init(&qq->ss,write,qq->fdm,qq->buf,sizeof(qq->buf));
   qq->flagerr = 0;
   return 0;
 }
@@ -62,19 +69,23 @@ void qmail_fail(struct qmail *qq)
 
 void qmail_put(struct qmail *qq,char *s,int len)
 {
-  if (!qq->flagerr) if (substdio_put(&qq->ss,s,len) == -1) qq->flagerr = 1;
+//  if (!qq->flagerr) if (substdio_put(&qq->ss,s,len) == -1) qq->flagerr = 1;
+  if (!qq->flagerr) if (buffer_put(&qq->ss,s,len) == -1) qq->flagerr = 1;
 }
 
 void qmail_puts(struct qmail *qq,char *s)
 {
-  if (!qq->flagerr) if (substdio_puts(&qq->ss,s) == -1) qq->flagerr = 1;
+//  if (!qq->flagerr) if (substdio_puts(&qq->ss,s) == -1) qq->flagerr = 1;
+  if (!qq->flagerr) if (buffer_puts(&qq->ss,s) == -1) qq->flagerr = 1;
 }
 
 void qmail_from(struct qmail *qq,char *s)
 {
-  if (substdio_flush(&qq->ss) == -1) qq->flagerr = 1;
+//  if (substdio_flush(&qq->ss) == -1) qq->flagerr = 1;
+  if (buffer_flush(&qq->ss) == -1) qq->flagerr = 1;
   close(qq->fdm);
-  substdio_fdbuf(&qq->ss,write,qq->fde,qq->buf,sizeof(qq->buf));
+//  substdio_fdbuf(&qq->ss,write,qq->fde,qq->buf,sizeof(qq->buf));
+  buffer_init(&qq->ss,write,qq->fde,qq->buf,sizeof(qq->buf));
   qmail_put(qq,"F",1);
   qmail_puts(qq,s);
   qmail_put(qq,"",1);
@@ -93,7 +104,8 @@ char *qmail_close(struct qmail *qq)
   int exitcode;
 
   qmail_put(qq,"",1);
-  if (!qq->flagerr) if (substdio_flush(&qq->ss) == -1) qq->flagerr = 1;
+//  if (!qq->flagerr) if (substdio_flush(&qq->ss) == -1) qq->flagerr = 1;
+  if (!qq->flagerr) if (buffer_flush(&qq->ss) == -1) qq->flagerr = 1;
   close(qq->fde);
 
   if (wait_pid(&wstat,qq->pid) != qq->pid)
@@ -131,7 +143,7 @@ char *qmail_close(struct qmail *qq)
     case 120: return "Zunable to exec qq (#4.3.0)";
     default:
       if ((exitcode >= 11) && (exitcode <= 40))
-	return "Dqq permanent problem (#5.3.0)";
+    return "Dqq permanent problem (#5.3.0)";
       return "Zqq temporary problem (#4.3.0)";
   }
 }

@@ -78,9 +78,8 @@ compile:
 
 condredirect: qmail.o auto_qmail.o
 	$(COMPILE) condredirect.c
-	./load condredirect qmail.o strerr.a fd.a sig.a wait.a \
-	seek.a env.a substdio.a error.a str.a fs.a auto_qmail.o \
-	qlibs/buffer.a qlibs/errmsg.a
+	./load condredirect qmail.o buffer.a strerr.a fd.a sig.a wait.a \
+	seek.a env.a error.a str.a fs.a auto_qmail.o buffer.a errmsg.a
 
 #config: \
 #warn-auto.sh config.sh
@@ -679,7 +678,7 @@ env.a substdio.a sig.a error.a wait.a fd.a str.a datetime.o fs.a
 	./compile qmail-qmqpd.c
 	./load qmail-qmqpd received.o now.o date822fmt.o qmail.o \
 	auto_qmail.o env.a substdio.a sig.a error.a wait.a fd.a \
-	str.a datetime.o fs.a case.a
+	str.a datetime.o fs.a case.a buffer.a
 
 qmail-qmtpd: \
 rcpthosts.o control.o constmap.o received.o \
@@ -833,12 +832,10 @@ qmail-start: prot.o fd.a auto_uids.o
 #	./compile qmail-start.c
 
 qmail-tcpok: auto_qmail.o
-# open.a lock.a strerr.a substdio.a error.a str.a \
-	$(COMPILE) qmail-tcpok.c
+# open.a lock.a strerr.a substdio.a error.a str.a
+	./compile qmail-tcpok.c
 	./load qmail-tcpok open.a lock.a strerr.a substdio.a \
-	error.a str.a auto_qmail.o    qlibs/buffer.a qlibs/errmsg.a
-
-#qmail-tcpok.o:
+	error.a str.a auto_qmail.o buffer.a errmsg.a
 
 qmail-tcpto: ip.o now.o auto_qmail.o
 # open.a lock.a substdio.a error.a str.a \
