@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "alloc.h"
@@ -9,7 +11,7 @@
 #include "stralloc.h"
 #include "select.h"
 #include "exit.h"
-#include "coe.h"
+#include "fd.h"
 #include "open.h"
 #include "error.h"
 #include "auto_qmail.h"
@@ -120,7 +122,8 @@ void docmd()
   if (pipe(pi) == -1)
     { close(fdmess); err("Zqmail-spawn unable to create pipe. (#4.3.0)\n"); return; }
 
-  coe(pi[0]);
+//  coe(pi[0]);
+  fd_coe(pi[0]);
 
   f = spawn(fdmess,pi[1],sender.s,recip.s,j);
   close(fdmess);
@@ -129,7 +132,8 @@ void docmd()
     { close(pi[0]); close(pi[1]); err("Zqmail-spawn unable to fork. (#4.3.0)\n"); return; }
 
   d[delnum].fdin = pi[0];
-  d[delnum].fdout = pi[1]; coe(pi[1]);
+//  d[delnum].fdout = pi[1]; coe(pi[1]);
+  d[delnum].fdout = pi[1]; fd_coe(pi[1]);
   d[delnum].pid = f;
   d[delnum].used = 1;
 }

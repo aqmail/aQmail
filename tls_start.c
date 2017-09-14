@@ -74,7 +74,7 @@ int starttls_info(void)
         else {
           if (!stralloc_0(&ssl_value)) die_nomem();
           x++;
-          if (!env_put2(ssl_parm.s,ssl_value.s)) die_nomem();
+          if (!env_put(ssl_parm.s,ssl_value.s)) die_nomem();
           ssl_parm.len = 0; 
           ssl_value.len = 0;
           break; 

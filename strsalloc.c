@@ -1,5 +1,4 @@
 #include "alloc.h"
-#include "gen_allocdefs.h"
 #include "stralloc.h"
 #include "strsalloc.h"
 

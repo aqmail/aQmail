@@ -1,7 +1,7 @@
 #ifndef SPF_H
 #define SPF_H
 
-#include "stralloc.h"
+#include "qlibs/include/stralloc.h"
 #include "ipalloc.h"
 
 /* (Internal) Processing codes */

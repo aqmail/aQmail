@@ -12,7 +12,7 @@
 #include "error.h"
 #include "str.h"
 #include "fmt.h"
-#include "cdb.h"
+//#include "cdb.h"
 #include "fd.h"
 #include "open.h"
 #include "byte.h"
@@ -59,7 +59,7 @@ int main(int argc,char **argv)
   char ch;
   char *homedir = "/home";
 
-  if (argv[1])  
+  if (argv[1])
     if (!case_diffs(argv[1],RESPECT_CASE)) flagrespect = 1;
     else {
       homedir = argv[1];
@@ -67,10 +67,10 @@ int main(int argc,char **argv)
       if (!dir) pam_exit(2);
     }
 
-  if (argv[2])  
+  if (argv[2])
     if (!case_diffs(argv[2],RESPECT_CASE)) flagrespect = 1;
 
- 
+
   switch (control_readfile(&vdoms,"control/virtualdomains",0)) {
     case -1: pam_exit(111);
     case  0: if (!constmap_init(&mapvdoms,"",0,1)) pam_exit(111);

@@ -4,7 +4,8 @@
 #define CDB_MAKE_H
 
 #include "buffer.h"
-#include "uint32.h"
+//#include "uint32.h"
+#include "uint_t.h"
 
 #define CDB_HPLIST 1000
 

@@ -1,21 +1,23 @@
+#include <unistd.h>
 #include "fd.h"
 #include "wait.h"
 #include "prot.h"
 #include "substdio.h"
+#include "buffer.h"
 #include "stralloc.h"
 #include "scan.h"
-#include "exit.h"
-//#include "fork.h"
+#include "byte.h"
+#include "open.h"
 #include "error.h"
-#include "cdb.h"
+#include "qlibs/include/cdbread.h"
 #include "case.h"
-//#include "slurpclose.h"
 #include "readclose.h"
 #include "auto_qmail.h"
 #include "auto_uids.h"
 #include "qlx.h"
 
 char *aliasempty;
+static struct cdb c;
 
 void initialize(int argc,char **argv)
 {
@@ -93,14 +95,19 @@ void nughde_get(char *local)
       _exit(QLX_CDB);
 
   if (fd != -1) {
-    uint32 dlen;
+//    uint32 dlen;
     unsigned int i;
 
-    r = cdb_seek(fd,"",0,&dlen);
+//    r = cdb_seek(fd,"",0,&dlen);
+    cdb_init(&c,fd);
+    r = cdb_find(&c,"",0);
     if (r != 1) _exit(QLX_CDB);
-    if (!stralloc_ready(&wildchars,(unsigned int) dlen)) _exit(QLX_NOMEM);
-    wildchars.len = dlen;
-    if (cdb_bread(fd,wildchars.s,wildchars.len) == -1) _exit(QLX_CDB);
+//    if (!stralloc_ready(&wildchars,(unsigned int) dlen)) _exit(QLX_NOMEM);
+//    wildchars.len = dlen;
+    if (!stralloc_ready(&wildchars,cdb_datalen(&c))) _exit(QLX_NOMEM);
+    wildchars.len = cdb_datalen(&c);
+//    if (cdb_bread(fd,wildchars.s,wildchars.len) == -1) _exit(QLX_CDB);
+    if (cdb_read(&c,wildchars.s,wildchars.len,cdb_datapos(&c)) == -1) _exit(QLX_CDB);
 
     i = lower.len;
     flagwild = 0;
@@ -108,14 +115,18 @@ void nughde_get(char *local)
     do {
       /* i > 0 */
       if (!flagwild || (i == 1) || (byte_chr(wildchars.s,wildchars.len,lower.s[i - 1]) < wildchars.len)) {
-        r = cdb_seek(fd,lower.s,i,&dlen);
+//        r = cdb_seek(fd,lower.s,i,&dlen);
+        r = cdb_find(&c,lower.s,i);
         if (r == -1) _exit(QLX_CDB);
         if (r == 1) {
-          if (!stralloc_ready(&nughde,(unsigned int) dlen)) _exit(QLX_NOMEM);
-          nughde.len = dlen;
-          if (cdb_bread(fd,nughde.s,nughde.len) == -1) _exit(QLX_CDB);
+//          if (!stralloc_ready(&nughde,(unsigned int) dlen)) _exit(QLX_NOMEM);
+//          nughde.len = dlen;
+          if (!stralloc_ready(&nughde,cdb_datalen(&c))) _exit(QLX_NOMEM);
+          nughde.len = cdb_datalen(&c);
+//          if (cdb_bread(fd,nughde.s,nughde.len) == -1) _exit(QLX_CDB);
+          if (cdb_read(&c,nughde.s,nughde.len,cdb_datapos(&c)) == -1) _exit(QLX_CDB);
           if (flagwild)
-	    if (!stralloc_cats(&nughde,local + i - 1)) _exit(QLX_NOMEM);
+        if (!stralloc_cats(&nughde,local + i - 1)) _exit(QLX_NOMEM);
           if (!stralloc_0(&nughde)) _exit(QLX_NOMEM);
           close(fd);
           return;

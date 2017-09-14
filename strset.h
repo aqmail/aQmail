@@ -1,7 +1,8 @@
 #ifndef STRSET_H
 #define STRSET_H
 
-#include "uint32.h"
+//#include "uint32.h"
+#include "uint_t.h"
 
 typedef struct strset_list
 {

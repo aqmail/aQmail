@@ -1,8 +1,10 @@
+#include <unistd.h>
 #include "substdio.h"
 #include "subfd.h"
 #include "strerr.h"
 #include "stralloc.h"
 #include "getln.h"
+#include "str.h"
 
 #define FATAL "printmaillist: fatal: "
 

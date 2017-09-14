@@ -1,4 +1,6 @@
-#include "cdb.h"
+#include <unistd.h>
+#include "qlibs/include/cdbread.h"
+//#include "cdb.h"
 #include "byte.h"
 #include "open.h"
 #include "error.h"
@@ -11,9 +13,13 @@
 #include "wait.h"
 #include "str.h"
 #include "case.h"
-#include "readwrite.h"
+//#include "readwrite.h"
 #include "substdio.h"
 #include "auto_break.h"
+
+#include "fd.h"
+#include "sig.h"
+
 #define FDAUTH 3
 
 static stralloc key = {0};
@@ -193,7 +199,8 @@ int recipients_parse(char *rhost,int rlen,char *addr,char *rkey,int klen,char *v
   int r;
   int j = 0;
   int k = 0;
-  uint32 dlen;
+//  uint32 dlen;
+  static struct cdb c;
   static stralloc line = {0};
   int seenhost = 0;
 
@@ -236,25 +243,35 @@ int recipients_parse(char *rhost,int rlen,char *addr,char *rkey,int klen,char *v
           if (r == 111) return r;
         }
 
-      if (j > 0 && j < line.len) 			             /* cdb */
+      if (j > 0 && j < line.len)                         /* cdb */
         if (seenhost || !str_diffn(line.s,"*",1)) {
           fdrcps = open_read(line.s+j+1);
           if (fdrcps != -1) {
-            r = cdb_seek(fdrcps,rkey,klen - 2,&dlen);
+//            r = cdb_seek(fdrcps,rkey,klen - 2,&dlen);
+            cdb_init(&c,fdrcps);
+            r = cdb_find(&c,rkey,klen - 2);
             if (vlen > 0 && r == 0)
-              r = cdb_seek(fdrcps,vkey,vlen - 2,&dlen);
+//              r = cdb_seek(fdrcps,vkey,vlen - 2,&dlen);
+              cdb_init(&c,fdrcps);
+              r = cdb_find(&c,vkey,vlen - 2);
             close(fdrcps);
+            cdb_free(&c);
             if (r) return 1;
-          } 
+          }
         }
-      
+
       if (!seenhost) {
-        fdrcps = open_read(line.s);                                  /* legacy cdb */					
+        fdrcps = open_read(line.s);                                  /* legacy cdb */
         if (fdrcps != -1) {
-          r = cdb_seek(fdrcps,rkey,klen - 2,&dlen);
+//          r = cdb_seek(fdrcps,rkey,klen - 2,&dlen);
+          cdb_init(&c,fdrcps);
+          r = cdb_find(&c,rkey,klen - 2);
           if (vlen > 0 && r == 0)
-            r = cdb_seek(fdrcps,vkey,vlen - 2,&dlen);
+//            r = cdb_seek(fdrcps,vkey,vlen - 2,&dlen);
+            cdb_init(&c,fdrcps);
+            r = cdb_find(&c,vkey,vlen - 2);
           close(fdrcps);
+          cdb_free(&c);
           if (r) return 1;
         }
       }

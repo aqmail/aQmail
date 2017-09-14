@@ -1,4 +1,5 @@
-#include "sgetopt.h"
+//#include "sgetopt.h"
+#include "getoptb.h"
 #include "substdio.h"
 #include "subfd.h"
 #include "alloc.h"
@@ -23,14 +24,14 @@ char *smtpdarg[] = { "bin/qmail-smtpd", 0 };
 void smtpd()
 {
   if (!env_get("PROTO")) {
-    if (!env_put("RELAYCLIENT=")) nomem();
-    if (!env_put("DATABYTES=0")) nomem();
-    if (!env_put("PROTO=TCP")) nomem();
-    if (!env_put("TCPLOCALIP=127.0.0.1")) nomem();
-    if (!env_put("TCPLOCALHOST=localhost")) nomem();
-    if (!env_put("TCPREMOTEIP=127.0.0.1")) nomem();
-    if (!env_put("TCPREMOTEHOST=localhost")) nomem();
-    if (!env_put("TCPREMOTEINFO=sendmail-bs")) nomem();
+    if (!env_puts("RELAYCLIENT=")) nomem();
+    if (!env_puts("DATABYTES=0")) nomem();
+    if (!env_puts("PROTO=TCP")) nomem();
+    if (!env_puts("TCPLOCALIP=127.0.0.1")) nomem();
+    if (!env_puts("TCPLOCALHOST=localhost")) nomem();
+    if (!env_puts("TCPREMOTEIP=127.0.0.1")) nomem();
+    if (!env_puts("TCPREMOTEHOST=localhost")) nomem();
+    if (!env_puts("TCPREMOTEINFO=sendmail-bs")) nomem();
   }
   execv(*smtpdarg,smtpdarg);
   substdio_putsflush(subfderr,"sendmail: fatal: unable to run qmail-smtpd\n");
@@ -63,17 +64,17 @@ const char *s;
   a = str_rchr(s, '@');
   if (a == n)
   {
-    env_put2("QMAILUSER", s);
+    env_put("QMAILUSER", s);
     return;
   }
-  env_put2("QMAILHOST", s + a + 1);
+  env_put("QMAILHOST", s + a + 1);
 
   x = (char *) alloc((a + 1) * sizeof(char));
   if (!x) nomem();
   for (i = 0; i < a; i++)
     x[i] = s[i];
   x[i] = 0;
-  env_put2("QMAILUSER", x);
+  env_put("QMAILUSER", x);
   alloc_free(x);
 }
 
@@ -102,7 +103,7 @@ char **argv;
       case 'B': break;
       case 't': flagh = 1; break;
       case 'f': sender = optarg; break;
-      case 'F': if (!env_put2("MAILNAME",optarg)) nomem(); break;
+      case 'F': if (!env_put("MAILNAME",optarg)) nomem(); break;
       case 'p': break; /* could generate a Received line from optarg */
       case 'v': break;
       case 'i': break; /* what an absurd concept */

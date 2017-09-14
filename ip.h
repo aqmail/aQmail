@@ -1,7 +1,8 @@
 #ifndef IP_H
 #define IP_H
 
-#include "uint32.h"
+//#include "uint32.h"
+#include "uint_t.h"
 #include "stralloc.h"
 
 #define IPFMT 40

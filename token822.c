@@ -2,7 +2,6 @@
 #include "alloc.h"
 #include "str.h"
 #include "token822.h"
-#include "gen_allocdefs.h"
 
 static struct token822 comma = { TOKEN822_COMMA };
 

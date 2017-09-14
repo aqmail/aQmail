@@ -1,7 +1,0 @@
-*.o
-*.a
-*.bck
-*.diff
-_*
-compile
-makelib
