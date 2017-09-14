@@ -6,7 +6,7 @@ COMPILE=./compile
 MAKELIB=./makelib
 LOAD=./load
 
-default: libs \
+default: conf libs \
 it-analog it-base it-setup it-dns it-control \
 it-mbox it-forward it-pop it-queue \
 it-clients it-user it-dns it-server it-log
@@ -14,23 +14,17 @@ it-clients it-user it-dns it-server it-log
 clean:
 	rm -f *.a *.o *.lib *.tmp `cat TARGETS`
 	cd ucspissl ; make clean
-#	cd qlibs ; make clean
+	cd qlibs ; make clean
+
+conf:
+	./configure
 
 libs:
-#	cd qlibs ; make
+	cd qlibs ; make
 	cd ucspissl ; make
 	cp ucspissl/ucspissl.a ucspissl.a
-	cp ucspissl/ssl.lib ssl.lib
+#	cp ucspissl/ssl.lib ssl.lib
 
-alloc.a:
-	ln -s qlibs/alloc.a alloc.a
-
-auto-ccld.sh:
-#../conf-cc conf-ld warn-auto.sh
-#	( cat warn-auto.sh; \
-#	echo CC=\'`head -1 ../conf-cc`\'; \
-#	echo LD=\'`head -1 ../conf-ld`\' \
-#	) > auto-ccld.sh
 
 auto_break.o:
 	$(COMPILE) auto_break.c
@@ -55,10 +49,6 @@ auto_usera.o:
 	./compile auto_usera.c
 
 
-base64.o:
-	cp qlibs/base64.o base64.o
-#	./compile base64.c
-
 md5c.o : \
 compile md5c.c md5.h
 	./compile md5c.c
@@ -72,63 +62,13 @@ bouncesaying:
 	$(LOAD) bouncesaying strerr.a error.a substdio.a wait.a \
 	qlibs/buffer.a qlibs/errmsg.a qlibs/byte.o str.a
 
-case.a:
-	cp qlibs/case.a case.a
-
-cdb2.a: \
-makelib cdb.o cdb_hash.o cdb_unpack.o cdb_seek.o cdb_make.o
-	./makelib cdb2.a cdb2.o cdb_hash2.o cdb_unpack2.o cdb_seek2.o cdb_make2.o qlibs/uint32p.o
-
-cdb.o:
-#compile cdb2.c
-# readwrite.h error.h seek.h
-	./compile cdb2.c
-
-cdb_hash.o:
-#compile cdb_hash2.c cdb.h uint32.h
-	./compile cdb_hash2.c
-
-cdb_seek.o:
-#compile cdb_seek.c cdb.h uint32.h
-	./compile cdb_seek2.c
-
-cdb_unpack.o:
-#compile cdb_unpack.c cdb.h uint32.h
-	./compile cdb_unpack2.c
-
-cdb_make.o:
-#compile cdb_make.c
-# uint32.h readwrite.h seek.h error.h cdb.h uint32.h cdb_make.h buffer.h
-	./compile cdb_make2.c
-
-#cdbmake.a: \
-#makelib cdbmake_pack.o cdbmake_hash.o cdbmake_add.o
-#	./makelib cdbmake.a cdbmake_pack.o cdbmake_hash.o cdbmake_add.o
-
-#cdbmake_add.o: \
-#compile cdbmake_add.c cdbmake.h uint32.h
-#	./compile cdbmake_add.c
-
-#cdbmake_hash.o: \
-#compile cdbmake_hash.c cdbmake.h uint32.h
-#	./compile cdbmake_hash.c
-
-#cdbmake_pack.o: \
-#compile cdbmake_pack.c cdbmake.h uint32.h
-#	./compile cdbmake_pack.c
-
-#cdbmss.o: \
-#compile cdbmss.c readwrite.h seek.h cdbmss.h cdb.h cdbmake.h uint32.h substdio.h
-#	./compile cdbmss.c
-
 columnt:
-#strerr.a substdio.a stralloc.a alloc.a error.a slurpclose.o
 	$(COMPILE) columnt.c
 	./load columnt qlibs/slurpclose.o qlibs/strerr.a qlibs/substdio.a qlibs/stralloc.a \
-	qlibs/alloc.a qlibs/error.a qlibs/str.a qlibs/buffer.a qlibs/open.o
+	alloc.a error.a str.a buffer.a open.a
 
 commands.o:
-	./compile commands.c
+	$(COMPILE) commands.c
 
 compile:
 #make-compile warn-auto.sh systype
@@ -136,17 +76,13 @@ compile:
 #	compile
 #	chmod 755 compile
 
-condredirect: \
-load condredirect.o qmail.o strerr.a fd.a sig.a wait.a seek.a env.a \
-substdio.a error.a str.a fs.a auto_qmail.o
+condredirect: qmail.o auto_qmail.o
+	$(COMPILE) condredirect.c
 	./load condredirect qmail.o strerr.a fd.a sig.a wait.a \
 	seek.a env.a substdio.a error.a str.a fs.a auto_qmail.o \
 	qlibs/buffer.a qlibs/errmsg.a
 
-condredirect.o:
-	$(COMPILE) condredirect.c
-
-config: \
+#config: \
 #warn-auto.sh config.sh
 #	cat warn-auto.sh config.sh \
 #	| sed s}HOME}"`head -1 conf-home`"}g \
@@ -155,7 +91,7 @@ config: \
 #	> config
 #	chmod 755 config
 
-config-fast:
+#config-fast:
 #warn-auto.sh config-fast.sh
 ## ../conf-home ../conf-break ../conf-split
 #	cat warn-auto.sh config-fast.sh \
@@ -171,13 +107,6 @@ constmap.o:
 control.o:
 	$(COMPILE) control.c
 
-crypt.lib: \
-trycrypt.c compile load
-	( ( ./compile trycrypt.c && \
-	./load trycrypt -lcrypt ) >/dev/null 2>&1 \
-	&& echo -lcrypt || exit 0 ) > crypt.lib
-	rm -f trycrypt.o trycrypt
-
 date822fmt.o:
 	$(COMPILE) date822fmt.c
 
@@ -190,17 +119,8 @@ warn-auto.sh datemail.sh
 	> datemail
 	chmod 755 datemail
 
-#datetime.a: \
-#makelib datetime.o datetime_un.o
-#	./makelib datetime.a datetime.o datetime_un.o
-
-datetime.o: \
-compile datetime.c
+datetime.o:
 	./compile datetime.c
-
-#datetime_un.o: \
-#compile datetime_un.c datetime.h
-#	./compile datetime_un.c
 
 ddist: \
 warn-auto.sh ddist.sh
@@ -216,85 +136,85 @@ warn-auto.sh deferrals.sh
 	> deferrals
 	chmod 755 deferrals
 
-dns.o: \
-compile dns.c
+dns.o:
+#compile dns.c
 # ip.h ipalloc.h \
 #strsalloc.h gen_alloc.h dns.h
 	./compile dns.c
 
 dnscname: \
-load dnscname.o dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
+dnscname.o dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
 stralloc.a alloc.a substdio.a error.a str.a fs.a dns.lib socket.lib
 	./load dnscname dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
 	stralloc.a alloc.a substdio.a error.a str.a fs.a \
 	`cat dns.lib` `cat socket.lib`
 
-dnscname.o: \
-compile dnscname.c
+dnscname.o:
+#compile dnscname.c
 # substdio.h subfd.h strsalloc.h \
 #gen_alloc.h dns.h dnsdoe.h readwrite.h exit.h
 	./compile dnscname.c
 
-dnsdoe.o: \
-compile dnsdoe.c
+dnsdoe.o:
+#compile dnsdoe.c
 # substdio.h subfd.h exit.h dns.h dnsdoe.h
 	./compile dnsdoe.c
 
 dnsfq: \
-load dnsfq.o dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
+dnsfq.o dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
 stralloc.a alloc.a substdio.a error.a str.a fs.a dns.lib socket.lib
 	./load dnsfq dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
 	stralloc.a alloc.a substdio.a error.a str.a fs.a \
 	`cat dns.lib` `cat socket.lib`
 
-dnsfq.o: \
-compile dnsfq.c
+dnsfq.o:
+#compile dnsfq.c
 # substdio.h subfd.h strsalloc.h gen_alloc.h \
 #dns.h dnsdoe.h ip.h ipalloc.h gen_alloc.h exit.h
 	./compile dnsfq.c
 
 dnsip: \
-load dnsip.o dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
+dnsip.o dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
 stralloc.a alloc.a substdio.a error.a str.a fs.a dns.lib socket.lib
 	./load dnsip dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
 	stralloc.a alloc.a substdio.a error.a str.a fs.a \
 	`cat dns.lib` `cat socket.lib`
 
-dnsip.o: \
-compile dnsip.c
+dnsip.o:
+#compile dnsip.c
 # substdio.h subfd.h strsalloc.h gen_alloc.h \
 #dns.h dnsdoe.h ip.h ipalloc.h gen_alloc.h exit.h
 	./compile dnsip.c
 
 dnsmxip: \
-load dnsmxip.o dns.o dnsdoe.o ip.o ipalloc.o now.o strsalloc.o \
+dnsmxip.o dns.o dnsdoe.o ip.o ipalloc.o now.o strsalloc.o \
 stralloc.a alloc.a substdio.a error.a str.a fs.a dns.lib socket.lib
 	./load dnsmxip dns.o dnsdoe.o ip.o ipalloc.o now.o strsalloc.o \
 	stralloc.a alloc.a substdio.a error.a str.a fs.a  `cat \
 	dns.lib` `cat socket.lib`
 
-dnsmxip.o: \
-compile dnsmxip.c
+dnsmxip.o:
+#compile dnsmxip.c
 # substdio.h subfd.h strsalloc.h \
 #gen_alloc.h dns.h dnsdoe.h ip.h ipalloc.h \
 #now.h datetime.h exit.h
 	./compile dnsmxip.c
 
 dnsptr: \
-load dnsptr.o dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
+dnsptr.o dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
 stralloc.a alloc.a substdio.a error.a str.a fs.a dns.lib socket.lib
 	./load dnsptr dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
 	stralloc.a alloc.a substdio.a error.a str.a fs.a \
 	`cat dns.lib` `cat socket.lib`
 
-dnsptr.o: \
-compile dnsptr.c
+dnsptr.o:
+#compile dnsptr.c
 # substdio.h subfd.h strsalloc.h gen_alloc.h \
 #scan.h dns.h dnsdoe.h ip.h exit.h
 	./compile dnsptr.c
 
 dnstxt: \
-load dnstxt.o dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
+dnstxt.o dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
 stralloc.a alloc.a substdio.a error.a str.a fs.a dns.lib socket.lib
 	./load dnstxt dns.o dnsdoe.o ip.o ipalloc.o strsalloc.o \
 	stralloc.a alloc.a substdio.a error.a str.a fs.a \
@@ -303,36 +223,10 @@ stralloc.a alloc.a substdio.a error.a str.a fs.a dns.lib socket.lib
 dnstxt.o:
 	$(COMPILE) dnstxt.c
 
-env.a:
-	cp qlibs/env.a env.a
-
-error.a:
-	cp qlibs/error.a error.a
-# makelib error.o error_str.o error_temp.o
-#	./makelib error.a error.o error_str.o error_temp.o
-
-#error.o: \
-#compile error.c
-# error.h
-#	./compile error.c
-
-#error_str.o: \
-#compile error_str.c
-# error.h
-#	./compile error_str.c
-
-#error_temp.o: \
-#compile error_temp.c
-# error.h
-#	./compile error_temp.c
-
-except: \
-load except.o strerr.a error.a substdio.a str.a wait.a
-	./load except strerr.a error.a substdio.a wait.a \
-	qlibs/buffer.a qlibs/errmsg.a str.a
-
-except.o:
+except:
 	$(COMPILE) except.c
+	./load except strerr.a error.a substdio.a wait.a \
+	buffer.a errmsg.a str.a
 
 failures: \
 warn-auto.sh failures.sh
@@ -341,57 +235,24 @@ warn-auto.sh failures.sh
 	> failures
 	chmod 755 failures
 
-fastforward: \
-load strset.o qmail.o auto_qmail.o \
-getopt.a env.a strerr.a substdio.a stralloc.a alloc.a error.a \
-case.a str.a fs.a sig.a wait.a seek.a open.a fd.a
+fastforward: strset.o qmail.o auto_qmail.o
 	$(COMPILE) fastforward.c
 	./load fastforward slurpclose.o strset.o qmail.o \
 	auto_qmail.o getopt.a qlibs/cdb.a env.a strerr.a substdio.a \
 	stralloc.a alloc.a error.a case.a str.a fs.a sig.a wait.a \
 	seek.a open.a fd.a    qlibs/buffer.a qlibs/errmsg.a
 
-# old:
-#fastforward: \
-#load strset.o qmail.o auto_qmail.o \
-#getopt.a cdb.a env.a strerr.a substdio.a stralloc.a alloc.a error.a \
-#case.a str.a fs.a sig.a wait.a seek.a open.a fd.a
-#	$(COMPILE) fastforward.c
-#	./load fastforward slurpclose.o strset.o qmail.o \
-#	auto_qmail.o getopt.a cdb.a env.a strerr.a substdio.a \
-#	stralloc.a alloc.a error.a case.a str.a fs.a sig.a wait.a \
-#	seek.a open.a fd.a    qlibs/buffer.a qlibs/errmsg.a
-
-fd.a:
-	cp qlibs/fd.a fd.a
-
 fifo.o: \
 compile fifo.c hasmkffo.h fifo.h
 	./compile fifo.c
 
-fmtqfn.o: \
-compile fmtqfn.c fmtqfn.h auto_split.h
-	./compile fmtqfn.c
+fmtqfn.o:
+	$(COMPILE) fmtqfn.c
 
-forward: \
-load forward.o qmail.o strerr.a alloc.a fd.a wait.a sig.a env.a \
-substdio.a error.a str.a fs.a auto_qmail.o
+forward: qmail.o auto_qmail.o
+	$(COMPILE) forward.c
 	./load forward qmail.o strerr.a alloc.a fd.a wait.a sig.a \
 	env.a substdio.a error.a str.a fs.a auto_qmail.o   qlibs/buffer.a qlibs/errmsg.a
-
-forward.o:
-	$(COMPILE) forward.c
-
-fs.a:
-	cp qlibs/fs.a fs.a
-
-getln.a:
-	cp qlibs/getln.a getln.a
-
-getopt.a:
-	cp qlibs/getopt.a getopt.a
-#makelib subgetopt.o sgetopt.o
-#	./makelib getopt.a subgetopt.o sgetopt.o
 
 gfrom.o: \
 compile gfrom.c gfrom.h
@@ -496,21 +357,15 @@ strerr.a substdio.a error.a str.a fs.a
 
 instcheck.o: \
 compile instcheck.c
-# strerr.h error.h readwrite.h exit.h
 	./compile instcheck.c
 
 ip.o:
-#compile ip.c
-	./compile ip.c
+	$(COMPILE) ip.c
 
-ipalloc.o: \
-compile ipalloc.c
-# gen_allocdefs.h ip.h ipalloc.h \
-#gen_alloc.h
-	./compile ipalloc.c
+ipalloc.o:
+	$(COMPILE) ipalloc.c
 
-ipme.o: \
-compile ipme.c hassalen.h
+ipme.o: compile ipme.c hassalen.h
 	./compile ipme.c
 
 ipmeprint: \
@@ -523,8 +378,6 @@ error.a str.a fs.a socket.lib
 
 ipmeprint.o: \
 compile ipmeprint.c
-# subfd.h substdio.h ip.h ipme.h \
-#ipalloc.h gen_alloc.h exit.h auto_qmail.h
 	./compile ipmeprint.c
 
 it-analog: \
@@ -583,56 +436,24 @@ load:
 #	( cat warn-auto.sh; ./make-load "`cat systype`" ) > load
 #	chmod 755 load
 
-lock.a:
-	cp qlibs/lock.a lock.a
+maildir.o:
+	$(COMPILE) maildir.c
 
-maildir.o: \
-compile maildir.c
-# prioq.h datetime.h gen_alloc.h env.h \
-#datetime.h now.h datetime.h maildir.h \
-#strerr.h
-	./compile maildir.c
-
-maildir2mbox: \
-maildir.o prioq.o now.o myctime.o gfrom.o lock.a \
-getln.a env.a open.a strerr.a stralloc.a alloc.a substdio.a error.a \
-str.a fs.a datetime.o
-	./compile maildir2mbox.c
+maildir2mbox: maildir.o prioq.o now.o myctime.o gfrom.o
+	$(COMPILE) maildir2mbox.c
 	./load maildir2mbox maildir.o prioq.o now.o myctime.o \
 	gfrom.o lock.a getln.a env.a open.a strerr.a stralloc.a \
 	alloc.a substdio.a error.a str.a fs.a datetime.o     qlibs/buffer.a qlibs/errmsg.a
 
-#maildir2mbox.o:
-#compile maildir2mbox.c
-# readwrite.h prioq.h datetime.h gen_alloc.h \
-#env.h subfd.h substdio.h getln.h \
-#error.h open.h lock.h gfrom.h exit.h myctime.h maildir.h \
-#strerr.h
-
-maildirmake: \
-load maildirmake.o strerr.a substdio.a error.a str.a
-	./load maildirmake strerr.a substdio.a error.a \
-	qlibs/buffer.a str.a qlibs/errmsg.a
-
-maildirmake.o: \
-compile maildirmake.c
-# strerr.h exit.h
+maildirmake:
 	./compile maildirmake.c
+	./load maildirmake strerr.a substdio.a error.a buffer.a str.a errmsg.a
 
-maildirwatch: \
-load maildirwatch.o hfield.o headerbody.o maildir.o prioq.o now.o \
-getln.a env.a open.a strerr.a stralloc.a alloc.a substdio.a error.a \
-str.a
+maildirwatch: hfield.o headerbody.o maildir.o prioq.o now.o
+	./compile maildirwatch.c
 	./load maildirwatch hfield.o headerbody.o maildir.o \
 	prioq.o now.o getln.a env.a open.a strerr.a stralloc.a \
 	alloc.a substdio.a error.a str.a     qlibs/buffer.a qlibs/errmsg.a
-
-maildirwatch.o: \
-compile maildirwatch.c
-# getln.h substdio.h subfd.h prioq.h \
-#datetime.h gen_alloc.h exit.h hfield.h \
-#readwrite.h open.h headerbody.h maildir.h strerr.h
-	./compile maildirwatch.c
 
 mailsubj: \
 warn-auto.sh mailsubj.sh
@@ -650,107 +471,51 @@ makelib:
 #	makelib
 #	chmod 755 makelib
 
-matchup: \
-load matchup.o strerr.a getln.a substdio.a stralloc.a alloc.a error.a \
-str.a fs.a case.a
+matchup:
+	./compile matchup.c
 	./load matchup strerr.a getln.a substdio.a stralloc.a \
 	alloc.a qlibs/error.a str.a fs.a case.a   qlibs/buffer.a qlibs/errmsg.a error.a
-
-matchup.o: \
-#compile matchup.c gen_alloc.h gen_alloc.h gen_allocdefs.h
-#strerr.h getln.h substdio.h subfd.h substdio.h readwrite.h exit.h \
-#str.h fmt.h scan.h
-# case.h
-	./compile matchup.c
 
 myctime.o:
 	./compile myctime.c
 
 mfrules.o:
-#compile mfrules.c
 	./compile mfrules.c
 
-ndelay.a:
-	cp qlibs/ndelay.a ndelay.a
-
-newaliases: \
-load auto_qmail.o token822.o control.o strerr.a getln.a stralloc.a alloc.a error.a \
-str.a fs.a seek.a open.a case.a
+newaliases: auto_qmail.o token822.o control.o
 	$(COMPILE) newaliases.c
-	./load newaliases auto_qmail.o token822.o control.o \
-	qlibs/cdb.a strerr.a getln.a stralloc.a \
-	alloc.a error.a str.a fs.a seek.a open.a case.a  qlibs/buffer.a qlibs/errmsg.a
+	$(LOAD) newaliases auto_qmail.o token822.o control.o \
+	cdb.a strerr.a getln.a stralloc.a \
+	alloc.a error.a str.a fs.a seek.a open.a case.a buffer.a errmsg.a
 
-old:
-#newaliases: \
-#load auto_qmail.o token822.o control.o cdbmss.o \
-#cdbmake.a strerr.a getln.a substdio.a stralloc.a alloc.a error.a \
-#str.a fs.a seek.a open.a case.a
-#	$(COMPILE) newaliases.c
-#	./load newaliases auto_qmail.o token822.o control.o \
-#	cdbmss.o cdbmake.a strerr.a getln.a substdio.a stralloc.a \
-#	alloc.a error.a str.a fs.a seek.a open.a case.a   qlibs/buffer.a qlibs/errmsg.a
-
-newinclude: \
-auto_qmail.o token822.o control.o getln.a strerr.a \
-stralloc.a env.a alloc.a substdio.a error.a str.a fs.a open.a wait.a \
-fd.a
+newinclude: auto_qmail.o token822.o control.o
 	./compile newinclude.c
 	./load newinclude auto_qmail.o token822.o control.o \
 	getln.a strerr.a stralloc.a env.a alloc.a substdio.a \
-	error.a str.a fs.a open.a wait.a fd.a    qlibs/buffer.a qlibs/errmsg.a
+	error.a str.a fs.a open.a wait.a fd.a buffer.a errmsg.a
 
 newfield.o:
 	$(COMPILE) newfield.c
 
-now.o: \
-compile now.c datetime.h now.h datetime.h
-	./compile now.c
+now.o:
+	$(COMPILE) now.c
 
-open.a:
-	cp qlibs/open.a open.a
-
-pathexec.o:
-	cp qlibs/pathexec.o pathexec.o
-
-predate: \
-load predate.o datetime.o strerr.a sig.a fd.a wait.a substdio.a \
-error.a str.a fs.a
-	./load predate datetime.o strerr.a sig.a fd.a wait.a \
-	substdio.a error.a str.a fs.a   qlibs/buffer.a qlibs/errmsg.a
-
-predate.o: \
-compile predate.c
-# datetime.h wait.h fd.h fmt.h strerr.h \
-#substdio.h subfd.h readwrite.h exit.h
+predate: datetime.o
 	./compile predate.c
+	./load predate datetime.o strerr.a sig.a fd.a wait.a \
+	substdio.a error.a str.a fs.a buffer.a errmsg.a
 
-preline: \
-load preline.o strerr.a fd.a wait.a sig.a env.a getopt.a substdio.a \
-error.a str.a
+preline:
+	$(COMPILE) preline.c
 	./load preline strerr.a fd.a wait.a sig.a env.a getopt.a \
 	substdio.a error.a str.a    qlibs/buffer.a qlibs/errmsg.a
 
-preline.o: \
-compile preline.c
-# fd.h sgetopt.h subgetopt.h readwrite.h strerr.h \
-#substdio.h exit.h wait.h env.h error.h
-	./compile preline.c
-
 printforward:
-#cdb2.a strerr.a substdio.a alloc.a error.a str.a
-	./compile printforward.c
-	./load printforward strerr.a stralloc.a \
-	alloc.a error.a str.a   qlibs/buffer.a qlibs/errmsg.a
+	$(COMPILE) printforward.c
+	$(LOAD) printforward strerr.a stralloc.a \
+	alloc.a error.a str.a buffer.a errmsg.a
 
-#printforward: \
-#cdb2.a strerr.a substdio.a alloc.a error.a str.a
-#	./compile printforward.c
-#	./load printforward cdb2.a strerr.a substdio.a qlibs/stralloc.a \
-#	alloc.a error.a str.a   qlibs/buffer.a qlibs/errmsg.a
-
-printmaillist: \
-getln.a strerr.a substdio.a stralloc.a alloc.a error.a str.a
+printmaillist:
 	$(COMPILE) printmaillist.c
 	./load printmaillist getln.a strerr.a substdio.a \
 	qlibs/stralloc.a alloc.a error.a str.a    qlibs/buffer.a qlibs/errmsg.a
@@ -762,10 +527,10 @@ prot.o:
 	cp qlibs/prot.o prot.o
 
 qmail-authuser: \
-auto_qmail.o alloc.a case.a control.o constmap.o \
-env.a error.a fd.a fs.a getln.a hmac_md5.o md5c.o substdio.a open.a seek.a \
-stralloc.a str.a pathexec.o prot.o shadow.lib crypt.lib \
-s.lib sha1.o sha256.o sig.a wait.a
+auto_qmail.o alloc.a case.a control.o constmap.o hmac_md5.o md5c.o shadow.lib crypt.lib \
+s.lib sha1.o sha256.o
+#env.a error.a fd.a fs.a getln.a substdio.a open.a seek.a \
+#stralloc.a str.a pathexec.o prot.o sig.a wait.a
 	$(COMPILE) qmail-authuser.c
 	./load qmail-authuser auto_qmail.o control.o constmap.o \
 	pathexec.o prot.o \
@@ -775,62 +540,48 @@ s.lib sha1.o sha256.o sig.a wait.a
 	wait.a `cat shadow.lib` `cat crypt.lib` `cat s.lib`    qlibs/buffer.a
 
 qmail-badloadertypes: auto_qmail.o
-#cdbmss.o getln.a open.a cdbmake.a seek.a case.a \
-#strerr.a substdio.a error.a
-	./compile qmail-badloadertypes.c
+	$(COMPILE) qmail-badloadertypes.c
 	./load qmail-badloadertypes qlibs/cdb.a getln.a open.a \
 	seek.a case.a qlibs/stralloc.a alloc.a strerr.a \
 	error.a qlibs/str.a auto_qmail.o    qlibs/buffer.a qlibs/errmsg.a
 
 qmail-badmimetypes: auto_qmail.o
-#getln.a open.a cdbmake.a seek.a case.a \
-#strerr.a error.a
-	./compile qmail-badmimetypes.c
+	$(COMPILE) qmail-badmimetypes.c
 	./load qmail-badmimetypes qlibs/cdb.a getln.a open.a \
 	seek.a case.a qlibs/stralloc.a alloc.a strerr.a \
 	error.a qlibs/str.a auto_qmail.o   qlibs/buffer.a qlibs/errmsg.a
 
-qmail-clean: \
-load fmtqfn.o now.o getln.a sig.a stralloc.a alloc.a \
-substdio.a error.a str.a fs.a auto_qmail.o auto_split.o
-	./compile qmail-clean.c
+qmail-clean: load fmtqfn.o now.o auto_qmail.o auto_split.o
+	$(COMPILE) qmail-clean.c
 	./load qmail-clean fmtqfn.o now.o getln.a sig.a stralloc.a \
 	alloc.a substdio.a error.a str.a fs.a auto_qmail.o \
 	auto_split.o     qlibs/buffer.a
-#load qmail-clean.o fmtqfn.o now.o getln.a sig.a stralloc.a alloc.a \
 
-#qmail-clean.o:
-#compile qmail-clean.c
-# readwrite.h now.h datetime.h \
-#getln.h gen_alloc.h substdio.h subfd.h \
-#scan.h fmt.h error.h exit.h fmtqfn.h auto_qmail.h
-#	./compile qmail-clean.c
-
-qmail-getpw: \
-case.a substdio.a error.a str.a fs.a auto_usera.o
+qmail-getpw: auto_usera.o
+#case.a substdio.a error.a str.a fs.a
 	$(COMPILE) qmail-getpw.c
 	./load qmail-getpw case.a substdio.a error.a str.a fs.a \
 	auto_break.o auto_usera.o
 
 qmail-inject: \
-load qmail-inject.o headerbody.o hfield.o newfield.o quote.o now.o \
+headerbody.o hfield.o newfield.o quote.o now.o \
 control.o date822fmt.o constmap.o qmail.o case.a fd.a wait.a open.a \
 getln.a sig.a getopt.a datetime.o token822.o env.a stralloc.a alloc.a \
 substdio.a error.a str.a fs.a auto_qmail.o
+	./compile qmail-inject.c
 	./load qmail-inject headerbody.o hfield.o newfield.o \
 	quote.o now.o control.o date822fmt.o constmap.o qmail.o \
 	case.a fd.a wait.a open.a getln.a sig.a getopt.a datetime.o \
 	token822.o env.a stralloc.a alloc.a substdio.a error.a \
 	str.a fs.a auto_qmail.o     qlibs/buffer.a
 
-qmail-inject.o: \
-compile qmail-inject.c
+#qmail-inject.o: \
+#compile qmail-inject.c
 # substdio.h gen_alloc.h \
 #subfd.h sgetopt.h subgetopt.h getln.h \
 #hfield.h token822.h control.h env.h  \
 #gen_allocdefs.h error.h qmail.h substdio.h now.h datetime.h exit.h \
 #quote.h headerbody.h auto_qmail.h newfield.h constmap.h
-	./compile qmail-inject.c
 
 qmail-local: \
 load qmail.o quote.o now.o gfrom.o myctime.o \
@@ -852,39 +603,17 @@ fs.a auto_qmail.o auto_uids.o auto_spawn.o
 	sig.a wait.a case.a qlibs/cdb.a fd.a open.a stralloc.a alloc.a \
 	substdio.a error.a str.a fs.a auto_qmail.o auto_uids.o \
 	auto_spawn.o
-#	./load qmail-lspawn spawn.o prot.o slurpclose.o \
-#	sig.a wait.a case.a cdb.a fd.a open.a stralloc.a alloc.a \
-#	substdio.a error.a str.a fs.a auto_qmail.o auto_uids.o \
-#	auto_spawn.o
 
-qmail-lspawn.o: \
-compile qmail-lspawn.c
-# prot.h substdio.h \
-#gen_alloc.h scan.h exit.h error.h cdb.h uint32.h \
-#auto_qmail.h auto_uids.h qlx.h
-	./compile qmail-lspawn.c
+qmail-lspawn.o:
+	$(COMPILE) qmail-lspawn.c
 
-# old:
-#qmail-mfrules: \
-#load qmail-mfrules.o case.a cdbmss.o getln.a open.a cdbmake.a seek.a  \
-#fs.a stralloc.a alloc.a strerr.a substdio.a error.a str.a auto_qmail.o
-#	./load qmail-mfrules case.a cdbmss.o getln.a open.a cdbmake.a \
-#	seek.a fs.a stralloc.a alloc.a strerr.a substdio.a \
-#	error.a str.a auto_qmail.o     qlibs/buffer.a qlibs/errmsg.a
-
-qmail-mfrules: \
-load qmail-mfrules.o case.a getln.a open.a seek.a  \
-fs.a stralloc.a alloc.a strerr.a substdio.a error.a str.a auto_qmail.o
+qmail-mfrules: auto_qmail.o
+#load qmail-mfrules.o case.a getln.a open.a seek.a  \
+#fs.a stralloc.a alloc.a strerr.a substdio.a error.a str.a
+	$(COMPILE) qmail-mfrules.c
 	./load qmail-mfrules case.a qlibs/cdb.a getln.a open.a \
 	seek.a fs.a stralloc.a alloc.a strerr.a substdio.a \
 	error.a str.a auto_qmail.o     qlibs/buffer.a qlibs/errmsg.a
-
-qmail-mfrules.o: \
-compile qmail-mfrules.c
-# auto_qmail.h strerr.h \
-#gen_alloc.h readwrite.h open.h auto_qmail.h cdbmss.h cdbmake.h \
-#getln.h substdio.h scan.h error.h 
-	./compile qmail-mfrules.c
 
 qmail-mrtg: \
 getln.a open.a now.o \
@@ -901,30 +630,17 @@ warn-auto.sh qmail-mrtg-queue.sh
 	> qmail-mrtg-queue
 	chmod 755 qmail-mrtg-queue
 
-qmail-newmrh:
-#cdbmss.o getln.a open.a cdbmake.a seek.a case.a \
-#stralloc.a alloc.a strerr.a substdio.a error.a str.a auto_qmail.o
+qmail-newmrh: auto_qmail.o
 	$(COMPILE) qmail-newmrh.c
 	./load qmail-newmrh qlibs/cdb.a getln.a open.a \
 	seek.a case.a stralloc.a alloc.a strerr.a \
 	error.a str.a auto_qmail.o    qlibs/buffer.a qlibs/errmsg.a
-#	./load qmail-newmrh cdbmss.o getln.a open.a cdbmake.a \
-#	seek.a case.a stralloc.a alloc.a strerr.a substdio.a \
-#	error.a str.a auto_qmail.o    qlibs/buffer.a qlibs/errmsg.a
 
 qmail-newu: auto_qmail.o
-#getln.a open.a seek.a case.a \
-#stralloc.a alloc.a error.a str.a
 	$(COMPILE) qmail-newu.c
 	$(LOAD) qmail-newu qlibs/cdb.a getln.a open.a seek.a \
 	case.a stralloc.a alloc.a error.a str.a \
 	auto_qmail.o qlibs/buffer.a
-#	./compile qmail-newu.c
-#	./load qmail-newu cdbmss.o getln.a open.a seek.a cdbmake.a \
-#	case.a stralloc.a alloc.a substdio.a error.a str.a \
-#	auto_qmail.o    qlibs/buffer.a
-#cdbmss.o getln.a open.a seek.a cdbmake.a case.a \
-#stralloc.a alloc.a substdio.a error.a str.a auto_qmail.o
 
 qmail-pop3d: \
 load qmail-pop3d.o commands.o case.a timeoutread.o timeoutwrite.o \
@@ -955,21 +671,13 @@ fs.a socket.lib
 	substdio.a error.a str.a fs.a  `cat socket.lib`
 
 qmail-pw2u: \
-load qmail-pw2u.o constmap.o control.o open.a getln.a case.a getopt.a \
-stralloc.a alloc.a substdio.a error.a str.a fs.a auto_usera.o
-#auto_break.o auto_qmail.o
+constmap.o control.o auto_break.o auto_qmail.o auto_usera.o
+# open.a getln.a case.a getopt.a \
+#stralloc.a alloc.a substdio.a error.a str.a fs.a
+	./compile qmail-pw2u.c
 	./load qmail-pw2u constmap.o control.o open.a getln.a \
 	case.a getopt.a stralloc.a alloc.a substdio.a error.a str.a \
 	fs.a auto_usera.o auto_break.o auto_qmail.o    qlibs/buffer.a
-
-qmail-pw2u.o: \
-compile qmail-pw2u.c
-# substdio.h readwrite.h subfd.h \
-#sgetopt.h subgetopt.h control.h constmap.h gen_alloc.h \
-#fmt.h scan.h open.h error.h getln.h
-# auto_break.h auto_qmail.h \
-#auto_usera.h
-	./compile qmail-pw2u.c
 
 qmail-qmqpc: \
 socket6_if.o timeoutread.o timeoutwrite.o \
@@ -982,35 +690,23 @@ getln.a substdio.a stralloc.a alloc.a error.a str.a fs.a socket.lib
 	error.a str.a fs.a  `cat socket.lib`    qlibs/buffer.a
 
 qmail-qmqpd: \
-load qmail-qmqpd.o received.o now.o date822fmt.o qmail.o auto_qmail.o \
+received.o now.o date822fmt.o qmail.o auto_qmail.o \
 env.a substdio.a sig.a error.a wait.a fd.a str.a datetime.o fs.a
+	./compile qmail-qmqpd.c
 	./load qmail-qmqpd received.o now.o date822fmt.o qmail.o \
 	auto_qmail.o env.a substdio.a sig.a error.a wait.a fd.a \
 	str.a datetime.o fs.a case.a
 
-qmail-qmqpd.o: \
-compile qmail-qmqpd.c
-# auto_qmail.h qmail.h substdio.h received.h \
-#readwrite.h exit.h now.h datetime.h fmt.h env.h
-	./compile qmail-qmqpd.c
-
 qmail-qmtpd: \
-load qmail-qmtpd.o rcpthosts.o control.o constmap.o received.o \
+rcpthosts.o control.o constmap.o received.o \
 date822fmt.o now.o qmail.o fd.a wait.a datetime.o open.a \
 getln.a sig.a case.a env.a stralloc.a alloc.a substdio.a error.a \
 str.a fs.a auto_qmail.o
+	./compile qmail-qmtpd.c
 	./load qmail-qmtpd rcpthosts.o control.o constmap.o \
 	received.o date822fmt.o now.o qmail.o qlibs/cdb.a fd.a wait.a \
 	datetime.o open.a getln.a sig.a case.a env.a stralloc.a \
 	alloc.a substdio.a error.a str.a fs.a auto_qmail.o    qlibs/buffer.a
-#	received.o date822fmt.o now.o qmail.o qlibs/cdb.a fd.a wait.a \
-
-qmail-qmtpd.o: \
-compile qmail-qmtpd.c
-# gen_alloc.h substdio.h qmail.h \
-#now.h datetime.h fmt.h env.h rcpthosts.h \
-#auto_qmail.h readwrite.h control.h received.h 
-	./compile qmail-qmtpd.c
 
 qmail-qread: \
 fmtqfn.o readsubdir.o date822fmt.o datetime.o \
@@ -1032,21 +728,15 @@ warn-auto.sh qmail-qstat.sh
 	chmod 755 qmail-qstat
 
 qmail-queue: \
-load qmail-queue.o triggerpull.o fmtqfn.o now.o date822fmt.o \
+triggerpull.o fmtqfn.o now.o date822fmt.o \
 datetime.o seek.a ndelay.a open.a sig.a alloc.a substdio.a error.a \
 env.a wait.a \
 str.a fs.a auto_qmail.o auto_split.o auto_uids.o
+	$(COMPILE) qmail-queue.c
 	./load qmail-queue triggerpull.o fmtqfn.o now.o \
 	date822fmt.o datetime.o seek.a ndelay.a open.a sig.a \
 	env.a wait.a alloc.a substdio.a error.a str.a fs.a \
 	auto_qmail.o auto_split.o auto_uids.o 
-
-qmail-queue.o: \
-compile qmail-queue.c
-# readwrite.h exit.h open.h seek.h fmt.h \
-#substdio.h datetime.h now.h datetime.h triggerpull.h extra.h \
-#auto_qmail.h auto_uids.h date822fmt.h fmtqfn.h
-	./compile qmail-queue.c
 
 qmail-recipients: \
 getln.a open.a seek.a case.a \
@@ -1055,20 +745,6 @@ stralloc.a alloc.a strerr.a error.a str.a auto_qmail.o
 	./load qmail-recipients qlibs/cdb.a getln.a open.a \
 	seek.a case.a stralloc.a alloc.a strerr.a \
 	error.a str.a auto_qmail.o     qlibs/buffer.a qlibs/errmsg.a
-
-# old:
-#qmail-recipients: \
-#load qmail-recipients.o cdbmss.o getln.a open.a cdbmake.a seek.a case.a \
-#stralloc.a alloc.a strerr.a substdio.a error.a str.a auto_qmail.o
-#	./load qmail-recipients cdbmss.o getln.a open.a cdbmake.a \
-#	seek.a case.a stralloc.a alloc.a strerr.a substdio.a \
-#	error.a str.a auto_qmail.o     qlibs/buffer.a qlibs/errmsg.a
-
-#qmail-recipients.o:
-#compile qmail-recipients.c
-# strerr.h gen_alloc.h substdio.h \
-#getln.h exit.h readwrite.h open.h auto_qmail.h cdbmss.h cdbmake.h \
-#uint32.h 
 
 qmail-remote: \
 control.o constmap.o timeoutread.o timeoutwrite.o \
@@ -1087,20 +763,18 @@ substdio.a error.a str.a fs.a auto_qmail.o socket6_if.o dns.lib socket.lib idn2.
 	`cat ssl.lib` `cat dns.lib` `cat socket.lib` `cat idn2.lib`    qlibs/buffer.a
 
 qmail-rspawn: \
-load qmail-rspawn.o spawn.o tcpto_clean.o now.o sig.a open.a \
+spawn.o tcpto_clean.o now.o sig.a open.a \
 seek.a lock.a wait.a stralloc.a alloc.a substdio.a error.a str.a \
 auto_qmail.o auto_uids.o auto_spawn.o
+	./compile qmail-rspawn.c
 	./load qmail-rspawn spawn.o tcpto_clean.o now.o \
 	sig.a open.a seek.a lock.a wait.a fd.a stralloc.a alloc.a \
 	substdio.a error.a str.a auto_qmail.o auto_uids.o \
 	auto_spawn.o
-#load qmail-rspawn.o spawn.o tcpto_clean.o now.o sig.a open.a \
-#seek.a lock.a wait.a fd.a stralloc.a alloc.a substdio.a error.a str.a \
 
-qmail-rspawn.o: \
-compile qmail-rspawn.c
+#qmail-rspawn.o: \
+#compile qmail-rspawn.c
 # tcpto.h uint32.h
-	./compile qmail-rspawn.c
 # fd.h wait.h substdio.h exit.h error.h \
 
 qmail-send: \
@@ -1191,11 +865,8 @@ auto_qmail.o
 	./load qmail-tcpok open.a lock.a strerr.a substdio.a \
 	error.a str.a auto_qmail.o    qlibs/buffer.a qlibs/errmsg.a
 
-qmail-tcpok.o: auto_qmail.h
-#compile qmail-tcpok.c
-# strerr.h substdio.h lock.h open.h readwrite.h \
-# exit.h
-	./compile qmail-tcpok.c
+qmail-tcpok.o:
+	$(COMPILE) qmail-tcpok.c
 
 qmail-tcpto: \
 load qmail-tcpto.o ip.o now.o open.a lock.a substdio.a error.a str.a \
@@ -1210,20 +881,20 @@ compile qmail-tcpto.c
 	./compile qmail-tcpto.c
 
 qmail-todo: \
-load qmail-todo.o control.o constmap.o trigger.o fmtqfn.o now.o qsutil.o \
-readsubdir.o case.a ndelay.a getln.a sig.a open.a stralloc.a alloc.a \
-substdio.a error.a str.a fs.a auto_qmail.o auto_split.o
+control.o constmap.o trigger.o fmtqfn.o now.o qsutil.o \
+readsubdir.o auto_qmail.o auto_split.o
+# case.a ndelay.a getln.a sig.a open.a stralloc.a alloc.a \
+#substdio.a error.a str.a fs.a
+	./compile qmail-todo.c
 	./load qmail-todo control.o constmap.o trigger.o fmtqfn.o now.o \
 	readsubdir.o case.a ndelay.a getln.a sig.a open.a stralloc.a qsutil.o \
 	alloc.a substdio.a error.a str.a fs.a auto_qmail.o auto_split.o \
 	qlibs/buffer.a
 
-qmail-todo.o: \
-compile auto_qmail.h
+#qmail-todo.o:
 # constmap.h control.h error.h \
 #exit.h fmt.h fmtqfn.h getln.h open.h ndelay.h now.h readsubdir.h readwrite.h \
 #scan.h select.h substdio.h trigger.h qsutil.h
-	./compile qmail-todo.c
 
 #qmail-upq: warn-auto.sh qmail-upq.sh
 ##conf-home ../conf-break ../conf-split
@@ -1243,8 +914,8 @@ stralloc.a str.a
 	getln.a stralloc.a alloc.a case.a error.a env.a fd.a fs.a  \
 	substdio.a open.a seek.a str.a substdio.a stralloc.a    qlibs/buffer.a
 
-qmail.o: \
-compile qmail.c qmail.h auto_qmail.h
+qmail.o:
+#compile qmail.c qmail.h auto_qmail.h
 	./compile qmail.c
 
 qreceipt: \
@@ -1256,24 +927,17 @@ str.a auto_qmail.o
 	qmail.o getln.a fd.a wait.a sig.a env.a stralloc.a alloc.a \
 	substdio.a error.a str.a auto_qmail.o     qlibs/buffer.a
 
-qsutil.o: \
-compile qsutil.c
-# gen_alloc.h readwrite.h substdio.h qsutil.h
-	./compile qsutil.c
+qsutil.o:
+	$(COMPILE) qsutil.c
 
 quote.o:
-#compile quote.c gen_alloc.h quote.h
-	./compile quote.c
+	$(COMPILE) quote.c
 
-rcpthosts.o: \
-compile rcpthosts.c
-# cdb.h uint32.h
-# error.h control.h \
-#constmap.h gen_alloc.h rcpthosts.h
-	./compile rcpthosts.c
+rcpthosts.o:
+	$(COMPILE) rcpthosts.c
 
-recipients.o: \
-compile recipients.c
+recipients.o:
+#compile recipients.c
 # cdb.h uint32.h
 # error.h control.h \
 #constmap.h gen_alloc.h recipients.h auto_break.h
@@ -1307,8 +971,8 @@ warn-auto.sh senders.sh
 	> senders
 	chmod 755 senders
 
-smtpdlog.o: \
-compile smtpdlog.c
+smtpdlog.o:
+#compile smtpdlog.c
 # gen_alloc.h open.h uint32.h env.h fmt.h \
 #substdio.h smtpdlog.h
 	./compile smtpdlog.c
@@ -1353,7 +1017,7 @@ compile received.c
 	./compile received.c
 
 seek.a:
-	cp qlibs/seek.a seek.a
+#	cp qlibs/seek.a seek.a
 
 #select.h: \
 #compile trysysel.c select.h1 select.h2
@@ -1409,8 +1073,8 @@ sha256.o : \
 compile sha256.c sha256.h
 	./compile sha256.c
 
-sig.a:
-	cp qlibs/sig.a sig.a
+#sig.a:
+#	cp qlibs/sig.a sig.a
 
 slurpclose.o:
 	ln -sf qlibs/readclose.o slurpclose.o
@@ -1433,71 +1097,51 @@ spawn.o:
 spfdnsip.o:
 	$(COMPILE) spfdnsip.c
 
-spf.o: \
-compile spf.c
+spf.o:
+#compile spf.c
 # gen_alloc.h ipme.h ip.h ipalloc.h \
 #strsalloc.h fmt.h scan.h now.h
 	./compile spf.c
 
 spfquery: \
-load spfquery.o spf.o spfdnsip.o ip.o ipme.o ipalloc.o strsalloc.o now.o dns.o \
+spf.o spfdnsip.o ip.o ipme.o ipalloc.o strsalloc.o now.o dns.o \
 datetime.o stralloc.a alloc.a str.a substdio.a error.a fs.a case.a dns.lib
+	./compile spfquery.c
 	./load spfquery spf.o spfdnsip.o ip.o ipme.o ipalloc.o strsalloc.o \
 	now.o dns.o datetime.o stralloc.a alloc.a str.a substdio.a \
 	case.a error.a fs.a `cat dns.lib` `cat socket.lib`
 
-spfquery.o: \
-compile spfquery.c
+#spfquery.o: \
+#compile spfquery.c
 # substdio.h subfd.h gen_alloc.h \
 #spf.h exit.h dns.h ipalloc.h
-	./compile spfquery.c 
 
 splogger: \
 load splogger.o substdio.a error.a str.a fs.a syslog.lib socket.lib
 	./load splogger substdio.a error.a str.a fs.a  `cat \
 	syslog.lib` `cat socket.lib`
 
-splogger.o: \
-compile splogger.c
+splogger.o:
+#compile splogger.c
 # error.h substdio.h subfd.h exit.h \
 #scan.h fmt.h
 	./compile splogger.c
 
-str.a:
-	cp qlibs/str.a str.a
+#str.a:
+#	cp qlibs/str.a str.a
 
-stralloc.a:
-	cp qlibs/stralloc.a stralloc.a
+#stralloc.a:
+#	cp qlibs/stralloc.a stralloc.a
 
-strerr.a:
-	cp qlibs/strerr.a strerr.a
-
-#strerr.a: \
-#makelib strerr_sys.o strerr_die.o
-#	./makelib strerr.a strerr_sys.o strerr_die.o
-
-#strerr_die.o: \
-#compile strerr_die.c
-## substdio.h subfd.h exit.h strerr.h
-#	./compile strerr_die.c
-
-#strerr_sys.o: \
-#compile strerr_sys.c
-## error.h strerr.h
-#	./compile strerr_sys.c
+#strerr.a:
+#	cp qlibs/strerr.a strerr.a
 
 strsalloc.o: \
 compile strsalloc.c
-# gen_allocdefs.h strsalloc.h \
-#gen_alloc.h
 	./compile strsalloc.c
 
-#subgetopt.o: \
-#compile subgetopt.c subgetopt.h
-#	./compile subgetopt.c
-
-substdio.a:
-	cp qlibs/substdio.a substdio.a
+#substdio.a:
+#	cp qlibs/substdio.a substdio.a
 
 syslog.lib: \
 trysyslog.c compile load
@@ -1519,14 +1163,14 @@ fs.a stralloc.a alloc.a strerr.a substdio.a error.a str.a
 	fs.a stralloc.a alloc.a strerr.a substdio.a \
 	error.a str.a     qlibs/buffer.a
 
-tcpto.o: \
-compile tcpto.c
+tcpto.o:
+#compile tcpto.c
 # tcpto.h open.h lock.h seek.h now.h datetime.h ip.h \
 #datetime.h readwrite.h
 	./compile tcpto.c
 
-tcpto_clean.o: \
-compile tcpto_clean.c
+tcpto_clean.o:
+#compile tcpto_clean.c
 # tcpto.h open.h substdio.h readwrite.h
 	./compile tcpto_clean.c
 
@@ -1570,30 +1214,18 @@ compile token822.c
 #gen_alloc.h gen_allocdefs.h
 	./compile token822.c
 
-trigger.o: \
-compile trigger.c
-# select.h open.h trigger.h hasnpbg1.h
+trigger.o:
+#compile trigger.c
 	./compile trigger.c
 
 triggerpull.o:
 	$(COMPILE) triggerpull.c
 
-#uint32_unpack.o: \
-#compile uint32_unpack.c uint32.h
-#	./compile uint32_unpack.c
-
-#uint32.h: \
-#tryulong32.c compile load uint32.h1 uint32.h2
-#	( ( ./compile tryulong32.c && ./load tryulong32 && \
-#	./tryulong32 ) >/dev/null 2>&1 \
-#	&& cat uint32.h2 || cat uint32.h1 ) > uint32.h
-#	rm -f tryulong32.o tryulong32
-
-wait.a:
-	ln -sf qlibs/wait.a wait.a
+#wait.a:
+#	ln -sf qlibs/wait.a wait.a
 
 wildmat.o:
-	./compile wildmat.c
+	$(COMPILE) wildmat.c
 
 xqp: \
 warn-auto.sh xqp.sh
