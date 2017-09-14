@@ -737,11 +737,17 @@ compile preline.c
 #substdio.h exit.h wait.h env.h error.h
 	./compile preline.c
 
-printforward: \
-cdb2.a strerr.a substdio.a alloc.a error.a str.a
+printforward:
+#cdb2.a strerr.a substdio.a alloc.a error.a str.a
 	./compile printforward.c
-	./load printforward cdb2.a strerr.a substdio.a qlibs/stralloc.a \
+	./load printforward strerr.a stralloc.a \
 	alloc.a error.a str.a   qlibs/buffer.a qlibs/errmsg.a
+
+#printforward: \
+#cdb2.a strerr.a substdio.a alloc.a error.a str.a
+#	./compile printforward.c
+#	./load printforward cdb2.a strerr.a substdio.a qlibs/stralloc.a \
+#	alloc.a error.a str.a   qlibs/buffer.a qlibs/errmsg.a
 
 printmaillist: \
 getln.a strerr.a substdio.a stralloc.a alloc.a error.a str.a
