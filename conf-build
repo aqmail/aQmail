@@ -4,7 +4,7 @@
 
 #********************************************************************************
 # This is the qmail home directory.
-QMAILDIR="/usr/local/qmail"
+QMAILDIR="/usr/local/aqmail"
 
 #********************************************************************************
 # This is the  qmail queue directory.  It must be a local directory,  not  shared

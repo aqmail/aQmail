@@ -312,10 +312,10 @@ headerbody.o:
 hfield.o:
 	$(COMPILE) hfield.c
 
-hier.o: \
-compile hier.c
+#hier.o: \
+#compile hier.c
 # auto_qmail.h auto_split.h auto_uids.h fmt.h fifo.h
-	./compile hier.c
+#	./compile hier.c
 
 hostname: \
 load hostname.o substdio.a error.a str.a dns.lib socket.lib
@@ -335,28 +335,28 @@ tryidn2.c compile load
 	rm -f tryind2.o tryidn2
 
 
-install: \
-load install.o fifo.o hier.o auto_qmail.o auto_split.o auto_uids.o \
-strerr.a substdio.a open.a error.a str.a fs.a
-	./load install fifo.o hier.o auto_qmail.o auto_split.o \
-	auto_uids.o strerr.a substdio.a open.a error.a str.a fs.a \
-	qlibs/buffer.a qlibs/errmsg.a
+#install: \
+#load install.o fifo.o hier.o auto_qmail.o auto_split.o auto_uids.o \
+#strerr.a substdio.a open.a error.a str.a fs.a
+#	./load install fifo.o hier.o auto_qmail.o auto_split.o \
+#	auto_uids.o strerr.a substdio.a open.a error.a str.a fs.a \
+#	qlibs/buffer.a qlibs/errmsg.a
 
-install.o: \
-compile install.c
+#install.o: \
+#compile install.c
 # substdio.h strerr.h error.h open.h readwrite.h exit.h
-	./compile install.c
+#	./compile install.c
 
-instcheck: \
-load instcheck.o fifo.o hier.o auto_qmail.o auto_split.o auto_uids.o \
-strerr.a substdio.a error.a str.a fs.a
-	./load instcheck fifo.o hier.o auto_qmail.o auto_split.o \
-	auto_uids.o strerr.a substdio.a error.a str.a fs.a \
-	qlibs/buffer.a  qlibs/errmsg.a qlibs/byte.o qlibs/qstring.a
+#instcheck: \
+#load instcheck.o fifo.o hier.o auto_qmail.o auto_split.o auto_uids.o \
+#strerr.a substdio.a error.a str.a fs.a
+#	./load instcheck fifo.o hier.o auto_qmail.o auto_split.o \
+#	auto_uids.o strerr.a substdio.a error.a str.a fs.a \
+#	qlibs/buffer.a  qlibs/errmsg.a qlibs/byte.o qlibs/qstring.a
 
-instcheck.o: \
-compile instcheck.c
-	./compile instcheck.c
+#instcheck.o: \
+#compile instcheck.c
+#	./compile instcheck.c
 
 ip.o:
 	$(COMPILE) ip.c
@@ -388,12 +388,14 @@ zddist zdeferrals zfailures zrecipients zrhosts \
 zrxdelay zsenders zsendmail zsuccesses zsuids zoverall
 
 it-base: \
-qmail-local qmail-rspawn qmail-lspawn qmail-send \
-qmail-clean qmail-start qmail-queue qmail-inject qmail-todo
+bouncesaying condredirect except forward predate preline \
+datemail maildirmake maildir2mbox maildirwatch \
+qmail-fixq qmail-local qmail-rspawn qmail-lspawn qmail-send \
+qmail-clean qmail-start qmail-queue qmail-inject qmail-todo \
+qreceipt
 
-it-mbox: \
-forward predate preline condredirect bouncesaying except \
-datemail maildirmake maildir2mbox maildirwatch qreceipt
+it-mbox: it-base
+#forward predate preline condredirect bouncesaying except \
 
 it-clients: \
 mailsubj qmail-remote qmail-qmqpc qmail-smtpam sendmail
@@ -425,7 +427,8 @@ it-server: \
 qmail-qmtpd qmail-qmqpd qmail-smtpd dnsip
 
 it-setup: \
-config config-fast install instcheck
+config config-fast
+# install instcheck
 
 it-user: \
 qmail-getpw qmail-newu qmail-pw2u qmail-newmrh 
@@ -553,6 +556,9 @@ qmail-clean: load fmtqfn.o now.o auto_qmail.o auto_split.o
 	./load qmail-clean fmtqfn.o now.o getln.a sig.a stralloc.a \
 	alloc.a substdio.a error.a str.a fs.a auto_qmail.o \
 	auto_split.o     qlibs/buffer.a
+
+qmail-fixq:
+	sh ./qmail-fixq.sh
 
 qmail-getpw: auto_usera.o
 	$(COMPILE) qmail-getpw.c
