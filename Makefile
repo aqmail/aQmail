@@ -802,7 +802,7 @@ timeoutwrite.o ip.o ipme.o ipalloc.o control.o constmap.o received.o \
 recipients.o mfrules.o tls_start.o smtpdlog.o dns.o \
 date822fmt.o now.o qmail.o wildmat.o spf.o spfdnsip.o strsalloc.o \
 fd.a wait.a datetime.o getln.a open.a sig.a case.a env.a stralloc.a \
-alloc.a substdio.a error.a str.a seek.a fs.a auto_qmail.o base64.o socket.lib
+alloc.a substdio.a error.a str.a seek.a fs.a auto_qmail.o base64.o socket.lib qmail-spp.o
 	./compile qmail-smtpd.c
 	./load qmail-smtpd rcpthosts.o recipients.o commands.o timeoutread.o \
 	mfrules.o tls_start.o auto_break.o smtpdlog.o \
@@ -810,10 +810,14 @@ alloc.a substdio.a error.a str.a seek.a fs.a auto_qmail.o base64.o socket.lib
 	spf.o spfdnsip.o received.o date822fmt.o now.o qmail.o wildmat.o \
 	base64.o strsalloc.o qlibs/cdb.a seek.a fd.a wait.a datetime.o getln.a \
 	open.a sig.a case.a  env.a stralloc.a alloc.a substdio.a str.a \
+	qmail-spp.o \
 	fs.a error.a auto_qmail.o `cat dns.lib` `cat socket.lib`    qlibs/buffer.a
 #	 qlibs/uint32p.o
 #	mfrules.o uint32_unpack.o tls_start.o auto_break.o smtpdlog.o \
 #cdb2.a fd.a wait.a datetime.o getln.a open.a sig.a case.a env.a stralloc.a \
+
+qmail-spp.o:
+	$(COMPILE) qmail-spp.c
 
 qmail-smtpam: \
 control.o constmap.o strsalloc.o timeoutread.o timeoutwrite.o \

@@ -34,7 +34,6 @@
 #include "base64.h"
 #include "spf.h"
 #include "cdbread.h"
-#include "qmail-spp.h"   // qmail-spp:
 
 #define FDAUTH 3
 
@@ -54,13 +53,6 @@
 #define MAXHOPS 100
 unsigned long databytes = 0;
 int timeout = 1200;
-
-#define SPP 1   // unset to deactivate qmail-spp
-#ifdef SPP
-// qmail-spp: (2 lines)
-extern void spp_rcpt_accepted();
-int spp_val;
-#endif
 
 int safewrite(int fd,char *buf,int len)
 {
@@ -245,10 +237,6 @@ void setup()
   if (timeout <= 0) timeout = 1;
 
   if (rcpthosts_init() == -1) die_control();
-// qmail-spp: (1 line)
-#ifdef SPP
-if (spp_init() == -1) die_control();
-#endif
   if (recipients_init() == -1) die_control();
 
   bmfok = control_readfile(&bmf,"control/badmailfrom",0);
@@ -485,11 +473,8 @@ int flagrcpt;
 int flagdnsmf = 0;
 int flagsize;
 int rcptcount = 0;
-// qmail-spp: (2 lines)
-#ifdef SPP
-int allowed;
+
 int addrparse(char *arg)
-#endif
 {
   int i;
   char ch;
@@ -512,7 +497,7 @@ int addrparse(char *arg)
   if (!stralloc_copys(&addr,"")) die_nomem();
   flagesc = 0;
   flagquoted = 0;
-  for (i = 0; (ch = arg[i]); ++i) { /* copy arg to addr, stripping quotes */
+  for (i = 0; ch = arg[i]; ++i) { /* copy arg to addr, stripping quotes */
     if (flagesc) {
       if (!stralloc_append(&addr,&ch)) die_nomem();
       flagesc = 0;
@@ -908,20 +893,12 @@ void mailfrom_parms(char *arg)
 
 void smtp_helo(char *arg)
 {
-// qmail-spp: (1 line)
-#ifdef SPP
-if(!spp_helo(arg)) return;
-#endif
   smtp_greet("250 "); out("\r\n");
   seenmail = 0; rcptcount = 0; seenhelo++; dohelo(arg);
 }
 
 void smtp_ehlo(char *arg)
 {
-// qmail-spp: (1 line)
-#ifdef SPP
-if(!spp_helo(arg)) return;
-#endif
   char size[FMT_ULONG];
   size[fmt_ulong(size,(unsigned long) databytes)] = 0;
   smtp_greet("250-"); out("\r\n");
@@ -938,10 +915,6 @@ if(!spp_helo(arg)) return;
 
 void smtp_rset(void)
 {
-// qmail-spp: (1 line)
-#ifdef SPP
-spp_rset();
-#endif
   seenmail = 0; rcptcount = 0; /* RFC 5321: seenauth + seentls stay */
   mailfrom.len = 0; rcptto.len = 0; ssin.p = 0;
   out("250 flushed\r\n");
@@ -979,11 +952,6 @@ void smtp_mail(char *arg)
   }
   if (!addrparse(arg)) { err_syntax(); return; }
 
-// qmail-spp: added additional bracket '{' (second line)
-#ifdef SPP
-if (!(spp_val = spp_mail())); return;
-if (spp_val == 1) {
-#endif
   flagsize = 0;
   rcptcount = 0;
   mailfrom_parms(arg);
@@ -1009,10 +977,6 @@ if (spp_val == 1) {
   if (!stralloc_0(&protocol)) die_nomem();
 
   if (!flagdnsmf) out("250 ok\r\n");
-// qmail-spp: added bracket (next line)
-#ifdef SPP
-}
-#endif
 }
 
 void smtp_rcpt(char *arg)
@@ -1021,13 +985,6 @@ void smtp_rcpt(char *arg)
   if (!seenmail) { err_wantmail(); return; }
   if (!addrparse(arg)) { err_syntax(); return; }
   rcptcount++;
-
-// qmail-spp: (3 lines)
-#ifdef SPP
-if (!relayclient) allowed = addrallowed(addr.s);
-else allowed = 1;
-if (!(spp_val = spp_rcpt(allowed))) return;
-#endif
 
 /* this file is too long --------------------------------- Split Horizon envelope checks */
 
@@ -1073,8 +1030,8 @@ if (!(spp_val = spp_rcpt(allowed))) return;
       flagerrcpts++;
       return;
     }
-
-    if (flagspf)             /* SPF rejects */
+    
+    if (flagspf) 			/* SPF rejects */
       if (spf_check(flagip6) > 0) {
         err_spf("Reject::SPF::Fail",protocol.s,remoteip,remotehost,helohost.s,mailfrom.s,addr.s,spfbounce.s);
         return;
@@ -1095,17 +1052,6 @@ if (!(spp_val = spp_rcpt(allowed))) return;
     if (!stralloc_cats(&addr,relayclient)) die_nomem();
     if (!stralloc_0(&addr)) die_nomem();
   }
-
-// qmail-spp: (4 lines)
-#ifdef SPP
-//else if (spp_val == 1) {   // --> initially we have hade an 'else', but now:
-if (spp_val == 1) {
-  if (!allowed) { //err_nogateway(); return; }  // err_no´gateway needs now arguments
-      err_nogateway("Reject::SNDR::Invalid_Relay",protocol.s,remoteip,remotehost,helohost.s,mailfrom.s,addr.s);
-  }
-}
-spp_rcpt_accepted();
-#endif
 
 /* this file is too long --------------------------------- Common checks */
 
@@ -1355,10 +1301,6 @@ void smtp_data()
   if (!seenmail) { err_wantmail(); return; }
   if (!rcptto.len) { err_wantrcpt(); return; }
   if (flagnotorious) { err_notorious(); }
-// qmail-spp: (1 line)
-#ifdef SPP
-if (!spp_data()) return;
-#endif
   seenmail = 0;
   if (databytes) bytestooverflow = databytes + 1;
 
@@ -1378,11 +1320,6 @@ if (!spp_data()) return;
 
   if (flagspf && !relayclient) spfheader(&qqt,spfinfo.s,local,remoteip,fakehelo,mailfrom.s);
   received(&qqt,protocol.s,local,remoteip,remotehost,remoteinfo,fakehelo,tlsinfo.s,rblinfo.s);
-// qmail-spp: (2 lines)
-#ifdef SPP
-qmail_put(&qqt,sppheaders.s,sppheaders.len);  /* set in qmail-spp.c */
-spp_rset();
-#endif
   blast(&hops);
   hops = (hops >= MAXHOPS);
   if (hops) qmail_fail(&qqt);
@@ -1632,10 +1569,6 @@ void smtp_auth(char *arg)
 
   switch (authcmds[i].fun(arg)) {
     case 0:
-// qmail-spp: (1 line)
-#ifdef SPP
-if (!spp_auth(authcmds[i].text, user.s)) return;
-#endif
       seenauth = 1;
       relayclient = "";
       remoteinfo = user.s;
@@ -1676,14 +1609,8 @@ int main(int argc, char **argv)
   setup();
   smtpdlog_init();
   if (ipme_init() != 1) die_ipme();
-#ifdef SPP
-  if (spp_connect()) {
-#endif
   smtp_greet("220 ");
   out(" ESMTP\r\n");
-#ifdef SPP
-  }
-#endif
   if (commands(&ssin,&smtpcommands) == 0) die_read();
   die_nomem();
 

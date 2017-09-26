@@ -4,7 +4,7 @@
 
 #********************************************************************************
 # bin:
-mkdir -p $QMAILDIR/bin  #/plugins
+mkdir -p $QMAILDIR/bin/plugins
 
 cp bouncesaying condredirect datemail except forward maildir2mbox \
    maildirmake mailsubj mksrvrcerts mkrsadhkeys predate preline $QMAILDIR/bin
