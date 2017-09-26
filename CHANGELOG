@@ -1,7 +1,13 @@
 ************************ H E A D E R *************************
 CHANGELOG created from git - do not change these hesder lines!
-Last commit: d9bfaa0bea847f7ae19590e32257328176a2c8e7
+Last commit: 7ade66d8472a03f40849d131912e50cd0959a56e
 ********************* E N D  H E A D E R *********************
+
+20170925:
+    replaced original install routine by install script w/o doc/man
+20170914:
+    qmail.c, condredirect.c: switched to buffer
+    replaced except.c by eQmails version
 
 20170914:
     added ssl.lib checks to configure, Makefile clean up

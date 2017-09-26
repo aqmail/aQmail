@@ -20,7 +20,7 @@ echo "SPLIT=$SPLIT"                             >> "$OUTFILE"
 
 echo "
 showHelp() {
-  echo \"Usage: $OUTFILE [option [-m]\"
+  echo \"Usage: $OUTFILE [option]\"
   echo
   echo -e \"  -c\tcheck structure of the queue for issues (default)\"
   echo -e \"  -f\tfix issues of the queue\"
