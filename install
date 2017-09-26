@@ -15,6 +15,14 @@ cp qmail-bfque qmail-bfrmt qmail-clean qmail-fixq qmail-getpw qmail-inject \
    qmail-smtpd qmail-start qmail-tcpok qmail-tcpto              $QMAILDIR/bin
 cp qreceipt sendmail splogger tcp-env                           $QMAILDIR/bin
 cp qmail-tcpsrv tcprules                                        $QMAILDIR/bin
+# s/qmail
+cp qmail-smtpam qmail-authuser qmail-vmailuser qmail-badloadertypes \
+   qmail-badmimetypes qmail-recipients qmail-mfrules \
+   qmail-mrtg qmail-mrtg-queue \
+   fastforward printforward setforward newaliases printmaillist setmaillist newinclude \
+   spfquery                                                     $QMAILDIR/bin
+#cp tai64nfrac
+
 
 chown $USRM:$GRPQ  $QMAILDIR/bin/*
 chmod 0755         $QMAILDIR/bin/*

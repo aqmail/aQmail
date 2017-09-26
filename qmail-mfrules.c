@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include "strerr.h"
 #include "stralloc.h"
 #include "substdio.h"
@@ -7,8 +11,7 @@
 #include "readwrite.h"
 #include "open.h"
 #include "auto_qmail.h"
-//#include "cdbmss.h"
-#include "qlibs/include/cdbmake.h"
+#include "cdbmake.h"
 #include "fmt.h"
 #include "scan.h"
 #include "byte.h"
@@ -42,11 +45,11 @@ void die_parse()
 }
 void die_read()
 {
-  strerr_die2sys(111,FATAL,"unable to read control/mailfromrules: ");
+  strerr_die2sys(111,FATAL,"unable to read etc/mailfromrules: ");
 }
 void die_write()
 {
-  strerr_die2sys(111,FATAL,"unable to write to control/mailfromrules.tmp: ");
+  strerr_die2sys(111,FATAL,"unable to write to etc/mailfromrules.tmp: ");
 }
 
 char strnum[FMT_ULONG];
@@ -115,12 +118,12 @@ int main()
   if (chdir(auto_qmail) == -1)
     strerr_die4sys(111,FATAL,"unable to chdir to ",auto_qmail,": ");
 
-  fd = open_read("control/mailfromrules");
+  fd = open_read("etc/mailfromrules");
   if (fd == -1) die_read();
 
   substdio_fdbuf(&ssin,read,fd,inbuf,sizeof(inbuf));
 
-  fdtemp = open_trunc("control/mailfromrules.tmp");
+  fdtemp = open_trunc("etc/mailfromrules.tmp");
   if (fdtemp == -1) die_write();
 
 //  if (cdbmss_start(&cdbmss,fdtemp) == -1) die_write();
@@ -171,8 +174,8 @@ int main()
   if (cdb_make_finish(&c) == -1) die_write();
   if (fsync(fdtemp) == -1) die_write();
   if (close(fdtemp) == -1) die_write(); /* NFS stupidity */
-  if (rename("control/mailfromrules.tmp","control/mailfromrules.cdb") == -1)
-    strerr_die2sys(111,FATAL,"unable to move control/mailfromrules.tmp to control/mailfromrules.cdb");
+  if (rename("etc/mailfromrules.tmp","etc/mailfromrules.cdb") == -1)
+    strerr_die2sys(111,FATAL,"unable to move etc/mailfromrules.tmp to etc/mailfromrules.cdb");
 
   _exit(0);
 }

@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include "readwrite.h"
 #include "stralloc.h"
 #include "substdio.h"
@@ -237,11 +241,11 @@ void setup()
   unsigned long u;
 
   if (control_init() == -1) die_control();
-  if (control_rldef(&greeting,"control/smtpgreeting",1,(char *) 0) != 1)
+  if (control_rldef(&greeting,"etc/smtpgreeting",1,(char *) 0) != 1)
     die_control();
-  liphostok = control_rldef(&liphost,"control/localiphost",1,(char *) 0);
+  liphostok = control_rldef(&liphost,"etc/localiphost",1,(char *) 0);
   if (liphostok == -1) die_control();
-  if (control_readint(&timeout,"control/timeoutsmtpd") == -1) die_control();
+  if (control_readint(&timeout,"etc/timeoutsmtpd") == -1) die_control();
   if (timeout <= 0) timeout = 1;
 
   if (rcpthosts_init() == -1) die_control();
@@ -251,17 +255,17 @@ if (spp_init() == -1) die_control();
 #endif
   if (recipients_init() == -1) die_control();
 
-  bmfok = control_readfile(&bmf,"control/badmailfrom",0);
+  bmfok = control_readfile(&bmf,"etc/badmailfrom",0);
   if (bmfok == -1) die_control();
   if (bmfok)
     if (!constmap_init(&mapbmf,bmf.s,bmf.len,0)) die_nomem();
 
-  brtok = control_readfile(&brt,"control/badrcptto",0);
+  brtok = control_readfile(&brt,"etc/badrcptto",0);
   if (brtok == -1) die_control();
   if (brtok)
     if (!constmap_init(&mapbrt,brt.s,brt.len,0)) die_nomem();
 
-  if (control_readint(&databytes,"control/databytes") == -1) die_control();
+  if (control_readint(&databytes,"etc/databytes") == -1) die_control();
   x = env_get("DATABYTES");
   if (x) { scan_ulong(x,&u); databytes = u; }
   if (!(databytes + 1)) --databytes;
@@ -299,7 +303,7 @@ if (spp_init() == -1) die_control();
 
   helocheck = env_get("HELOCHECK");
   if (helocheck) {
-    badhelook = control_readfile(&badhelo,"control/badhelo",0);
+    badhelook = control_readfile(&badhelo,"etc/badhelo",0);
     if (badhelook == -1) die_control();
     if (badhelook)
       if (!constmap_init(&mapbhlo,badhelo.s,badhelo.len,0)) die_nomem();
@@ -315,7 +319,7 @@ if (spp_init() == -1) die_control();
     localmf = 1;
     if (str_len(localmfcheck) == 1 && *localmfcheck == '!') {
       localmf = 2;
-      fdmav = open_read("control/mailfromrules.cdb");
+      fdmav = open_read("etc/mailfromrules.cdb");
       if (fdmav == -1 ) localmf = 1;
     }
     if (str_len(localmfcheck) == 1 && *localmfcheck == '=') {
@@ -334,7 +338,7 @@ if (spp_init() == -1) die_control();
       else {
         if (*badmimeinit == '!') flagmimetype = 1;
         if (*badmimeinit == '+') flagmimetype = 4;
-        fdbmt = open_read("control/badmimetypes.cdb");
+        fdbmt = open_read("etc/badmimetypes.cdb");
         if (fdbmt != -1 ) flagmimetype = flagmimetype + 2;
       }
     }
@@ -348,7 +352,7 @@ if (spp_init() == -1) die_control();
       else {
         flagloadertype = 1;
         if (*badloaderinit == '+') flagloadertype = 2;
-        fdblt = open_read("control/badloadertypes.cdb");
+        fdblt = open_read("etc/badloadertypes.cdb");
         if (fdblt == -1 ) flagloadertype = 0;
       }
     }
@@ -394,10 +398,10 @@ if (spp_init() == -1) die_control();
   if (x) { scan_ulong(x,&u); flagspf = u; }
   if (flagspf < 0 || flagspf > 6) die_control();
   if (flagspf) {
-    localrules = control_readline(&spflocalrules,"control/spflocalrules");
+    localrules = control_readline(&spflocalrules,"etc/spflocalrules");
     if (localrules == -1) die_control();
     if (!stralloc_0(&spflocalrules)) die_nomem();
-    if (control_rldef(&spfexplain,"control/spfexplain",0,SPF_DEFEXP) == -1) die_control();
+    if (control_rldef(&spfexplain,"etc/spfexplain",0,SPF_DEFEXP) == -1) die_control();
     if (!stralloc_0(&spfexplain)) die_nomem();
   }
 

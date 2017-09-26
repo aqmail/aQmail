@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -160,7 +164,7 @@ int main()
 
   if (chdir(auto_qmail) == -1) die_home();
   if (control_init() == -1) die_control();
-  if (control_readfile(&servers,"control/qmqpservers",0) != 1) die_control();
+  if (control_readfile(&servers,"etc/qmqpservers",0) != 1) die_control();
 
   getmess();
 

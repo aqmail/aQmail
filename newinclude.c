@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include "substdio.h"
 #include "strerr.h"
 #include "stralloc.h"
@@ -107,23 +111,23 @@ void readcontrols()
   if (chdir(auto_qmail) == -1)
     strerr_die4sys(111,FATAL,"unable to chdir to ",auto_qmail,": ");
 
-  r = control_readline(&me,"control/me");
+  r = control_readline(&me,"etc/me");
   if (r == -1) die_control();
   if (!r) if (!stralloc_copys(&me,"me")) nomem();
 
-  r = control_readline(&defaultdomain,"control/defaultdomain");
+  r = control_readline(&defaultdomain,"etc/defaultdomain");
   if (r == -1) die_control();
   if (!r) if (!stralloc_copy(&defaultdomain,&me)) nomem();
   x = env_get("QMAILDEFAULTDOMAIN");
   if (x) if (!stralloc_copys(&defaultdomain,x)) nomem();
 
-  r = control_readline(&defaulthost,"control/defaulthost");
+  r = control_readline(&defaulthost,"etc/defaulthost");
   if (r == -1) die_control();
   if (!r) if (!stralloc_copy(&defaulthost,&me)) nomem();
   x = env_get("QMAILDEFAULTHOST");
   if (x) if (!stralloc_copys(&defaulthost,x)) nomem();
 
-  r = control_readline(&plusdomain,"control/plusdomain");
+  r = control_readline(&plusdomain,"etc/plusdomain");
   if (r == -1) die_control();
   if (!r) if (!stralloc_copy(&plusdomain,&me)) nomem();
   x = env_get("QMAILPLUSDOMAIN");

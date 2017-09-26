@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include <sys/stat.h>
 #include "strerr.h"
 #include "stralloc.h"
@@ -7,8 +11,7 @@
 #include "readwrite.h"
 #include "open.h"
 #include "auto_qmail.h"
-//#include "cdbmss.h"
-#include "qlibs/include/cdbmake.h"
+#include "cdbmake.h"
 #include "rename.h"
 
 #define FATAL "qmail-badloadertypes: fatal: "
@@ -16,11 +19,11 @@
 
 void die_read()
 {
-  strerr_die2sys(111,FATAL,"unable to read control/badloadertypes: ");
+  strerr_die2sys(111,FATAL,"unable to read etc/badloadertypes: ");
 }
 void die_write()
 {
-  strerr_die2sys(111,FATAL,"unable to write to control/badloadertypes.tmp: ");
+  strerr_die2sys(111,FATAL,"unable to write to etc/badloadertypes.tmp: ");
 }
 
 char inbuf[1024];
@@ -41,13 +44,13 @@ int main()
   if (chdir(auto_qmail) == -1)
     strerr_die4sys(111,FATAL,"unable to chdir to ",auto_qmail,": ");
 
-  fd = open_read("control/badloadertypes");
+  fd = open_read("etc/badloadertypes");
   if (fd == -1) die_read();
 
 //  substdio_fdbuf(&ssin,read,fd,inbuf,sizeof(inbuf));
   buffer_init(&bin,read,fd,inbuf,sizeof(inbuf));
 
-  fdtemp = open_trunc("control/badloadertypes.tmp");
+  fdtemp = open_trunc("etc/badloadertypes.tmp");
   if (fdtemp == -1) die_write();
 
 //  if (cdbmss_start(&cdbmss,fdtemp) == -1) die_write();
@@ -66,8 +69,8 @@ int main()
   if (cdb_make_finish(&c) == -1) die_write();
   if (fsync(fdtemp) == -1) die_write();
   if (close(fdtemp) == -1) die_write(); /* NFS stupidity */
-  if (rename("control/badloadertypes.tmp","control/badloadertypes.cdb") == -1)
-    strerr_die2sys(111,FATAL,"unable to move control/badloadertypes.tmp to control/badloadertypes.cdb");
+  if (rename("etc/badloadertypes.tmp","etc/badloadertypes.cdb") == -1)
+    strerr_die2sys(111,FATAL,"unable to move etc/badloadertypes.tmp to etc/badloadertypes.cdb");
 
   _exit(0);
 }

@@ -1,13 +1,13 @@
-//#include "readwrite.h"
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include <unistd.h>
 #include "open.h"
 #include "getln.h"
-//#include "stralloc.h"
-//#include "substdio.h"
-#include "qlibs/include/buffer.h"
+#include "buffer.h"
 #include "error.h"
 #include "control.h"
-//#include "alloc.h"
 #include "scan.h"
 
 static char inbuf[2048];
@@ -34,7 +34,7 @@ int control_init(void)
 {
   int r;
 
-  r = control_readline(&me,"control/me");
+  r = control_readline(&me,"etc/me");
   if (r == 1) meok = 1;
   return r;
 }

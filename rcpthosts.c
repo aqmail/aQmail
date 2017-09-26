@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include "byte.h"
 #include "open.h"
 #include "error.h"
@@ -6,7 +10,7 @@
 #include "constmap.h"
 #include "stralloc.h"
 #include "rcpthosts.h"
-#include "qlibs/include/cdbread.h"
+#include "cdbread.h"
 #include "case.h"
 #include "close.h"
 
@@ -20,10 +24,10 @@ static struct cdb c;
 
 int rcpthosts_init()
 {
-  flagrh = control_readfile(&rh,"control/rcpthosts",0);
+  flagrh = control_readfile(&rh,"etc/rcpthosts",0);
   if (flagrh != 1) return flagrh;
   if (!constmap_init(&maprh,rh.s,rh.len,0)) return flagrh = -1;
-  fdmrh = open_read("control/morercpthosts.cdb");
+  fdmrh = open_read("etc/morercpthosts.cdb");
   if (fdmrh == -1) if (errno != error_noent) return flagmrh = -1;
   if (fdmrh > 0) flagmrh = 1;
   return 0;
@@ -51,7 +55,7 @@ int rcpthosts(char *buf, int len)
       if (constmap(&maprh,buf + j,len - j)) return 1;
 
   if (flagmrh == 1) {
-    fdmrh = open_read("control/morercpthosts.cdb");
+    fdmrh = open_read("etc/morercpthosts.cdb");
     if (fdmrh == -1) if (errno == error_noent) return 0;
 //    uint32 dlen;
     int r;

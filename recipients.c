@@ -1,6 +1,9 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include <unistd.h>
-#include "qlibs/include/cdbread.h"
-//#include "cdb.h"
+#include "cdbread.h"
 #include "byte.h"
 #include "open.h"
 #include "error.h"
@@ -9,11 +12,9 @@
 #include "stralloc.h"
 #include "recipients.h"
 #include "strerr.h"
-//#include "fork.h"
 #include "wait.h"
 #include "str.h"
 #include "case.h"
-//#include "readwrite.h"
 #include "substdio.h"
 #include "auto_break.h"
 
@@ -48,7 +49,7 @@ static int fdrcps;
 
 int recipients_init()
 {
-  flagrcpts = control_readfile(&rcptline,"control/recipients",0);
+  flagrcpts = control_readfile(&rcptline,"etc/recipients",0);
   if (flagrcpts != 1) return flagrcpts;
   return 0;
 }
