@@ -1,16 +1,16 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - moved directory 'users' to 'var/users'
+*/
 #include <unistd.h>
 #include <sys/stat.h>
 #include "strerr.h"
 #include "stralloc.h"
 #include "substdio.h"
 #include "getln.h"
-//#include "exit.h"
-//#include "readwrite.h"
 #include "open.h"
 #include "auto_qmail.h"
-//#include "cdbmss.h"
-#include "qlibs/include/cdbmake.h"
-//#include "qlibs/include/cdbread.h"
+#include "cdbmake.h"
 #include "case.h"
 #include "rename.h"
 
@@ -18,21 +18,19 @@
 
 void die_read()
 {
-  strerr_die2sys(111,FATAL,"unable to read users/recipients: ");
+  strerr_die2sys(111,FATAL,"unable to read var/users/recipients: ");
 }
 void die_write()
 {
-  strerr_die2sys(111,FATAL,"unable to write to users/recipients.tmp: ");
+  strerr_die2sys(111,FATAL,"unable to write to var/users/recipients.tmp: ");
 }
 
 char inbuf[1024];
-//substdio ssin;
 buffer bin;
 
 int fd;
 int fdtemp;
 
-//struct cdbmss cdbmss;
 static struct cdb_make c;
 stralloc line = {0};
 stralloc key  = {0};
@@ -44,13 +42,12 @@ int main()
   if (chdir(auto_qmail) == -1)
     strerr_die4sys(111,FATAL,"unable to chdir to ",auto_qmail,": ");
 
-  fd = open_read("users/recipients");
+  fd = open_read("var/users/recipients");
   if (fd == -1) die_read();
 
-//  substdio_fdbuf(&ssin,read,fd,inbuf,sizeof(inbuf));
   buffer_init(&bin,read,fd,inbuf,sizeof(inbuf));
 
-  fdtemp = open_trunc("users/recipients.tmp");
+  fdtemp = open_trunc("var/users/recipients.tmp");
   if (fdtemp == -1) die_write();
 
 //  if (cdbmss_start(&cdbmss,fdtemp) == -1) die_write();
@@ -68,7 +65,7 @@ int main()
         case_lowerb(key.s,key.len);
 //	if (cdbmss_add(&cdbmss,key.s,key.len,"",0) == -1)
     if (cdb_make_add(&c,key.s,key.len,"",0) == -1)
-	  die_write();
+      die_write();
       }
       break;
     }
@@ -79,8 +76,8 @@ int main()
   if (cdb_make_finish(&c) == -1) die_write();
   if (fsync(fdtemp) == -1) die_write();
   if (close(fdtemp) == -1) die_write(); /* NFS stupidity */
-  if (rename("users/recipients.tmp","users/recipients.cdb") == -1)
-    strerr_die2sys(111,FATAL,"unable to move users/recipients.tmp to users/recipients.cdb");
+  if (rename("var/users/recipients.tmp","var/users/recipients.cdb") == -1)
+    strerr_die2sys(111,FATAL,"unable to move var/users/recipients.tmp to var/users/recipients.cdb");
 
   _exit(0);
 }

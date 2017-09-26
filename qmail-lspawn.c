@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - moved directory 'users' to 'var/users'
+*/
 #include <unistd.h>
 #include "fd.h"
 #include "wait.h"
@@ -34,7 +38,7 @@ void report(substdio *ss,int wstat,char *s,int len)
 
   switch(wait_exitcode(wstat)) {
     case QLX_CDB:
-      substdio_puts(ss,"ZTrouble reading users/cdb in qmail-lspawn.\n"); return;
+      substdio_puts(ss,"ZTrouble reading var/users/cdb in qmail-lspawn.\n"); return;
     case QLX_NOMEM:
       substdio_puts(ss,"ZOut of memory in qmail-lspawn.\n"); return;
     case QLX_SYS:
@@ -89,7 +93,7 @@ void nughde_get(char *local)
 
   if (!stralloc_copys(&nughde,"")) _exit(QLX_NOMEM);
 
-  fd = open_read("users/cdb");
+  fd = open_read("var/users/cdb");
   if (fd == -1)
     if (errno != error_noent)
       _exit(QLX_CDB);
