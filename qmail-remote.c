@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #ifdef IDN2
 #include <idn2.h>
 #endif
@@ -114,7 +118,7 @@ void outsafe(stralloc *sa)
 
 void temp_noip() 
 { 
-  out("ZInvalid ipaddr in control/domainips (#4.3.0)\n"); 
+  out("ZInvalid ipaddr in etc/domainips (#4.3.0)\n"); 
   zerodie(); 
 }
 void temp_nomem() 
@@ -203,7 +207,7 @@ void perm_nomx()
 void perm_ambigmx() 
 { 
   out("DSorry. Although I'm listed as a best-preference MX or A for that host,\n\
-it isn't in my control/locals file, so I don't treat it as local. (#5.4.6)\n");
+it isn't in my etc/locals file, so I don't treat it as local. (#5.4.6)\n");
   zerodie(); 
 }
 void err_authprot() 
@@ -961,12 +965,12 @@ void addrmangle(stralloc *saout,char *address,int *flagalias,int flagcname) 	/* 
 void getcontrols()
 {
   if (control_init() == -1) temp_control();
-  if (control_readint(&timeout,"control/timeoutremote") == -1) temp_control();
-  if (control_readint(&timeoutconnect,"control/timeoutconnect") == -1)
+  if (control_readint(&timeout,"etc/timeoutremote") == -1) temp_control();
+  if (control_readint(&timeoutconnect,"etc/timeoutconnect") == -1)
     temp_control();
-  if (control_rldef(&helohost,"control/helohost",1,(char *) 0) != 1)
+  if (control_rldef(&helohost,"etc/helohost",1,(char *) 0) != 1)
     temp_control();
-  switch(control_readfile(&smtproutes,"control/smtproutes",0)) {
+  switch(control_readfile(&smtproutes,"etc/smtproutes",0)) {
     case -1:
       temp_control();
     case 0:
@@ -974,7 +978,7 @@ void getcontrols()
     case 1:
       if (!constmap_init(&mapsmtproutes,smtproutes.s,smtproutes.len,1)) temp_nomem(); break;
   }
-  switch(control_readfile(&domainips,"control/domainips",0)) {
+  switch(control_readfile(&domainips,"etc/domainips",0)) {
     case -1:
       temp_control();
     case 0:
@@ -982,7 +986,7 @@ void getcontrols()
     case 1:
       if (!constmap_init(&mapdomainips,domainips.s,domainips.len,1)) temp_nomem(); break;
   }
-  switch(control_readfile(&authsenders,"control/authsenders",0)) {
+  switch(control_readfile(&authsenders,"etc/authsenders",0)) {
     case -1:
        temp_control();
     case 0:
@@ -990,7 +994,7 @@ void getcontrols()
     case 1:
       if (!constmap_init(&mapauthsenders,authsenders.s,authsenders.len,1)) temp_nomem(); break;
   }
-  switch(control_readfile(&qmtproutes,"control/qmtproutes",0)) {
+  switch(control_readfile(&qmtproutes,"etc/qmtproutes",0)) {
     case -1:
       temp_control();
     case 0:
@@ -998,7 +1002,7 @@ void getcontrols()
     case 1:
       if (!constmap_init(&mapqmtproutes,qmtproutes.s,qmtproutes.len,1)) temp_nomem(); break;
   }
-  switch(control_readfile(&domaincerts,"control/domaincerts",0)) {
+  switch(control_readfile(&domaincerts,"etc/domaincerts",0)) {
     case -1:
       temp_control();
     case 0:
@@ -1006,7 +1010,7 @@ void getcontrols()
     case 1:
       if (!constmap_init(&mapdomaincerts,domaincerts.s,domaincerts.len,1)) temp_nomem(); break;
   }
-  switch(control_readfile(&tlsdestinations,"control/tlsdestinations",0)) {
+  switch(control_readfile(&tlsdestinations,"etc/tlsdestinations",0)) {
     case -1:
       temp_control();
     case 0:

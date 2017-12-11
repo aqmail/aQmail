@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - moved directory 'users' to 'var/users'
+*/
 #include "global.h"
 #include "readwrite.h"
 #include "stralloc.h"
@@ -9,7 +13,6 @@
 #include "error.h"
 #include "str.h"
 #include "fmt.h"
-//#include "cdb.h"
 #include "fd.h"
 #include "open.h"
 #include "byte.h"
@@ -20,7 +23,6 @@
 #include "sha256.h"
 #include "pathexec.h"
 #include "prot.h"
-//#include "fork.h"
 #include "wait.h"
 #include "sig.h"
 #include "readwrite.h"
@@ -300,7 +302,7 @@ int main(int argc,char **argv)
       authsocket = argv[2];
     }
   
-  switch (control_readfile(&authfile,"users/authuser",0)) {
+  switch (control_readfile(&authfile,"var/users/authuser",0)) {
     case -1: auth_exit(111);
     case  0: if (!constmap_init(&mapauthuser,"",0,1)) auth_exit(111); 
     case  1: if (!constmap_init(&mapauthuser,authfile.s,authfile.len,1)) auth_exit(111);

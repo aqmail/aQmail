@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -1264,26 +1268,26 @@ void todo_do(fd_set *rfds)
 int getcontrols() 
 { 
   if (control_init() == -1) return 0;
-  if (control_readint(&lifetime,"control/queuelifetime") == -1) return 0;
-  if (control_readint(&concurrency[0],"control/concurrencylocal") == -1) return 0;
-  if (control_readint(&concurrency[1],"control/concurrencyremote") == -1) return 0;
-  if (control_rldef(&envnoathost,"control/envnoathost",1,"envnoathost") != 1) return 0;
-  if (control_rldef(&bouncefrom,"control/bouncefrom",0,"MAILER-DAEMON") != 1) return 0;
-  if (control_rldef(&bouncehost,"control/bouncehost",1,"bouncehost") != 1) return 0;
-  if (control_readint(&bouncemaxbytes,"control/bouncemaxbytes") == -1) return 0;   
-  if (control_rldef(&doublebouncehost,"control/doublebouncehost",1,"doublebouncehost") != 1) return 0;
-  if (control_rldef(&doublebounceto,"control/doublebounceto",0,"postmaster") != 1) return 0;
+  if (control_readint(&lifetime,"etc/queuelifetime") == -1) return 0;
+  if (control_readint(&concurrency[0],"etc/concurrencylocal") == -1) return 0;
+  if (control_readint(&concurrency[1],"etc/concurrencyremote") == -1) return 0;
+  if (control_rldef(&envnoathost,"etc/envnoathost",1,"envnoathost") != 1) return 0;
+  if (control_rldef(&bouncefrom,"etc/bouncefrom",0,"MAILER-DAEMON") != 1) return 0;
+  if (control_rldef(&bouncehost,"etc/bouncehost",1,"bouncehost") != 1) return 0;
+  if (control_readint(&bouncemaxbytes,"etc/bouncemaxbytes") == -1) return 0;   
+  if (control_rldef(&doublebouncehost,"etc/doublebouncehost",1,"doublebouncehost") != 1) return 0;
+  if (control_rldef(&doublebounceto,"etc/doublebounceto",0,"postmaster") != 1) return 0;
   if (!stralloc_cats(&doublebounceto,"@")) return 0;
   if (!stralloc_cat(&doublebounceto,&doublebouncehost)) return 0;
   if (!stralloc_0(&doublebounceto)) return 0;
-  if (control_readfile(&locals,"control/locals",1) != 1) return 0;
+  if (control_readfile(&locals,"etc/locals",1) != 1) return 0;
   if (!constmap_init(&maplocals,locals.s,locals.len,0)) return 0;
-  switch(control_readfile(&percenthack,"control/percenthack",0)) {
+  switch(control_readfile(&percenthack,"etc/percenthack",0)) {
     case -1: return 0;
     case 0: if (!constmap_init(&mappercenthack,"",0,0)) return 0; break;
     case 1: if (!constmap_init(&mappercenthack,percenthack.s,percenthack.len,0)) return 0; break;
   }
-  switch(control_readfile(&vdoms,"control/virtualdomains",0)) {
+  switch(control_readfile(&vdoms,"etc/virtualdomains",0)) {
     case -1: return 0;
     case 0: if (!constmap_init(&mapvdoms,"",0,1)) return 0; break;
     case 1: if (!constmap_init(&mapvdoms,vdoms.s,vdoms.len,1)) return 0; break;
@@ -1298,13 +1302,13 @@ void regetcontrols()
 {
   int r;
 
-  if (control_readfile(&newlocals,"control/locals",1) != 1) { log1s("alert: unable to reread control/locals\n"); return; }
-  if (control_readint(&concurrency[0],"control/concurrencylocal") == -1) { log1s("alert: unable to reread control/concurrencylocal\n"); return; }
-  if (control_readint(&concurrency[1],"control/concurrencyremote") == -1) { log1s("alert: unable to reread control/concurrencyremote\n"); return; }
-  if (control_readint(&lifetime,"control/queuelifetime") == -1) { log1s("alert: unable to reread control/queuelifetime\n"); return; }
+  if (control_readfile(&newlocals,"etc/locals",1) != 1) { log1s("alert: unable to reread etc/locals\n"); return; }
+  if (control_readint(&concurrency[0],"etc/concurrencylocal") == -1) { log1s("alert: unable to reread etc/concurrencylocal\n"); return; }
+  if (control_readint(&concurrency[1],"etc/concurrencyremote") == -1) { log1s("alert: unable to reread etc/concurrencyremote\n"); return; }
+  if (control_readint(&lifetime,"etc/queuelifetime") == -1) { log1s("alert: unable to reread etc/queuelifetime\n"); return; }
 
-  r = control_readfile(&newvdoms,"control/virtualdomains",0);
-  if (r == -1) { log1s("alert: unable to reread control/virtualdomains\n"); return; }
+  r = control_readfile(&newvdoms,"etc/virtualdomains",0);
+  if (r == -1) { log1s("alert: unable to reread etc/virtualdomains\n"); return; }
 
   constmap_free(&maplocals);
   constmap_free(&mapvdoms);

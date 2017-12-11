@@ -1,4 +1,6 @@
 /*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
  *  Revision 20170317, Kai Peter
  *  - switched to 'buffer'
  *  - added 'rename.h'
@@ -14,8 +16,7 @@
 #include "stralloc.h"
 #include "open.h"
 #include "auto_qmail.h"
-//#include "cdbmake.h"
-#include "qlibs/include/cdbmake.h"
+#include "cdbmake.h"
 #include "case.h"
 #include "rename.h"
 
@@ -23,11 +24,11 @@
 
 void die_read()
 {
-  strerr_die2sys(111,FATL,"unable to read control/morercpthosts: ");
+  strerr_die2sys(111,FATL,"unable to read etc/morercpthosts: ");
 }
 void die_write()
 {
-  strerr_die2sys(111,FATL,"unable to write to control/morercpthosts.tmp: ");
+  strerr_die2sys(111,FATL,"unable to write to etc/morercpthosts.tmp: ");
 }
 
 char inbuf[1024];
@@ -46,12 +47,12 @@ int main()
   if (chdir(auto_qmail) == -1)
     strerr_die4sys(111,FATL,"unable to chdir to ",auto_qmail,": ");
 
-  fd = open_read("control/morercpthosts");
+  fd = open_read("etc/morercpthosts");
   if (fd == -1) die_read();
 
   buffer_init(&ssin,read,fd,inbuf,sizeof inbuf);
 
-  fdtemp = open_trunc("control/morercpthosts.tmp");
+  fdtemp = open_trunc("etc/morercpthosts.tmp");
   if (fdtemp == -1) die_write();
 
   if (cdb_make_start(&c,fdtemp) == -1) die_write();
@@ -74,8 +75,8 @@ int main()
   if (cdb_make_finish(&c) == -1) die_write();
   if (fsync(fdtemp) == -1) die_write();
   if (close(fdtemp) == -1) die_write(); /* NFS stupidity */
-  if (rename("control/morercpthosts.tmp","control/morercpthosts.cdb") == -1)
-    strerr_die2sys(111,FATL,"unable to move control/morercpthosts.tmp to control/morercpthosts.cdb");
+  if (rename("etc/morercpthosts.tmp","etc/morercpthosts.cdb") == -1)
+    strerr_die2sys(111,FATL,"unable to move etc/morercpthosts.tmp to etc/morercpthosts.cdb");
 
   _exit(0);
 }

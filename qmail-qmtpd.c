@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include "stralloc.h"
 #include "substdio.h"
 #include "qmail.h"
@@ -165,7 +169,7 @@ int main()
   if (control_init() == -1) resources();
   if (rcpthosts_init() == -1) resources();
 
-  if (control_readint(&databytes,"control/databytes") == -1) resources();
+  if (control_readint(&databytes,"etc/databytes") == -1) resources();
   x = env_get("DATABYTES");
   if (x) { scan_ulong(x,&u); databytes = u; }
   if (!(databytes + 1)) --databytes;

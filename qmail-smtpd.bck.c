@@ -1,7 +1,3 @@
-/*
- *  Revision 20170926, Kai Peter
- *  - changed 'control' directory name to 'etc'
-*/
 #include "readwrite.h"
 #include "stralloc.h"
 #include "substdio.h"
@@ -38,7 +34,6 @@
 #include "base64.h"
 #include "spf.h"
 #include "cdbread.h"
-#include "qmail-spp.h"   // qmail-spp:
 
 #define FDAUTH 3
 
@@ -58,13 +53,6 @@
 #define MAXHOPS 100
 unsigned long databytes = 0;
 int timeout = 1200;
-
-#define SPP 1   // unset to deactivate qmail-spp
-#ifdef SPP
-// qmail-spp: (2 lines)
-extern void spp_rcpt_accepted();
-int spp_val;
-#endif
 
 int safewrite(int fd,char *buf,int len)
 {
@@ -241,31 +229,27 @@ void setup()
   unsigned long u;
 
   if (control_init() == -1) die_control();
-  if (control_rldef(&greeting,"etc/smtpgreeting",1,(char *) 0) != 1)
+  if (control_rldef(&greeting,"control/smtpgreeting",1,(char *) 0) != 1)
     die_control();
-  liphostok = control_rldef(&liphost,"etc/localiphost",1,(char *) 0);
+  liphostok = control_rldef(&liphost,"control/localiphost",1,(char *) 0);
   if (liphostok == -1) die_control();
-  if (control_readint(&timeout,"etc/timeoutsmtpd") == -1) die_control();
+  if (control_readint(&timeout,"control/timeoutsmtpd") == -1) die_control();
   if (timeout <= 0) timeout = 1;
 
   if (rcpthosts_init() == -1) die_control();
-// qmail-spp: (1 line)
-#ifdef SPP
-if (spp_init() == -1) die_control();
-#endif
   if (recipients_init() == -1) die_control();
 
-  bmfok = control_readfile(&bmf,"etc/badmailfrom",0);
+  bmfok = control_readfile(&bmf,"control/badmailfrom",0);
   if (bmfok == -1) die_control();
   if (bmfok)
     if (!constmap_init(&mapbmf,bmf.s,bmf.len,0)) die_nomem();
 
-  brtok = control_readfile(&brt,"etc/badrcptto",0);
+  brtok = control_readfile(&brt,"control/badrcptto",0);
   if (brtok == -1) die_control();
   if (brtok)
     if (!constmap_init(&mapbrt,brt.s,brt.len,0)) die_nomem();
 
-  if (control_readint(&databytes,"etc/databytes") == -1) die_control();
+  if (control_readint(&databytes,"control/databytes") == -1) die_control();
   x = env_get("DATABYTES");
   if (x) { scan_ulong(x,&u); databytes = u; }
   if (!(databytes + 1)) --databytes;
@@ -303,7 +287,7 @@ if (spp_init() == -1) die_control();
 
   helocheck = env_get("HELOCHECK");
   if (helocheck) {
-    badhelook = control_readfile(&badhelo,"etc/badhelo",0);
+    badhelook = control_readfile(&badhelo,"control/badhelo",0);
     if (badhelook == -1) die_control();
     if (badhelook)
       if (!constmap_init(&mapbhlo,badhelo.s,badhelo.len,0)) die_nomem();
@@ -319,7 +303,7 @@ if (spp_init() == -1) die_control();
     localmf = 1;
     if (str_len(localmfcheck) == 1 && *localmfcheck == '!') {
       localmf = 2;
-      fdmav = open_read("etc/mailfromrules.cdb");
+      fdmav = open_read("control/mailfromrules.cdb");
       if (fdmav == -1 ) localmf = 1;
     }
     if (str_len(localmfcheck) == 1 && *localmfcheck == '=') {
@@ -338,7 +322,7 @@ if (spp_init() == -1) die_control();
       else {
         if (*badmimeinit == '!') flagmimetype = 1;
         if (*badmimeinit == '+') flagmimetype = 4;
-        fdbmt = open_read("etc/badmimetypes.cdb");
+        fdbmt = open_read("control/badmimetypes.cdb");
         if (fdbmt != -1 ) flagmimetype = flagmimetype + 2;
       }
     }
@@ -352,7 +336,7 @@ if (spp_init() == -1) die_control();
       else {
         flagloadertype = 1;
         if (*badloaderinit == '+') flagloadertype = 2;
-        fdblt = open_read("etc/badloadertypes.cdb");
+        fdblt = open_read("control/badloadertypes.cdb");
         if (fdblt == -1 ) flagloadertype = 0;
       }
     }
@@ -398,10 +382,10 @@ if (spp_init() == -1) die_control();
   if (x) { scan_ulong(x,&u); flagspf = u; }
   if (flagspf < 0 || flagspf > 6) die_control();
   if (flagspf) {
-    localrules = control_readline(&spflocalrules,"etc/spflocalrules");
+    localrules = control_readline(&spflocalrules,"control/spflocalrules");
     if (localrules == -1) die_control();
     if (!stralloc_0(&spflocalrules)) die_nomem();
-    if (control_rldef(&spfexplain,"etc/spfexplain",0,SPF_DEFEXP) == -1) die_control();
+    if (control_rldef(&spfexplain,"control/spfexplain",0,SPF_DEFEXP) == -1) die_control();
     if (!stralloc_0(&spfexplain)) die_nomem();
   }
 
@@ -489,11 +473,8 @@ int flagrcpt;
 int flagdnsmf = 0;
 int flagsize;
 int rcptcount = 0;
-// qmail-spp: (2 lines)
-#ifdef SPP
-int allowed;
+
 int addrparse(char *arg)
-#endif
 {
   int i;
   char ch;
@@ -516,7 +497,7 @@ int addrparse(char *arg)
   if (!stralloc_copys(&addr,"")) die_nomem();
   flagesc = 0;
   flagquoted = 0;
-  for (i = 0; (ch = arg[i]); ++i) { /* copy arg to addr, stripping quotes */
+  for (i = 0; ch = arg[i]; ++i) { /* copy arg to addr, stripping quotes */
     if (flagesc) {
       if (!stralloc_append(&addr,&ch)) die_nomem();
       flagesc = 0;
@@ -912,20 +893,12 @@ void mailfrom_parms(char *arg)
 
 void smtp_helo(char *arg)
 {
-// qmail-spp: (1 line)
-#ifdef SPP
-if(!spp_helo(arg)) return;
-#endif
   smtp_greet("250 "); out("\r\n");
   seenmail = 0; rcptcount = 0; seenhelo++; dohelo(arg);
 }
 
 void smtp_ehlo(char *arg)
 {
-// qmail-spp: (1 line)
-#ifdef SPP
-if(!spp_helo(arg)) return;
-#endif
   char size[FMT_ULONG];
   size[fmt_ulong(size,(unsigned long) databytes)] = 0;
   smtp_greet("250-"); out("\r\n");
@@ -942,10 +915,6 @@ if(!spp_helo(arg)) return;
 
 void smtp_rset(void)
 {
-// qmail-spp: (1 line)
-#ifdef SPP
-spp_rset();
-#endif
   seenmail = 0; rcptcount = 0; /* RFC 5321: seenauth + seentls stay */
   mailfrom.len = 0; rcptto.len = 0; ssin.p = 0;
   out("250 flushed\r\n");
@@ -983,11 +952,6 @@ void smtp_mail(char *arg)
   }
   if (!addrparse(arg)) { err_syntax(); return; }
 
-// qmail-spp: added additional bracket '{' (second line)
-#ifdef SPP
-if (!(spp_val = spp_mail())); return;
-if (spp_val == 1) {
-#endif
   flagsize = 0;
   rcptcount = 0;
   mailfrom_parms(arg);
@@ -1013,10 +977,6 @@ if (spp_val == 1) {
   if (!stralloc_0(&protocol)) die_nomem();
 
   if (!flagdnsmf) out("250 ok\r\n");
-// qmail-spp: added bracket (next line)
-#ifdef SPP
-}
-#endif
 }
 
 void smtp_rcpt(char *arg)
@@ -1025,13 +985,6 @@ void smtp_rcpt(char *arg)
   if (!seenmail) { err_wantmail(); return; }
   if (!addrparse(arg)) { err_syntax(); return; }
   rcptcount++;
-
-// qmail-spp: (3 lines)
-#ifdef SPP
-if (!relayclient) allowed = addrallowed(addr.s);
-else allowed = 1;
-if (!(spp_val = spp_rcpt(allowed))) return;
-#endif
 
 /* this file is too long --------------------------------- Split Horizon envelope checks */
 
@@ -1077,8 +1030,8 @@ if (!(spp_val = spp_rcpt(allowed))) return;
       flagerrcpts++;
       return;
     }
-
-    if (flagspf)             /* SPF rejects */
+    
+    if (flagspf) 			/* SPF rejects */
       if (spf_check(flagip6) > 0) {
         err_spf("Reject::SPF::Fail",protocol.s,remoteip,remotehost,helohost.s,mailfrom.s,addr.s,spfbounce.s);
         return;
@@ -1099,17 +1052,6 @@ if (!(spp_val = spp_rcpt(allowed))) return;
     if (!stralloc_cats(&addr,relayclient)) die_nomem();
     if (!stralloc_0(&addr)) die_nomem();
   }
-
-// qmail-spp: (4 lines)
-#ifdef SPP
-//else if (spp_val == 1) {   // --> initially we have hade an 'else', but now:
-if (spp_val == 1) {
-  if (!allowed) { //err_nogateway(); return; }  // err_no´gateway needs now arguments
-      err_nogateway("Reject::SNDR::Invalid_Relay",protocol.s,remoteip,remotehost,helohost.s,mailfrom.s,addr.s);
-  }
-}
-spp_rcpt_accepted();
-#endif
 
 /* this file is too long --------------------------------- Common checks */
 
@@ -1359,10 +1301,6 @@ void smtp_data()
   if (!seenmail) { err_wantmail(); return; }
   if (!rcptto.len) { err_wantrcpt(); return; }
   if (flagnotorious) { err_notorious(); }
-// qmail-spp: (1 line)
-#ifdef SPP
-if (!spp_data()) return;
-#endif
   seenmail = 0;
   if (databytes) bytestooverflow = databytes + 1;
 
@@ -1382,11 +1320,6 @@ if (!spp_data()) return;
 
   if (flagspf && !relayclient) spfheader(&qqt,spfinfo.s,local,remoteip,fakehelo,mailfrom.s);
   received(&qqt,protocol.s,local,remoteip,remotehost,remoteinfo,fakehelo,tlsinfo.s,rblinfo.s);
-// qmail-spp: (2 lines)
-#ifdef SPP
-qmail_put(&qqt,sppheaders.s,sppheaders.len);  /* set in qmail-spp.c */
-spp_rset();
-#endif
   blast(&hops);
   hops = (hops >= MAXHOPS);
   if (hops) qmail_fail(&qqt);
@@ -1636,10 +1569,6 @@ void smtp_auth(char *arg)
 
   switch (authcmds[i].fun(arg)) {
     case 0:
-// qmail-spp: (1 line)
-#ifdef SPP
-if (!spp_auth(authcmds[i].text, user.s)) return;
-#endif
       seenauth = 1;
       relayclient = "";
       remoteinfo = user.s;
@@ -1680,14 +1609,8 @@ int main(int argc, char **argv)
   setup();
   smtpdlog_init();
   if (ipme_init() != 1) die_ipme();
-#ifdef SPP
-  if (spp_connect()) {
-#endif
   smtp_greet("220 ");
   out(" ESMTP\r\n");
-#ifdef SPP
-  }
-#endif
   if (commands(&ssin,&smtpcommands) == 0) die_read();
   die_nomem();
 

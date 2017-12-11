@@ -1,4 +1,6 @@
 /*
+ *  Revision 20170926, Kai Peter
+ *  - moved directory 'users' to 'var/users'
  *  Revision 20160713, Kai Peter
  *  - switched to 'buffer'
  *  Revision 20170306, Kai Peter
@@ -34,35 +36,32 @@ void die_nomem()
 }
 void die_opena()
 {
-  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to open users/assign\n");
+  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to open var/users/assign\n");
   die_temp();
 }
 void die_reada()
 {
-  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to read users/assign\n");
+  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to read var/users/assign\n");
   die_temp();
 }
 void die_format()
 {
-  buffer_putsflush(buffer_2,"qmail-newu: fatal: bad format in users/assign\n");
+  buffer_putsflush(buffer_2,"qmail-newu: fatal: bad format in var/users/assign\n");
   die_temp();
 }
 void die_opent()
 {
-//  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to open var/users.tmp\n");
-  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to open users/cdb.tmp\n");
+  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to open var/users/cdb.tmp\n");
   die_temp();
 }
 void die_writet()
 {
-//  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to write var/users.tmp\n");
-  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to write users/cdb.tmp\n");
+  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to write var/users/cdb.tmp\n");
   die_temp();
 }
 void die_rename()
 {
-//  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to move var/users.tmp to users/cdb\n");
-  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to move users/cdb.tmp to users/cdb\n");
+  buffer_putsflush(buffer_2,"qmail-newu: fatal: unable to move var/users/cdb.tmp to var/users/cdb\n");
   die_temp();
 }
 
@@ -71,7 +70,6 @@ stralloc key = {0};
 stralloc data = {0};
 
 char inbuf[1024];
-//substdio ssin;
 buffer ssin;
 
 int fd;
@@ -90,14 +88,12 @@ int main()
   umask(033);
   if (chdir(auto_qmail) == -1) die_chdir();
 
-//  fd = open_read("var/users.txt");   // new location + name
-  fd = open_read("users/assign");
+  fd = open_read("var/users/assign");
   if (fd == -1) die_opena();
 
   buffer_init(&ssin,read,fd,inbuf,sizeof(inbuf));
 
-//  fdtemp = open_trunc("var/users.tmp");
-  fdtemp = open_trunc("users/cdb.tmp");
+  fdtemp = open_trunc("/var/users/cdb.tmp");
   if (fdtemp == -1) die_opent();
 
   if (cdb_make_start(&c,fdtemp) == -1) die_writet();
@@ -147,8 +143,7 @@ int main()
   if (cdb_make_finish(&c) == -1) die_writet();
   if (fsync(fdtemp) == -1) die_writet();
   if (close(fdtemp) == -1) die_writet(); /* NFS stupidity */
-//  if (rename("var/users.tmp","var/users.cdb") == -1) die_rename();
-  if (rename("users/cdb.tmp","users/cdb") == -1) die_rename();
+  if (rename("var/users.tmp","var/users.cdb") == -1) die_rename();
 
   _exit(0);
 }

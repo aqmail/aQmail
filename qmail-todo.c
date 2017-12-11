@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "alloc.h"
@@ -514,15 +518,15 @@ void todo_do(fd_set *rfds)
 int getcontrols(void)
 {
   if (control_init() == -1) return 0;
-  if (control_rldef(&envnoathost,"control/envnoathost",1,"envnoathost") != 1) return 0;
-  if (control_readfile(&locals,"control/locals",1) != 1) return 0;
+  if (control_rldef(&envnoathost,"etc/envnoathost",1,"envnoathost") != 1) return 0;
+  if (control_readfile(&locals,"etc/locals",1) != 1) return 0;
   if (!constmap_init(&maplocals,locals.s,locals.len,0)) return 0;
-  switch(control_readfile(&percenthack,"control/percenthack",0)) {
+  switch(control_readfile(&percenthack,"etc/percenthack",0)) {
     case -1: return 0;
     case 0: if (!constmap_init(&mappercenthack,"",0,0)) return 0; break;
     case 1: if (!constmap_init(&mappercenthack,percenthack.s,percenthack.len,0)) return 0; break;
   }
-  switch(control_readfile(&vdoms,"control/virtualdomains",0)) {
+  switch(control_readfile(&vdoms,"etc/virtualdomains",0)) {
     case -1: return 0;
     case 0: if (!constmap_init(&mapvdoms,"",0,1)) return 0; break;
     case 1: if (!constmap_init(&mapvdoms,vdoms.s,vdoms.len,1)) return 0; break;
@@ -537,11 +541,11 @@ void regetcontrols(void)
 {
   int r;
 
-  if (control_readfile(&newlocals,"control/locals",1) != 1)
-    { sendlog1("alert: qmail-todo: unable to reread control/locals\n"); return; }
-  r = control_readfile(&newvdoms,"control/virtualdomains",0);
+  if (control_readfile(&newlocals,"etc/locals",1) != 1)
+    { sendlog1("alert: qmail-todo: unable to reread etc/locals\n"); return; }
+  r = control_readfile(&newvdoms,"etc/virtualdomains",0);
   if (r == -1)
-    { sendlog1("alert: qmail-todo: unable to reread control/virtualdomains\n"); return; }
+    { sendlog1("alert: qmail-todo: unable to reread etc/virtualdomains\n"); return; }
 
   constmap_free(&maplocals);
   constmap_free(&mapvdoms);

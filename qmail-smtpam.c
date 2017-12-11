@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -96,7 +100,7 @@ void outsafe(stralloc *sa)
 
 void temp_noip() 
 {
-  out("Zinvalid ipaddr in control/domainips (#4.3.0)\n");
+  out("Zinvalid ipaddr in etc/domainips (#4.3.0)\n");
   zerodie();
 }
 void temp_nomem() 
@@ -158,7 +162,7 @@ void perm_nomx()
 void perm_ambigmx() 
 {
   out("DSorry. Although I'm listed as a best-preference MX or A for that host,\n\
-it isn't in my control/locals file, so I don't treat it as local. (#5.4.6)\n");
+it isn't in my etc/locals file, so I don't treat it as local. (#5.4.6)\n");
   zerodie();
 }
 
@@ -452,12 +456,12 @@ void smtp()
 void getcontrols()
 {
   if (control_init() == -1) temp_control();
-  if (control_readint(&timeout,"control/timeoutremote") == -1) temp_control();
-  if (control_readint(&timeoutconnect,"control/timeoutconnect") == -1)
+  if (control_readint(&timeout,"etc/timeoutremote") == -1) temp_control();
+  if (control_readint(&timeoutconnect,"etc/timeoutconnect") == -1)
     temp_control();
-  if (control_rldef(&helohost,"control/helohost",1,(char *) 0) != 1)
+  if (control_rldef(&helohost,"etc/helohost",1,(char *) 0) != 1)
     temp_control();
-  switch (control_readfile(&domainips,"control/domainips",0)) {
+  switch (control_readfile(&domainips,"etc/domainips",0)) {
     case -1:
       temp_control();
     case 0:

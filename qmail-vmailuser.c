@@ -1,3 +1,7 @@
+/*
+ *  Revision 20170926, Kai Peter
+ *  - changed 'control' directory name to 'etc'
+*/
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "global.h"
@@ -71,7 +75,7 @@ int main(int argc,char **argv)
     if (!case_diffs(argv[2],RESPECT_CASE)) flagrespect = 1;
 
 
-  switch (control_readfile(&vdoms,"control/virtualdomains",0)) {
+  switch (control_readfile(&vdoms,"etc/virtualdomains",0)) {
     case -1: pam_exit(111);
     case  0: if (!constmap_init(&mapvdoms,"",0,1)) pam_exit(111);
     case  1: if (!constmap_init(&mapvdoms,vdoms.s,vdoms.len,1)) pam_exit(111);
